@@ -30,15 +30,6 @@ namespace MindMap.View
             get { return _ParentNode; }
         }
 
-        /// <summary> 设置当前节点的背景颜色
-        /// 
-        /// </summary>
-        public Color _NodeBackColor
-        {
-            get { return Content_lable.BackColor; }
-            set { Content_lable.BackColor = value; }
-        }
-
         private Font g_TextFont = new Font(new FontFamily("微软雅黑"), 12);
         /// <summary> 当前节点的字体
         /// 
@@ -71,7 +62,7 @@ namespace MindMap.View
                 Content_lable.Text = _TreeNode.Text;
                 Content_lable.Font = g_TextFont;
                 Content_lable.ForeColor = Color.FromArgb(255, 255, 255);
-                Content_lable.BackColor = Color.FromArgb(48, 120, 215);
+                Content_lable.BackColor = _NodeBackColor.Normaly.Value;
 
                 Chidren_Panel.Controls.Clear();
                 foreach (TreeNode TreeNodeItem in _TreeNode.Nodes)
@@ -99,6 +90,15 @@ namespace MindMap.View
                 _Selected = value;
             }
         }
+
+
+        /// <summary> 设置当前节点的背景颜色
+        /// 
+        /// </summary>
+        public MindMapNodeBackColor NodeBackColor { get { return _NodeBackColor; } set { _NodeBackColor = value; } }
+        private MindMapNodeBackColor _NodeBackColor = new MindMapNodeBackColor(Color.FromArgb(48, 120, 215));
+
+
         #endregion 属性               
 
         #region 方法
@@ -220,7 +220,24 @@ namespace MindMap.View
             NewNode.Margin = new Padding(0, 2, 0, 2);
             Chidren_Panel.Controls.Add(NewNode);
             ResetNodeSize();
+        }
 
+        /// <summary> 移除一个节点
+        /// 
+        /// </summary>
+        public void Remove(MindMapNode MindMapNodeParame)
+        {
+
+            MindMapNode MindMapNodeTemp = null;
+
+            foreach (Control ControlItem in Chidren_Panel.Controls)
+            {
+                MindMapNodeTemp = (MindMapNode)ControlItem;
+                if (MindMapNodeParame == MindMapNodeTemp)
+                {
+                    MindMapNodeTemp.Parent = null;
+                }
+            }
         }
         #endregion 方法
 
@@ -236,6 +253,113 @@ namespace MindMap.View
 
         }
 
+        private void Content_lable_MouseEnter(object sender, EventArgs e)
+        {
+            Content_lable.BackColor = _NodeBackColor.Enter.Value;
+        }
+
+        private void Content_lable_MouseDown(object sender, MouseEventArgs e)
+        {
+            Content_lable.BackColor = _NodeBackColor.Down.Value;
+        }
+
+        private void Content_lable_MouseLeave(object sender, EventArgs e)
+        {
+            Content_lable.BackColor = _NodeBackColor.Normaly.Value;
+        }
+
+        private void Content_lable_MouseUp(object sender, MouseEventArgs e)
+        {
+            Content_lable.BackColor = _NodeBackColor.Normaly.Value;
+        }
+
         #endregion 事件
+
+        #region 配套使用的内部类
+        /// <summary> 设置节点的背景色
+        /// 
+        /// </summary>
+        public class MindMapNodeBackColor
+        {
+            /// <summary> 必须设置节点在正常时的背景颜色，如果其他颜色为空则，其他色在取值时会基于正常色自动给出缺省颜色
+            /// 
+            /// </summary>
+            /// <param name="ColorParame"></param>
+            public MindMapNodeBackColor(Color NormalyColor)
+            {
+                _Normaly = NormalyColor;
+            }
+
+            /// <summary>节点在正常时的背景颜色
+            /// 
+            /// </summary>
+            public Color? Normaly { get { return _Normaly; } set { _Normaly = value; } }
+            private Color? _Normaly = null;
+
+            /// <summary> 节点在鼠标进入时的背景颜色 [如果为空取值时将取到比正常色稍亮一些的颜色]
+            /// 
+            /// </summary>
+            public Color? Enter
+            {
+                get
+                {
+                    if (_Enter == null)
+                    {
+                        int IntRed = _Normaly.Value.R + 30;
+                        int IntGreen = _Normaly.Value.G + 30;
+                        int IntBlue = _Normaly.Value.B + 30;
+                        IntRed = GetColorValue(IntRed);
+                        IntGreen = GetColorValue(IntGreen);
+                        IntBlue = GetColorValue(IntBlue);
+                        _Enter = Color.FromArgb(IntRed, IntGreen, IntBlue);
+                    }
+                    return _Enter;
+                }
+                set { _Enter = value; }
+            }
+            private Color? _Enter = null;
+
+            /// <summary> 节点在鼠标按下时的背景颜色 [如果为空取值时将取到比正常色稍暗一些的颜色]
+            /// 
+            /// </summary>
+            public Color? Down
+            {
+                get
+                {
+                    if (_Down == null)
+                    {
+                        int IntRed = _Normaly.Value.R - 30;
+                        int IntGreen = _Normaly.Value.G - 30;
+                        int IntBlue = _Normaly.Value.B - 30;
+                        IntRed = GetColorValue(IntRed);
+                        IntGreen = GetColorValue(IntGreen);
+                        IntBlue = GetColorValue(IntBlue);
+                        _Down = Color.FromArgb(IntRed, IntGreen, IntBlue);
+                    }
+                    return _Down;
+
+
+                }
+                set { _Down = value; }
+            }
+            private Color? _Down = null;
+
+            /// <summary> 限制int不能超过0-255的范围，超过最小值则取最小值超过最大值则取最大值
+            /// 
+            /// </summary>
+            /// <param name="ColorValue"></param>
+            /// <returns></returns>
+            private int GetColorValue(int ColorValue)
+            {
+                int IntResult = ColorValue;
+                IntResult = IntResult > 255 ? 255 : IntResult;//不能大于255，如果大于就取255
+                IntResult = IntResult < 0 ? 0 : IntResult;//不能小于0，如果小于0那就取0
+                return IntResult;
+            }
+        }
+
+
     }
+    #endregion 配套使用的内部类
 }
+

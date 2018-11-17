@@ -56,6 +56,10 @@
             this.Content_lable.TabIndex = 0;
             this.Content_lable.Text = "思维导图节点名称";
             this.Content_lable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Content_lable.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseDown);
+            this.Content_lable.MouseEnter += new System.EventHandler(this.Content_lable_MouseEnter);
+            this.Content_lable.MouseLeave += new System.EventHandler(this.Content_lable_MouseLeave);
+            this.Content_lable.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseUp);
             // 
             // Chidren_Panel
             // 
