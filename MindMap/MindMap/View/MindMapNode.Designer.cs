@@ -54,7 +54,7 @@
             this.Content_lable.Name = "Content_lable";
             this.Content_lable.Size = new System.Drawing.Size(59, 25);
             this.Content_lable.TabIndex = 0;
-            this.Content_lable.Text = "思维导图节点名称";
+            this.Content_lable.Text = "新的节点";
             this.Content_lable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.Content_lable.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseDown);
             this.Content_lable.MouseEnter += new System.EventHandler(this.Content_lable_MouseEnter);

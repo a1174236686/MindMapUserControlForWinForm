@@ -36,10 +36,15 @@
             this.mindMapNode.BackColor = System.Drawing.Color.White;
             this.mindMapNode.Location = new System.Drawing.Point(0, 0);
             this.mindMapNode.Name = "mindMapNode";
-            this.mindMapNode.Size = new System.Drawing.Size(467, 28);
+            this.mindMapNode.ParentNode = null;
+            this.mindMapNode.Selected = false;
+            this.mindMapNode.Size = new System.Drawing.Size(92, 23);
             this.mindMapNode.TabIndex = 0;
             this.mindMapNode.TextFont = new System.Drawing.Font("微软雅黑", 12F);
-            this.mindMapNode.TreeNode = null;
+            this.mindMapNode.MindMapNodeMouseEnter += new System.EventHandler(this.mindMapNode_MindMapNodeMouseEnter);
+            this.mindMapNode.MindMapNodeMouseLeave += new System.EventHandler(this.mindMapNode_MindMapNodeMouseLeave);
+            this.mindMapNode.MindMapNodeMouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MindMapNodeMouseDown);
+            this.mindMapNode.MindMapNodeMouseUp += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MindMapNodeMouseUp);
             // 
             // MindMap_Panel
             // 

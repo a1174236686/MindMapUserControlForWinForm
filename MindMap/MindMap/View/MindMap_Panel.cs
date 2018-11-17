@@ -31,17 +31,12 @@ namespace MindMap.View
             set
             {
                 if (value == null) return;
-                _TextFont = value;
-                
+                _TextFont = value;                
                 mindMapNode.SetTextFont(_TextFont);
-
-
-
-
             }
         }
 
-
+        
         
 
         /// <summary> 为控件设置数据源
@@ -113,6 +108,64 @@ namespace MindMap.View
             public string ParentName { get; set; }
 
         }
+        #region 公开事件委托
+        /// <summary>节点被按下时
+        /// 
+        /// </summary>
+        private void mindMapNode_MindMapNodeMouseDown(object sender, MouseEventArgs e)
+        {
+            if (MindMapNodeMouseDown != null) MindMapNodeMouseDown(this, e);
+        }
+        /// <summary>鼠标进入节点范围时
+        /// 
+        /// </summary>
+        private void mindMapNode_MindMapNodeMouseEnter(object sender, EventArgs e)
+        {
+            if (MindMapNodeMouseEnter != null) MindMapNodeMouseEnter(this, e);
+        }
+        /// <summary>鼠标移出节点范围事件
+        /// 
+        /// </summary>
+        private void mindMapNode_MindMapNodeMouseLeave(object sender, EventArgs e)
+        {
+            if (MindMapNodeMouseLeave != null) MindMapNodeMouseLeave(this, e);
+        }
+        /// <summary>节点在鼠标弹起时
+        /// 
+        /// </summary>
+        private void mindMapNode_MindMapNodeMouseUp(object sender, MouseEventArgs e)
+        {            
+            if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
+        }
 
-    }  
+        /// <summary>鼠标进入节点范围事件
+        /// 
+        /// </summary>
+        [Description("鼠标进入节点范围事件")]
+        public event EventHandler MindMapNodeMouseEnter;
+
+        /// <summary>鼠标离开节点范围事件
+        /// 
+        /// </summary>
+        [Description("鼠标离开节点范围事件")]
+        public event EventHandler MindMapNodeMouseLeave;
+
+        /// <summary> 节点被鼠标按下事件
+        /// 
+        /// </summary>
+        [Description("节点被鼠标按下事件")]
+        public event MouseEventHandler MindMapNodeMouseDown;
+
+        /// <summary> 节点被鼠标弹起事件
+        /// 
+        /// </summary>
+        [Description("节点被鼠标弹起事件")]
+        public event MouseEventHandler MindMapNodeMouseUp;
+
+
+
+        #endregion 公开事件委托
+
+       
+    }
 }
