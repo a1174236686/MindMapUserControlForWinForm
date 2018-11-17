@@ -45,6 +45,7 @@
             this.Content_Panel.Name = "Content_Panel";
             this.Content_Panel.Size = new System.Drawing.Size(61, 35);
             this.Content_Panel.TabIndex = 0;
+            this.Content_Panel.Click += new System.EventHandler(this.EmptyRange_Click);
             // 
             // Content_lable
             // 
@@ -56,6 +57,7 @@
             this.Content_lable.TabIndex = 0;
             this.Content_lable.Text = "新的节点";
             this.Content_lable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Content_lable.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseClick);
             this.Content_lable.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseDown);
             this.Content_lable.MouseEnter += new System.EventHandler(this.Content_lable_MouseEnter);
             this.Content_lable.MouseLeave += new System.EventHandler(this.Content_lable_MouseLeave);
@@ -71,6 +73,7 @@
             this.Chidren_Panel.Name = "Chidren_Panel";
             this.Chidren_Panel.Size = new System.Drawing.Size(864, 35);
             this.Chidren_Panel.TabIndex = 1;
+            this.Chidren_Panel.Click += new System.EventHandler(this.EmptyRange_Click);
             // 
             // DrawingLine_panel
             // 
@@ -81,6 +84,7 @@
             this.DrawingLine_panel.Name = "DrawingLine_panel";
             this.DrawingLine_panel.Size = new System.Drawing.Size(10, 35);
             this.DrawingLine_panel.TabIndex = 2;
+            this.DrawingLine_panel.Click += new System.EventHandler(this.EmptyRange_Click);
             // 
             // MindMapNode
             // 

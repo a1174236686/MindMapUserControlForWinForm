@@ -130,6 +130,22 @@ namespace MindMap.View
         {
             if (MindMapNodeMouseLeave != null) MindMapNodeMouseLeave(this, e);
         }
+        /// <summary> 鼠标单击某节点
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMapNode_MindMapNodeMouseClick(object sender, MouseEventArgs e)
+        {
+            List<MindMapNode> MindMapNodeList=mindMapNode.GetChidrenNode(true);
+            MindMapNodeList.Add(mindMapNode);
+            MindMapNodeList.ForEach(T1 => T1.Selected = false);
+            
+            MindMapNode SenderObject = ((MindMapNode)sender);
+            SenderObject.Selected =true;
+            
+            if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
+        }
         /// <summary>节点在鼠标弹起时
         /// 
         /// </summary>
@@ -162,10 +178,32 @@ namespace MindMap.View
         [Description("节点被鼠标弹起事件")]
         public event MouseEventHandler MindMapNodeMouseUp;
 
+        /// <summary> 节点被单击时
+        /// 
+        /// </summary>
+        [Browsable(true), Description("节点被单击时")]
+        public event MouseEventHandler MindMapNodeMouseClick;
+
 
 
         #endregion 公开事件委托
 
-       
+        private void MindMap_Panel_Click(object sender, EventArgs e)
+        {
+            List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+            MindMapNodeList.Add(mindMapNode);
+            MindMapNodeList.ForEach(T1 => T1.Selected = false);
+        }      
+        /// <summary> 空白处被单击取消所有选中        
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMapNode_EmptyRangeClick(object sender, EventArgs e)
+        {
+            List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+            MindMapNodeList.Add(mindMapNode);
+            MindMapNodeList.ForEach(T1 => T1.Selected = false);
+        }
     }
 }
