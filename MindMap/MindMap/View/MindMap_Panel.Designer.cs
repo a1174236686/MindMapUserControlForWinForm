@@ -48,7 +48,6 @@
             this.mindMapNode.MindMapNodeMouseUp += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MindMapNodeMouseUp);
             this.mindMapNode.MindMapNodeMouseClick += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MindMapNodeMouseClick);
             this.mindMapNode.EmptyRangeClick += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
-            
             // 
             // MindMap_Panel
             // 
@@ -57,8 +56,7 @@
             this.Controls.Add(this.mindMapNode);
             this.Name = "MindMap_Panel";
             this.Size = new System.Drawing.Size(467, 389);
-            this.Click += new System.EventHandler(this.MindMap_Panel_Click);
-            
+            this.Click += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
             this.ResumeLayout(false);
 
         }

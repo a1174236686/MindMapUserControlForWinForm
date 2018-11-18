@@ -31,14 +31,11 @@ namespace MindMap.View
             set
             {
                 if (value == null) return;
-                _TextFont = value;                
+                _TextFont = value;
                 mindMapNode.SetTextFont(_TextFont);
             }
         }
-
         
-        
-
         /// <summary> 为控件设置数据源
         /// 
         /// </summary>
@@ -79,6 +76,10 @@ namespace MindMap.View
             }
         }
 
+        /// <summary> 获取根节点
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private TreeNodeCollection GetBaseNodes()
         {
             if (g_BaseNode == null)
@@ -90,6 +91,20 @@ namespace MindMap.View
             return g_BaseNode.Nodes;
         }
 
+        /// <summary> 获取所有呗选中的节点
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<MindMapNode> GetSelectedNode()
+        {
+            List<MindMapNode> ResultList = new List<MindMapNode>();
+            ResultList = mindMapNode.GetChidrenNode(true);
+            ResultList.Add(mindMapNode);
+            ResultList = ResultList.Where(T1 => T1.Selected = true).ToList();
+            return ResultList;
+        }
+
+        #region 配套使用的内部类
         /// <summary> 用于指明SetDataSource的泛型类的结构
         /// [指明传入的哪个属性是ID，哪个属性是父ID，哪个属性是展示在前台的文本]
         /// </summary>
@@ -108,6 +123,8 @@ namespace MindMap.View
             public string ParentName { get; set; }
 
         }
+        #endregion 配套使用的内部类
+        
         #region 公开事件委托
         /// <summary>节点被按下时
         /// 
@@ -137,20 +154,31 @@ namespace MindMap.View
         /// <param name="e"></param>
         private void mindMapNode_MindMapNodeMouseClick(object sender, MouseEventArgs e)
         {
-            List<MindMapNode> MindMapNodeList=mindMapNode.GetChidrenNode(true);
-            MindMapNodeList.Add(mindMapNode);
-            MindMapNodeList.ForEach(T1 => T1.Selected = false);
-            
+            if (sender == null) return;
             MindMapNode SenderObject = ((MindMapNode)sender);
-            SenderObject.Selected =true;
+            if (Control.ModifierKeys != Keys.Control)//不按住ctrl就单选
+            {
+                List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+                MindMapNodeList.Add(mindMapNode);
+                MindMapNodeList.ForEach(T1 => T1.Selected = false);
+                SenderObject.Selected = true;
+            }
+            else//按住ctrl可单选
+            {
+                SenderObject.Selected = !SenderObject.Selected;
+            }
             
+            
+
             if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
         }
+        
+
         /// <summary>节点在鼠标弹起时
         /// 
         /// </summary>
         private void mindMapNode_MindMapNodeMouseUp(object sender, MouseEventArgs e)
-        {            
+        {
             if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
         }
 
@@ -187,13 +215,7 @@ namespace MindMap.View
 
 
         #endregion 公开事件委托
-
-        private void MindMap_Panel_Click(object sender, EventArgs e)
-        {
-            List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
-            MindMapNodeList.Add(mindMapNode);
-            MindMapNodeList.ForEach(T1 => T1.Selected = false);
-        }      
+                
         /// <summary> 空白处被单击取消所有选中        
         /// 
         /// </summary>
@@ -204,6 +226,11 @@ namespace MindMap.View
             List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
             MindMapNodeList.Add(mindMapNode);
             MindMapNodeList.ForEach(T1 => T1.Selected = false);
+        }
+
+        private void MindMap_Panel_KeyDown(object sender, KeyEventArgs e)
+        {
+
         }
     }
 }
