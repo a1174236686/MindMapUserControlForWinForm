@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.Content_Panel = new System.Windows.Forms.Panel();
-            this.Content_lable = new System.Windows.Forms.Label();
+            this.Content_lable = new System.Windows.Forms.LinkLabel();
             this.Chidren_Panel = new System.Windows.Forms.FlowLayoutPanel();
             this.DrawingLine_panel = new System.Windows.Forms.Panel();
             this.Content_Panel.SuspendLayout();
@@ -50,14 +50,17 @@
             // Content_lable
             // 
             this.Content_lable.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Content_lable.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.Content_lable.Location = new System.Drawing.Point(2, 4);
             this.Content_lable.Margin = new System.Windows.Forms.Padding(0);
             this.Content_lable.Name = "Content_lable";
             this.Content_lable.Size = new System.Drawing.Size(59, 25);
             this.Content_lable.TabIndex = 0;
+            this.Content_lable.TabStop = true;
             this.Content_lable.Text = "新的节点";
             this.Content_lable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.Content_lable.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseClick);
+            this.Content_lable.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseDoubleClick);
             this.Content_lable.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseDown);
             this.Content_lable.MouseEnter += new System.EventHandler(this.Content_lable_MouseEnter);
             this.Content_lable.MouseLeave += new System.EventHandler(this.Content_lable_MouseLeave);
@@ -106,7 +109,7 @@
 
         private System.Windows.Forms.Panel Content_Panel;
         private System.Windows.Forms.FlowLayoutPanel Chidren_Panel;
-        private System.Windows.Forms.Label Content_lable;
+        private System.Windows.Forms.LinkLabel Content_lable;
         private System.Windows.Forms.Panel DrawingLine_panel;
     }
 }

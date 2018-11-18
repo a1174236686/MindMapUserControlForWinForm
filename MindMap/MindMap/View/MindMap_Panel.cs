@@ -100,7 +100,7 @@ namespace MindMap.View
             List<MindMapNode> ResultList = new List<MindMapNode>();
             ResultList = mindMapNode.GetChidrenNode(true);
             ResultList.Add(mindMapNode);
-            ResultList = ResultList.Where(T1 => T1.Selected = true).ToList();
+            ResultList = ResultList.Where(T1 => T1.Selected == true).ToList();
             return ResultList;
         }
 
@@ -154,8 +154,8 @@ namespace MindMap.View
         /// <param name="e"></param>
         private void mindMapNode_MindMapNodeMouseClick(object sender, MouseEventArgs e)
         {
-            if (sender == null) return;
             MindMapNode SenderObject = ((MindMapNode)sender);
+
             if (Control.ModifierKeys != Keys.Control)//不按住ctrl就单选
             {
                 List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
@@ -173,7 +173,6 @@ namespace MindMap.View
             if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
         }
         
-
         /// <summary>节点在鼠标弹起时
         /// 
         /// </summary>
@@ -212,10 +211,11 @@ namespace MindMap.View
         [Browsable(true), Description("节点被单击时")]
         public event MouseEventHandler MindMapNodeMouseClick;
 
-
+        [Browsable(true), Description("节点被单击时")]
+        public event MouseEventHandler MindMapNodeMouseDoubleClick;
 
         #endregion 公开事件委托
-                
+
         /// <summary> 空白处被单击取消所有选中        
         /// 
         /// </summary>
@@ -223,14 +223,48 @@ namespace MindMap.View
         /// <param name="e"></param>
         private void mindMapNode_EmptyRangeClick(object sender, EventArgs e)
         {
+          
+
+            if (NodeEdit_textBox.Visible)//如果正在编辑某节点则完成编辑
+            {
+                NodeEdit_textBox.Visible = false;
+                GetSelectedNode().ForEach(Item => Item.MindMapNodeText = NodeEdit_textBox.Text);
+                return;
+            }
+            
             List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
             MindMapNodeList.Add(mindMapNode);
             MindMapNodeList.ForEach(T1 => T1.Selected = false);
+
         }
-
-        private void MindMap_Panel_KeyDown(object sender, KeyEventArgs e)
+                
+        private void NodeEdit_textBox_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyData == Keys.Enter) mindMapNode_EmptyRangeClick(null,null);//如果按下回车则编辑完成
+            if (e.KeyData == Keys.Escape) NodeEdit_textBox.Visible = false;//按下esc则取消编辑
 
+
+
+        }
+        /// <summary> 双击某节点后编辑某节点
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMapNode_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (sender == null) return;
+            MindMapNode SenderObject = ((MindMapNode)sender);
+
+            NodeEdit_textBox.Visible = true;
+            NodeEdit_textBox.BringToFront();
+            NodeEdit_textBox.Size = SenderObject.NodeContentSize;
+            NodeEdit_textBox.Text = SenderObject.MindMapNodeText;
+            NodeEdit_textBox.Font = SenderObject.TextFont;
+            NodeEdit_textBox.Location = this.PointToClient(SenderObject.PointToScreen(SenderObject.NodeContentLocation));
+            NodeEdit_textBox.Focus();
+            if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(this, e);
+            
         }
     }
 }

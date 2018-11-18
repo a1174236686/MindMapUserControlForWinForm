@@ -25,7 +25,6 @@ C:\用户文件\生活\360同步\个人文件\代码、作品\思维导图\MindM
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\bin\Debug\MindMap.exe.config
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\bin\Debug\MindMap.exe
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\bin\Debug\MindMap.pdb
-C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.csprojAssemblyReference.cache
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.frmMainForm.resources
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.Properties.Resources.resources
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.View.MindMap_Panel.resources
@@ -34,3 +33,4 @@ C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.csproj.CoreCompileInputs.cache
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.exe
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.pdb
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.csprojAssemblyReference.cache

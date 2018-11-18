@@ -16,6 +16,9 @@ namespace MindMap.View
         {
             InitializeComponent();
             Content_lable.ForeColor = Color.FromArgb(255, 255, 255);
+            Content_lable.LinkColor = Color.FromArgb(255, 255, 255);
+            Content_lable.VisitedLinkColor = Color.FromArgb(255, 255, 255);
+            Content_lable.ActiveLinkColor = Color.FromArgb(255, 255, 255);
             Content_lable.BackColor = _NodeBackColor.Normaly.Value;
         }
 
@@ -28,7 +31,8 @@ namespace MindMap.View
         /// </summary>
         public MindMapNode ParentNode
         {
-            set {
+            set
+            {
                 if (_ParentNode == value) return;
                 if (_ParentNode != null) _ParentNode.Remove(this);
 
@@ -63,14 +67,17 @@ namespace MindMap.View
         /// 
         /// </summary>
         [Description("节点的文本内容")]
-        public string MindMapNodeText { get { return Content_lable.Text; } set { Content_lable.Text = value; } }
+        public string MindMapNodeText { get { return Content_lable.Text; } set {
+                Content_lable.Text = value;
+                ResetNodeSize();
+            } }
 
 
         private TreeNode _TreeNode = null;
         /// <summary> 设置当前节点的内容
         /// 
         /// </summary>
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never),DisplayName("节点对象")]//不允许编辑器修改，否则设计器会自动给他默认值导致需要手动删掉
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never), DisplayName("节点对象")]//不允许编辑器修改，否则设计器会自动给他默认值导致需要手动删掉
         public TreeNode TreeNode
         {
             set
@@ -87,9 +94,9 @@ namespace MindMap.View
                     MindMapNodeTemp.TextFont = g_TextFont;
                     MindMapNodeTemp.TreeNode = TreeNodeItem;
                     MindMapNodeTemp.Margin = new Padding(0, 2, 0, 2);
-                    
-                    //MindMapNodeTemp.ParentNode = this;
-                    Chidren_Panel.Controls.Add(MindMapNodeTemp);
+
+                    MindMapNodeTemp.ParentNode = this;
+                    //Chidren_Panel.Controls.Add(MindMapNodeTemp);
                 }
                 ReSetSize();
                 DrawingConnectLine();
@@ -134,18 +141,32 @@ namespace MindMap.View
         }
         private MindMapNodeBackColor _NodeBackColor = new MindMapNodeBackColor(Color.FromArgb(48, 120, 215));
 
+        /// <summary>节点中的内容位置[用于节点编辑时TextBox暂时覆盖内容]
+        /// 
+        /// </summary>
+        public Point NodeContentLocation { get { return Content_lable.Location; } }
+
+        public Size NodeContentSize { get { return Content_lable.Size; } }
 
         #endregion 属性               
 
         #region 方法
         private void SetEvent(MindMapNode MindMapNodeTemp)
         {
-            MindMapNodeTemp.MindMapNodeMouseDown += new MouseEventHandler(this.MindMapNodeMouseDown);
-            MindMapNodeTemp.MindMapNodeMouseEnter += new EventHandler(this.MindMapNodeMouseEnter);
-            MindMapNodeTemp.MindMapNodeMouseLeave += new EventHandler(this.MindMapNodeMouseLeave);
-            MindMapNodeTemp.MindMapNodeMouseUp += new MouseEventHandler(this.MindMapNodeMouseUp);
-            MindMapNodeTemp.MindMapNodeMouseClick += new MouseEventHandler(this.MindMapNodeMouseClick);
-            MindMapNodeTemp.EmptyRangeClick += new EventHandler(this.EmptyRangeClick);
+            if (this.MindMapNodeMouseDown != null)
+                MindMapNodeTemp.MindMapNodeMouseDown += new MouseEventHandler(this.MindMapNodeMouseDown);
+            if (this.MindMapNodeMouseEnter != null)
+                MindMapNodeTemp.MindMapNodeMouseEnter += new EventHandler(this.MindMapNodeMouseEnter);
+            if (this.MindMapNodeMouseLeave != null)
+                MindMapNodeTemp.MindMapNodeMouseLeave += new EventHandler(this.MindMapNodeMouseLeave);
+            if (this.MindMapNodeMouseUp != null)
+                MindMapNodeTemp.MindMapNodeMouseUp += new MouseEventHandler(this.MindMapNodeMouseUp);
+            if (this.MindMapNodeMouseClick != null)
+                MindMapNodeTemp.MindMapNodeMouseClick += new MouseEventHandler(this.MindMapNodeMouseClick);
+            if (this.EmptyRangeClick != null)
+                MindMapNodeTemp.EmptyRangeClick += new EventHandler(this.EmptyRangeClick);
+            if (this.MindMapNodeMouseDoubleClick != null)
+                MindMapNodeTemp.MindMapNodeMouseDoubleClick += new MouseEventHandler(this.MindMapNodeMouseDoubleClick);
 
 
 
@@ -190,7 +211,7 @@ namespace MindMap.View
             Graphics g = this.CreateGraphics();
             g.PageUnit = GraphicsUnit.Display;
             SizeF ContentSize = g.MeasureString(Content_lable.Text, g_TextFont);
-            Content_Panel.Width = Convert.ToInt32(ContentSize.Width + (ContentSize.Width * 0.15));
+            Content_Panel.Width = Convert.ToInt32(ContentSize.Width + (5));
 
             int MaxChidrenWidth = 0;
             int HeightCount = 0;
@@ -276,10 +297,10 @@ namespace MindMap.View
         public void AddNode(MindMapNode MindMapNodeParame)
         {
             if (MindMapNodeParame == null) return;
-             List <MindMapNode> MindMapNodeList = GetChidrenNode();
+            List<MindMapNode> MindMapNodeList = GetChidrenNode();
             int FindCount = MindMapNodeList.Where(T1 => T1 == MindMapNodeParame).Count();
             if (FindCount != 0) return;//如果要添加的节点已经存在就直接返回
-            
+
             MindMapNode NewNode = MindMapNodeParame;
             SetEvent(NewNode);
             NewNode.TextFont = g_TextFont;
@@ -296,7 +317,7 @@ namespace MindMap.View
         public void Remove(MindMapNode MindMapNodeParame)
         {
             if (MindMapNodeParame == null) return;
-            MindMapNode MindMapNodeTemp = null;            
+            MindMapNode MindMapNodeTemp = null;
             foreach (Control ControlItem in Chidren_Panel.Controls)
             {
                 MindMapNodeTemp = (MindMapNode)ControlItem;
@@ -321,7 +342,7 @@ namespace MindMap.View
             DrawingConnectLine();
 
         }
-        
+
         private void Content_lable_MouseEnter(object sender, EventArgs e)
         {
             Content_lable.BackColor = _NodeBackColor.Enter.Value;
@@ -342,19 +363,25 @@ namespace MindMap.View
             {
                 ResultColor = _NodeBackColor.Down.Value;
             }
-                Content_lable.BackColor = ResultColor;
+            Content_lable.BackColor = ResultColor;
             if (MindMapNodeMouseLeave != null) MindMapNodeMouseLeave(this, e);
         }
 
         private void Content_lable_MouseUp(object sender, MouseEventArgs e)
         {
-            if(!Selected) Content_lable.BackColor = _NodeBackColor.Normaly.Value;
+            if (!Selected) Content_lable.BackColor = _NodeBackColor.Normaly.Value;
             if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
         }
 
         private void Content_lable_MouseClick(object sender, MouseEventArgs e)
         {
             if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
+        }
+
+        private void Content_lable_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(this, e);
+
         }
 
         private void EmptyRange_Click(object sender, EventArgs e)
@@ -370,7 +397,7 @@ namespace MindMap.View
         /// <summary>鼠标离开节点范围事件
         /// 
         /// </summary>
-         [Description("鼠标离开节点范围事件")]
+        [Description("鼠标离开节点范围事件")]
         public event EventHandler MindMapNodeMouseLeave;
 
         /// <summary> 节点被鼠标按下事件
@@ -390,6 +417,9 @@ namespace MindMap.View
         /// </summary>
         [Browsable(true), Description("节点被单击时")]
         public event MouseEventHandler MindMapNodeMouseClick;
+
+        [Browsable(true), Description("节点被双击时")]
+        public event MouseEventHandler MindMapNodeMouseDoubleClick;
 
         /// <summary> 点击空白处
         /// 
@@ -482,13 +512,14 @@ namespace MindMap.View
                 return IntResult;
             }
         }
+
+
+
         #endregion 用于指明节点的背景色
 
         #endregion 配套使用的内部类
 
-        
 
-       
     }
 
 }
