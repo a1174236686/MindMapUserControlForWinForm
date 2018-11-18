@@ -33,6 +33,7 @@
             // 
             // mindMap_Panel1
             // 
+            this.mindMap_Panel1.AutoScroll = true;
             this.mindMap_Panel1.BackColor = System.Drawing.SystemColors.Control;
             this.mindMap_Panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mindMap_Panel1.Location = new System.Drawing.Point(0, 0);

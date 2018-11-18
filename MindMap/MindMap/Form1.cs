@@ -208,6 +208,7 @@ namespace MindMap
             mindMap_Panel1.Visible = true;
                                  
         }
+                
     }
 
     public class TestEntity

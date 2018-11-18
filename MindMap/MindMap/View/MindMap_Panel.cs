@@ -49,6 +49,8 @@ namespace MindMap.View
             SetTreeNode<T>(DataSource, NodeStruct);
             mindMapNode.TextFont = _TextFont;
             mindMapNode.TreeNode = g_BaseNode;
+                  
+            
         }
 
         /// <summary> 用递归的方式将List数据按树状图添加到指定节点下
@@ -265,6 +267,32 @@ namespace MindMap.View
             NodeEdit_textBox.Focus();
             if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(this, e);
             
+        }
+                      
+        private void mindMapNode_Resize(object sender, EventArgs e)
+        {
+            
+            Scroll_panel.Height = mindMapNode.Height * 2;//容器高度
+            Scroll_panel.Width = mindMapNode.Width * 2;//容器宽度
+            if (Scroll_panel.Height < this.Height) Scroll_panel.Height = this.Height;
+            if (Scroll_panel.Width < this.Width) Scroll_panel.Width = this.Width;
+     
+        
+            #region 思维导图相对于容器居中
+            int IntTemp = Scroll_panel.Height - mindMapNode.Height;
+            IntTemp = IntTemp / 2;
+            mindMapNode.Top = IntTemp;
+            IntTemp = Scroll_panel.Width - mindMapNode.Width;
+            IntTemp = IntTemp / 2;
+            mindMapNode.Left = IntTemp;
+            #endregion 思维导图相对于容器居中
+            #region 将容器滚动至居中位置
+
+            int IntX = this.Scroll_panel.Width - this.Width;
+            int IntY = this.Scroll_panel.Height - this.Height;
+            Point PointTemp = new Point(IntX / 2, IntY / 2);
+            this.AutoScrollPosition = PointTemp;
+            #endregion 将容器滚动至居中位置
         }
     }
 }
