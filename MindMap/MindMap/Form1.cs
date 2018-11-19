@@ -208,7 +208,11 @@ namespace MindMap
             mindMap_Panel1.Visible = true;
                                  
         }
-                
+
+        private void mindMap_Panel1_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
     }
 
     public class TestEntity

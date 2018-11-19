@@ -151,26 +151,7 @@ namespace MindMap.View
         #endregion 属性               
 
         #region 方法
-        private void SetEvent(MindMapNode MindMapNodeTemp)
-        {
-            if (this.MindMapNodeMouseDown != null)
-                MindMapNodeTemp.MindMapNodeMouseDown += new MouseEventHandler(this.MindMapNodeMouseDown);
-            if (this.MindMapNodeMouseEnter != null)
-                MindMapNodeTemp.MindMapNodeMouseEnter += new EventHandler(this.MindMapNodeMouseEnter);
-            if (this.MindMapNodeMouseLeave != null)
-                MindMapNodeTemp.MindMapNodeMouseLeave += new EventHandler(this.MindMapNodeMouseLeave);
-            if (this.MindMapNodeMouseUp != null)
-                MindMapNodeTemp.MindMapNodeMouseUp += new MouseEventHandler(this.MindMapNodeMouseUp);
-            if (this.MindMapNodeMouseClick != null)
-                MindMapNodeTemp.MindMapNodeMouseClick += new MouseEventHandler(this.MindMapNodeMouseClick);
-            if (this.EmptyRangeClick != null)
-                MindMapNodeTemp.EmptyRangeClick += new EventHandler(this.EmptyRangeClick);
-            if (this.MindMapNodeMouseDoubleClick != null)
-                MindMapNodeTemp.MindMapNodeMouseDoubleClick += new MouseEventHandler(this.MindMapNodeMouseDoubleClick);
-
-
-
-        }
+     
 
         /// <summary> 再面板上画出当前节点的连接线
         /// 
@@ -343,6 +324,14 @@ namespace MindMap.View
 
         }
 
+        #region 关于事件的注释
+        /*
+         * 需要注意的是尽量不要将Label或其他控件的事件直接Public开放。
+         * 如果事件需要对MindMap开放尽量使用这种方法进行一次中转并重新定义开放的委托
+         * 这些委托的方法列表尽量只允许存入一个方法。
+         * 否则一旦委托出现Bug真的很难维护，很难发现哪里的问题。因为下断点后委托飞来飞去最后还得找这个委托在哪里被多次定义了。。
+         */
+        #endregion 关于事件的注释
         private void Content_lable_MouseEnter(object sender, EventArgs e)
         {
             Content_lable.BackColor = _NodeBackColor.Enter.Value;
@@ -384,10 +373,63 @@ namespace MindMap.View
 
         }
 
+        private void Content_lable_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (MindMapNodeMouseMove != null) MindMapNodeMouseMove(this, e);
+            
+        }
+
         private void EmptyRange_Click(object sender, EventArgs e)
         {
             if (EmptyRangeClick != null) EmptyRangeClick(this, e);
         }
+
+        private void EmptyRange_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (EmptyRangeMouseDown != null) EmptyRangeMouseDown(this, e);
+        }
+        private void EmptyRange_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (EmptyRangeMouseUp != null) EmptyRangeMouseUp(this, e);
+        }
+        private void EmptyRange_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (EmptyRangeMouseMove != null) EmptyRangeMouseMove(this, e);
+        }
+
+        /// <summary>统一将事件触发到MindMapPanel控件
+        /// 
+        /// </summary>
+        /// <param name="MindMapNodeTemp"></param>
+        private void SetEvent(MindMapNode MindMapNodeTemp)
+        {
+            if (this.MindMapNodeMouseDown != null && MindMapNodeTemp.MindMapNodeMouseDown == null)
+                MindMapNodeTemp.MindMapNodeMouseDown += new MouseEventHandler(this.MindMapNodeMouseDown);
+            if (this.MindMapNodeMouseEnter != null && MindMapNodeTemp.MindMapNodeMouseEnter == null)
+                MindMapNodeTemp.MindMapNodeMouseEnter += new EventHandler(this.MindMapNodeMouseEnter);
+            if (this.MindMapNodeMouseLeave != null && MindMapNodeTemp.MindMapNodeMouseLeave == null)
+                MindMapNodeTemp.MindMapNodeMouseLeave += new EventHandler(this.MindMapNodeMouseLeave);
+            if (this.MindMapNodeMouseUp != null && MindMapNodeTemp.MindMapNodeMouseUp == null)
+                MindMapNodeTemp.MindMapNodeMouseUp += new MouseEventHandler(this.MindMapNodeMouseUp);
+            if (this.MindMapNodeMouseClick != null && MindMapNodeTemp.MindMapNodeMouseClick == null)
+                MindMapNodeTemp.MindMapNodeMouseClick += new MouseEventHandler(this.MindMapNodeMouseClick);
+            if (this.MindMapNodeMouseDoubleClick != null && MindMapNodeTemp.MindMapNodeMouseDoubleClick == null)
+                MindMapNodeTemp.MindMapNodeMouseDoubleClick += new MouseEventHandler(this.MindMapNodeMouseDoubleClick);
+            if (this.MindMapNodeMouseMove != null && MindMapNodeTemp.MindMapNodeMouseMove == null)
+                MindMapNodeTemp.MindMapNodeMouseMove += new MouseEventHandler(this.MindMapNodeMouseMove);
+
+
+            if (this.EmptyRangeMouseDown != null && MindMapNodeTemp.EmptyRangeMouseDown == null)
+                MindMapNodeTemp.EmptyRangeMouseDown += new MouseEventHandler(this.EmptyRangeMouseDown);
+            if (this.EmptyRangeMouseUp != null && MindMapNodeTemp.EmptyRangeMouseUp == null)
+                MindMapNodeTemp.EmptyRangeMouseUp += new MouseEventHandler(this.EmptyRangeMouseUp);
+            if (this.EmptyRangeMouseMove != null && MindMapNodeTemp.EmptyRangeMouseMove == null)
+                MindMapNodeTemp.EmptyRangeMouseMove += new MouseEventHandler(this.EmptyRangeMouseMove);
+            if (this.EmptyRangeClick != null && MindMapNodeTemp.EmptyRangeClick == null)
+                MindMapNodeTemp.EmptyRangeClick += new EventHandler(this.EmptyRangeClick);
+        }
+
+
         /// <summary>鼠标进入节点范围事件
         /// 
         /// </summary>
@@ -412,6 +454,12 @@ namespace MindMap.View
         [Description("节点被鼠标弹起事件")]
         public event MouseEventHandler MindMapNodeMouseUp;
 
+        /// <summary> 鼠标在节点上移动时
+        /// 
+        /// </summary>
+        [Description("鼠标在节点上移动时")]
+        public event MouseEventHandler MindMapNodeMouseMove;
+
         /// <summary> 节点被单击时
         /// 
         /// </summary>
@@ -426,6 +474,23 @@ namespace MindMap.View
         /// </summary>
         [Browsable(true), Description("点击空白处")]
         public event EventHandler EmptyRangeClick;
+        /// <summary> 空白处鼠标按下
+        /// 
+        /// </summary>
+        [Browsable(true), Description("空白处鼠标按下")]
+        public event MouseEventHandler EmptyRangeMouseDown;
+
+        /// <summary> 空白处鼠标弹起
+        /// 
+        /// </summary>
+        [Browsable(true), Description("空白处鼠标弹起")]
+        public event MouseEventHandler EmptyRangeMouseUp;
+
+        /// <summary> 空白处鼠标移动
+        /// 
+        /// </summary>
+        [Browsable(true), Description("空白处鼠标移动")]
+        public event MouseEventHandler EmptyRangeMouseMove;
 
         #endregion 事件
 
@@ -515,11 +580,12 @@ namespace MindMap.View
 
 
 
+
         #endregion 用于指明节点的背景色
 
         #endregion 配套使用的内部类
 
-
+    
     }
 
 }

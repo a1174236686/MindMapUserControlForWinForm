@@ -46,6 +46,9 @@
             this.Content_Panel.Size = new System.Drawing.Size(61, 35);
             this.Content_Panel.TabIndex = 0;
             this.Content_Panel.Click += new System.EventHandler(this.EmptyRange_Click);
+            this.Content_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);
+            this.Content_Panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseMove);
+            this.Content_Panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseUp);
             // 
             // Content_lable
             // 
@@ -64,6 +67,7 @@
             this.Content_lable.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseDown);
             this.Content_lable.MouseEnter += new System.EventHandler(this.Content_lable_MouseEnter);
             this.Content_lable.MouseLeave += new System.EventHandler(this.Content_lable_MouseLeave);
+            this.Content_lable.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseMove);
             this.Content_lable.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseUp);
             // 
             // Chidren_Panel
@@ -77,6 +81,9 @@
             this.Chidren_Panel.Size = new System.Drawing.Size(864, 35);
             this.Chidren_Panel.TabIndex = 1;
             this.Chidren_Panel.Click += new System.EventHandler(this.EmptyRange_Click);
+            this.Chidren_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);
+            this.Chidren_Panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseMove);
+            this.Chidren_Panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseUp);
             // 
             // DrawingLine_panel
             // 
@@ -88,6 +95,9 @@
             this.DrawingLine_panel.Size = new System.Drawing.Size(10, 35);
             this.DrawingLine_panel.TabIndex = 2;
             this.DrawingLine_panel.Click += new System.EventHandler(this.EmptyRange_Click);
+            this.DrawingLine_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);
+            this.DrawingLine_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseMove);
+            this.DrawingLine_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseUp);
             // 
             // MindMapNode
             // 

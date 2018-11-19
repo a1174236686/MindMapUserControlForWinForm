@@ -35,7 +35,7 @@ namespace MindMap.View
                 mindMapNode.SetTextFont(_TextFont);
             }
         }
-        
+
         /// <summary> 为控件设置数据源
         /// 
         /// </summary>
@@ -49,8 +49,8 @@ namespace MindMap.View
             SetTreeNode<T>(DataSource, NodeStruct);
             mindMapNode.TextFont = _TextFont;
             mindMapNode.TreeNode = g_BaseNode;
-                  
-            
+
+
         }
 
         /// <summary> 用递归的方式将List数据按树状图添加到指定节点下
@@ -126,14 +126,33 @@ namespace MindMap.View
 
         }
         #endregion 配套使用的内部类
-        
+
         #region 公开事件委托
         /// <summary>节点被按下时
         /// 
         /// </summary>
         private void mindMapNode_MindMapNodeMouseDown(object sender, MouseEventArgs e)
         {
+            MindMap_Panel_MouseDown(this, e);
             if (MindMapNodeMouseDown != null) MindMapNodeMouseDown(this, e);
+        }
+        /// <summary>节点在鼠标弹起时
+        /// 
+        /// </summary>
+        private void mindMapNode_MindMapNodeMouseUp(object sender, MouseEventArgs e)
+        {
+            MindMap_Panel_MouseUp(this, e);
+            if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
+        }
+        /// <summary>鼠标在节点移动时
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMapNode_MindMapNodeMouseMove(object sender, MouseEventArgs e)
+        {
+            MindMap_Panel_MouseMove(this, e);
+            if (MindMapNodeMouseMove != null) MindMapNodeMouseMove(sender, e);
         }
         /// <summary>鼠标进入节点范围时
         /// 
@@ -169,19 +188,34 @@ namespace MindMap.View
             {
                 SenderObject.Selected = !SenderObject.Selected;
             }
-            
-            
+
+
 
             if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
         }
-        
-        /// <summary>节点在鼠标弹起时
-        /// 
-        /// </summary>
-        private void mindMapNode_MindMapNodeMouseUp(object sender, MouseEventArgs e)
+
+      
+
+      
+
+        private void mindMapNode_EmptyRangeMouseDown(object sender, MouseEventArgs e)
         {
-            if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
+            MindMap_Panel_MouseDown(sender, e);
+            if (EmptyRangeMouseDown != null) EmptyRangeMouseDown(sender, e);
         }
+
+        private void mindMapNode_EmptyRangeMouseMove(object sender, MouseEventArgs e)
+        {
+            MindMap_Panel_MouseMove(sender, e);
+            if (EmptyRangeMouseMove != null) EmptyRangeMouseMove(sender, e);
+        }
+
+        private void mindMapNode_EmptyRangeMouseUp(object sender, MouseEventArgs e)
+        {
+            MindMap_Panel_MouseUp(sender, e);
+            if (EmptyRangeMouseUp != null) EmptyRangeMouseUp(sender, e);
+        }
+
 
         /// <summary>鼠标进入节点范围事件
         /// 
@@ -216,6 +250,36 @@ namespace MindMap.View
         [Browsable(true), Description("节点被单击时")]
         public event MouseEventHandler MindMapNodeMouseDoubleClick;
 
+        /// <summary> 空白处鼠标按下
+        /// 
+        /// </summary>
+        [Browsable(true), Description("空白处鼠标按下")]
+        public event MouseEventHandler EmptyRangeMouseDown;
+
+        /// <summary> 空白处鼠标弹起
+        /// 
+        /// </summary>
+        [Browsable(true), Description("空白处鼠标弹起")]
+        public event MouseEventHandler EmptyRangeMouseUp;
+
+        /// <summary> 空白处鼠标移动
+        /// 
+        /// </summary>
+        [Browsable(true), Description("空白处鼠标移动")]
+        public event MouseEventHandler EmptyRangeMouseMove;
+
+        /// <summary> 点击空白处
+        /// 
+        /// </summary>
+        [Browsable(true), Description("点击空白处")]
+        public event EventHandler EmptyRangeClick;
+
+        /// <summary> 鼠标在节点上移动时
+        /// 
+        /// </summary>
+        [Description("鼠标在节点上移动时")]
+        public event MouseEventHandler MindMapNodeMouseMove;
+
         #endregion 公开事件委托
 
         /// <summary> 空白处被单击取消所有选中        
@@ -225,7 +289,7 @@ namespace MindMap.View
         /// <param name="e"></param>
         private void mindMapNode_EmptyRangeClick(object sender, EventArgs e)
         {
-          
+
 
             if (NodeEdit_textBox.Visible)//如果正在编辑某节点则完成编辑
             {
@@ -233,16 +297,20 @@ namespace MindMap.View
                 GetSelectedNode().ForEach(Item => Item.MindMapNodeText = NodeEdit_textBox.Text);
                 return;
             }
-            
+
             List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
             MindMapNodeList.Add(mindMapNode);
             MindMapNodeList.ForEach(T1 => T1.Selected = false);
 
+            if (EmptyRangeClick != null) EmptyRangeClick(sender, e);
+
+
+
         }
-                
+
         private void NodeEdit_textBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.Enter) mindMapNode_EmptyRangeClick(null,null);//如果按下回车则编辑完成
+            if (e.KeyData == Keys.Enter) mindMapNode_EmptyRangeClick(null, null);//如果按下回车则编辑完成
             if (e.KeyData == Keys.Escape) NodeEdit_textBox.Visible = false;//按下esc则取消编辑
 
 
@@ -266,18 +334,18 @@ namespace MindMap.View
             NodeEdit_textBox.Location = this.PointToClient(SenderObject.PointToScreen(SenderObject.NodeContentLocation));
             NodeEdit_textBox.Focus();
             if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(this, e);
-            
+
         }
-                      
+
         private void mindMapNode_Resize(object sender, EventArgs e)
         {
-            
+
             Scroll_panel.Height = mindMapNode.Height * 2;//容器高度
             Scroll_panel.Width = mindMapNode.Width * 2;//容器宽度
             if (Scroll_panel.Height < this.Height) Scroll_panel.Height = this.Height;
             if (Scroll_panel.Width < this.Width) Scroll_panel.Width = this.Width;
-     
-        
+
+
             #region 思维导图相对于容器居中
             int IntTemp = Scroll_panel.Height - mindMapNode.Height;
             IntTemp = IntTemp / 2;
@@ -294,5 +362,62 @@ namespace MindMap.View
             this.AutoScrollPosition = PointTemp;
             #endregion 将容器滚动至居中位置
         }
+
+        #region 鼠标中键拖动滚动条
+
+        private bool IsMouseMove = false;
+        private Point MoveValue = new Point();
+        /// <summary> 按下中键时可拖动滚动条
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MindMap_Panel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right)
+            {
+                MoveValue = Control.MousePosition;
+                IsMouseMove = true;
+            }
+        }
+
+        /// <summary> 弹起中键结束拖动滚动条
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MindMap_Panel_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right)
+                IsMouseMove = false;
+        }
+
+        /// <summary>按住鼠标中间可拖动滚动条
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MindMap_Panel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (IsMouseMove)
+            {
+
+                MoveValue.X = MoveValue.X - Control.MousePosition.X;
+                MoveValue.Y = MoveValue.Y - Control.MousePosition.Y;
+
+                Point ResultPoint = new Point(this.HorizontalScroll.Value + MoveValue.X, this.VerticalScroll.Value + MoveValue.Y);
+
+                this.AutoScrollPosition = ResultPoint;
+
+                MoveValue = Control.MousePosition;
+
+
+            }
+        }
+
+
+        #endregion 鼠标中键拖动滚动条
+
+    
     }
 }
