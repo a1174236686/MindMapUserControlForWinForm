@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.NodeEdit_textBox = new System.Windows.Forms.TextBox();
-            this.mindMapNode = new MindMap.View.MindMapNode();
             this.Scroll_panel = new System.Windows.Forms.Panel();
+            this.mindMapNode = new MindMap.View.MindMapNode();
             this.Scroll_panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,10 +43,23 @@
             this.NodeEdit_textBox.Visible = false;
             this.NodeEdit_textBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NodeEdit_textBox_KeyDown);
             // 
+            // Scroll_panel
+            // 
+            this.Scroll_panel.BackColor = System.Drawing.Color.White;
+            this.Scroll_panel.Controls.Add(this.mindMapNode);
+            this.Scroll_panel.Location = new System.Drawing.Point(0, 0);
+            this.Scroll_panel.Name = "Scroll_panel";
+            this.Scroll_panel.Size = new System.Drawing.Size(467, 389);
+            this.Scroll_panel.TabIndex = 2;
+            this.Scroll_panel.Click += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
+            this.Scroll_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
+            this.Scroll_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseMove);
+            this.Scroll_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
+            // 
             // mindMapNode
             // 
             this.mindMapNode.BackColor = System.Drawing.Color.White;
-            this.mindMapNode.Location = new System.Drawing.Point(51, 37);
+            this.mindMapNode.Location = new System.Drawing.Point(181, 166);
             this.mindMapNode.MindMapNodeText = "新的节点";
             this.mindMapNode.Name = "mindMapNode";
             this.mindMapNode.ParentNode = null;
@@ -67,18 +80,6 @@
             this.mindMapNode.EmptyRangeMouseMove += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseMove);
             this.mindMapNode.Resize += new System.EventHandler(this.mindMapNode_Resize);
             // 
-            // Scroll_panel
-            // 
-            this.Scroll_panel.Controls.Add(this.mindMapNode);
-            this.Scroll_panel.Location = new System.Drawing.Point(0, 0);
-            this.Scroll_panel.Name = "Scroll_panel";
-            this.Scroll_panel.Size = new System.Drawing.Size(200, 100);
-            this.Scroll_panel.TabIndex = 2;
-            this.Scroll_panel.Click += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
-            this.Scroll_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
-            this.Scroll_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseMove);
-            this.Scroll_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
-            // 
             // MindMap_Panel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -91,6 +92,7 @@
             this.Click += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
+            this.Resize += new System.EventHandler(this.MindMap_Panel_Resize);
             this.Scroll_panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

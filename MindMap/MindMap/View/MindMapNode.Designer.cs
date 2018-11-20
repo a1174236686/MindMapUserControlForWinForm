@@ -75,10 +75,10 @@
             this.Chidren_Panel.BackColor = System.Drawing.Color.Transparent;
             this.Chidren_Panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Chidren_Panel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.Chidren_Panel.Location = new System.Drawing.Point(71, 0);
+            this.Chidren_Panel.Location = new System.Drawing.Point(95, 0);
             this.Chidren_Panel.Margin = new System.Windows.Forms.Padding(0);
             this.Chidren_Panel.Name = "Chidren_Panel";
-            this.Chidren_Panel.Size = new System.Drawing.Size(864, 35);
+            this.Chidren_Panel.Size = new System.Drawing.Size(840, 35);
             this.Chidren_Panel.TabIndex = 1;
             this.Chidren_Panel.Click += new System.EventHandler(this.EmptyRange_Click);
             this.Chidren_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);
@@ -92,7 +92,7 @@
             this.DrawingLine_panel.Location = new System.Drawing.Point(61, 0);
             this.DrawingLine_panel.Margin = new System.Windows.Forms.Padding(0);
             this.DrawingLine_panel.Name = "DrawingLine_panel";
-            this.DrawingLine_panel.Size = new System.Drawing.Size(10, 35);
+            this.DrawingLine_panel.Size = new System.Drawing.Size(34, 35);
             this.DrawingLine_panel.TabIndex = 2;
             this.DrawingLine_panel.Click += new System.EventHandler(this.EmptyRange_Click);
             this.DrawingLine_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);

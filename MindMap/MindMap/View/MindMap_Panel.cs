@@ -340,6 +340,9 @@ namespace MindMap.View
         private void mindMapNode_Resize(object sender, EventArgs e)
         {
 
+            MindMap_Panel_Resize(null, null);
+            return;
+
             Scroll_panel.Height = mindMapNode.Height * 2;//容器高度
             Scroll_panel.Width = mindMapNode.Width * 2;//容器宽度
             if (Scroll_panel.Height < this.Height) Scroll_panel.Height = this.Height;
@@ -416,8 +419,39 @@ namespace MindMap.View
         }
 
 
+
         #endregion 鼠标中键拖动滚动条
 
-    
+        private void MindMap_Panel_Resize(object sender, EventArgs e)
+        {
+            Scroll_panel.Location = new Point(-this.HorizontalScroll.Value, -this.VerticalScroll.Value);
+
+            int MaxHeight = this.Height * 2;
+            int MaxWidth = this.Width * 2;
+
+            int MinHeight= mindMapNode.Height * 2;//容器高度
+            int MinWidth = mindMapNode.Width * 2;
+
+
+            Scroll_panel.Height = MaxHeight > MinHeight ? MaxHeight : MinHeight;
+            Scroll_panel.Width = MaxWidth > MinWidth ? MaxWidth : MinWidth;
+
+            #region 思维导图相对于容器居中
+            int IntTemp = Scroll_panel.Height - mindMapNode.Height;
+            IntTemp = IntTemp / 2;
+            mindMapNode.Top = IntTemp;
+            IntTemp = Scroll_panel.Width - mindMapNode.Width;
+            IntTemp = IntTemp / 2;
+            mindMapNode.Left = IntTemp;
+            #endregion 思维导图相对于容器居中
+            #region 将容器滚动至居中位置
+
+            int IntX = this.Scroll_panel.Width - this.Width;
+            int IntY = this.Scroll_panel.Height - this.Height;
+            Point PointTemp = new Point(IntX / 2, IntY / 2);
+            this.AutoScrollPosition = PointTemp;
+            #endregion 将容器滚动至居中位置
+            
+        }
     }
 }
