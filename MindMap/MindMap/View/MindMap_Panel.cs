@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MindMap.View;
 using System.Reflection;
+using System.Threading;
 
 namespace MindMap.View
 {
@@ -35,6 +36,9 @@ namespace MindMap.View
                 mindMapNode.SetTextFont(_TextFont);
             }
         }
+
+        #region 公开方法
+
 
         /// <summary> 为控件设置数据源
         /// 
@@ -93,7 +97,7 @@ namespace MindMap.View
             return g_BaseNode.Nodes;
         }
 
-        /// <summary> 获取所有呗选中的节点
+        /// <summary> 获取所有被选中的节点
         /// 
         /// </summary>
         /// <returns></returns>
@@ -106,26 +110,8 @@ namespace MindMap.View
             return ResultList;
         }
 
-        #region 配套使用的内部类
-        /// <summary> 用于指明SetDataSource的泛型类的结构
-        /// [指明传入的哪个属性是ID，哪个属性是父ID，哪个属性是展示在前台的文本]
-        /// </summary>
-        public class TreeViewNodeStruct
-        {
-            /// <summary> 用于添加到TreeNode.Name中的属性名称
-            /// 一般用于存ID值
-            /// </summary>
-            public string KeyName { get; set; }
-            /// <summary> 用于展示到前台的属性名称
-            /// [添加到TreeNode.Text中的值]
-            /// </summary>
-            public string ValueName { get; set; }
-            /// <summary> 父ID的属性名称
-            /// </summary>
-            public string ParentName { get; set; }
+        #endregion 公开方法
 
-        }
-        #endregion 配套使用的内部类
 
         #region 公开事件委托
         /// <summary>节点被按下时
@@ -194,9 +180,9 @@ namespace MindMap.View
             if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
         }
 
-      
 
-      
+
+
 
         private void mindMapNode_EmptyRangeMouseDown(object sender, MouseEventArgs e)
         {
@@ -308,6 +294,11 @@ namespace MindMap.View
 
         }
 
+        /// <summary> 节点编辑完成
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NodeEdit_textBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Enter) mindMapNode_EmptyRangeClick(null, null);//如果按下回车则编辑完成
@@ -316,6 +307,7 @@ namespace MindMap.View
 
 
         }
+
         /// <summary> 双击某节点后编辑某节点
         /// 
         /// </summary>
@@ -340,30 +332,32 @@ namespace MindMap.View
         private void mindMapNode_Resize(object sender, EventArgs e)
         {
 
-            MindMap_Panel_Resize(null, null);
-            return;
-
-            Scroll_panel.Height = mindMapNode.Height * 2;//容器高度
-            Scroll_panel.Width = mindMapNode.Width * 2;//容器宽度
-            if (Scroll_panel.Height < this.Height) Scroll_panel.Height = this.Height;
-            if (Scroll_panel.Width < this.Width) Scroll_panel.Width = this.Width;
+            ResetMindMapPanelSize(); 
+            #region 注释，以前居中的方法
 
 
-            #region 思维导图相对于容器居中
-            int IntTemp = Scroll_panel.Height - mindMapNode.Height;
-            IntTemp = IntTemp / 2;
-            mindMapNode.Top = IntTemp;
-            IntTemp = Scroll_panel.Width - mindMapNode.Width;
-            IntTemp = IntTemp / 2;
-            mindMapNode.Left = IntTemp;
-            #endregion 思维导图相对于容器居中
-            #region 将容器滚动至居中位置
+            //Scroll_panel.Height = mindMapNode.Height * 2;//容器高度
+            //Scroll_panel.Width = mindMapNode.Width * 2;//容器宽度
+            //if (Scroll_panel.Height < this.Height) Scroll_panel.Height = this.Height;
+            //if (Scroll_panel.Width < this.Width) Scroll_panel.Width = this.Width;
 
-            int IntX = this.Scroll_panel.Width - this.Width;
-            int IntY = this.Scroll_panel.Height - this.Height;
-            Point PointTemp = new Point(IntX / 2, IntY / 2);
-            this.AutoScrollPosition = PointTemp;
-            #endregion 将容器滚动至居中位置
+
+            //#region 思维导图相对于容器居中
+            //int IntTemp = Scroll_panel.Height - mindMapNode.Height;
+            //IntTemp = IntTemp / 2;
+            //mindMapNode.Top = IntTemp;
+            //IntTemp = Scroll_panel.Width - mindMapNode.Width;
+            //IntTemp = IntTemp / 2;
+            //mindMapNode.Left = IntTemp;
+            //#endregion 思维导图相对于容器居中
+            //#region 将容器滚动至居中位置
+
+            //int IntX = this.Scroll_panel.Width - this.Width;
+            //int IntY = this.Scroll_panel.Height - this.Height;
+            //Point PointTemp = new Point(IntX / 2, IntY / 2);
+            //this.AutoScrollPosition = PointTemp;
+            //#endregion 将容器滚动至居中位置 
+            #endregion 注释，以前居中的方法
         }
 
         #region 鼠标中键拖动滚动条
@@ -424,17 +418,39 @@ namespace MindMap.View
 
         private void MindMap_Panel_Resize(object sender, EventArgs e)
         {
+
+            new Thread(() =>
+            {
+                Thread.Sleep(200);
+                this.Invoke(new Action(() =>
+                {
+                    ResetMindMapPanelSize();
+                }
+                    ));
+            }).Start();
+        }
+
+        /// <summary> 重新设置导图和容器在控件中的尺寸
+        /// 
+        /// </summary>
+        private void ResetMindMapPanelSize()
+        {
             Scroll_panel.Location = new Point(-this.HorizontalScroll.Value, -this.VerticalScroll.Value);
 
-            int MaxHeight = this.Height * 2;
-            int MaxWidth = this.Width * 2;
+            int MaxHeight = this.Height * 2;//容器最大高度，父容器的2倍
+            int MaxWidth = this.Width * 2;//容器最大宽度，父容器的2倍
+            int MinHeight = mindMapNode.Height * 2;//容器最小高度，自身高度的两倍
+            int MinWidth = mindMapNode.Width * 2;//容器最小宽度，自身宽度的两倍
+            Scroll_panel.Height = MaxHeight > MinHeight ? MaxHeight : MinHeight;//优先最大高度
+            Scroll_panel.Width = MaxWidth > MinWidth ? MaxWidth : MinWidth;//优先最大宽度
 
-            int MinHeight= mindMapNode.Height * 2;//容器高度
-            int MinWidth = mindMapNode.Width * 2;
+            #region 将容器滚动至居中位置
 
-
-            Scroll_panel.Height = MaxHeight > MinHeight ? MaxHeight : MinHeight;
-            Scroll_panel.Width = MaxWidth > MinWidth ? MaxWidth : MinWidth;
+            int IntX = this.Scroll_panel.Width - this.Width;
+            int IntY = this.Scroll_panel.Height - this.Height;
+            Point PointTemp = new Point(IntX / 2, IntY / 2);
+            this.AutoScrollPosition = PointTemp;
+            #endregion 将容器滚动至居中位置
 
             #region 思维导图相对于容器居中
             int IntTemp = Scroll_panel.Height - mindMapNode.Height;
@@ -444,14 +460,30 @@ namespace MindMap.View
             IntTemp = IntTemp / 2;
             mindMapNode.Left = IntTemp;
             #endregion 思维导图相对于容器居中
-            #region 将容器滚动至居中位置
 
-            int IntX = this.Scroll_panel.Width - this.Width;
-            int IntY = this.Scroll_panel.Height - this.Height;
-            Point PointTemp = new Point(IntX / 2, IntY / 2);
-            this.AutoScrollPosition = PointTemp;
-            #endregion 将容器滚动至居中位置
-            
+            this.HorizontalScroll.Minimum = Scroll_panel.Width;
+            this.VerticalScroll.Minimum = Scroll_panel.Height;
         }
+        
+        #region 配套使用的内部类
+        /// <summary> 用于指明SetDataSource的泛型类的结构
+        /// [指明传入的哪个属性是ID，哪个属性是父ID，哪个属性是展示在前台的文本]
+        /// </summary>
+        public class TreeViewNodeStruct
+        {
+            /// <summary> 用于添加到TreeNode.Name中的属性名称
+            /// 一般用于存ID值
+            /// </summary>
+            public string KeyName { get; set; }
+            /// <summary> 用于展示到前台的属性名称
+            /// [添加到TreeNode.Text中的值]
+            /// </summary>
+            public string ValueName { get; set; }
+            /// <summary> 父ID的属性名称
+            /// </summary>
+            public string ParentName { get; set; }
+
+        }
+        #endregion 配套使用的内部类
     }
 }
