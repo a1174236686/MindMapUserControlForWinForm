@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.mindMap_Panel1 = new MindMap.View.MindMap_Panel();
+            this.mindMap_Panel1 = new WlxMindMap.MindMap_Panel();
             this.SuspendLayout();
             // 
             // mindMap_Panel1
@@ -59,7 +59,7 @@
 
         #endregion
 
-        private View.MindMap_Panel mindMap_Panel1;
+        private WlxMindMap.MindMap_Panel mindMap_Panel1;
     }
 }
 

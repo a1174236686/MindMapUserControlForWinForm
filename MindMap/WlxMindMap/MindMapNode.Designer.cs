@@ -1,4 +1,4 @@
-﻿namespace MindMap.View
+﻿namespace WlxMindMap
 {
     partial class MindMapNode
     {

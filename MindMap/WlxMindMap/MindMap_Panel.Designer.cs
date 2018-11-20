@@ -1,4 +1,4 @@
-﻿namespace MindMap.View
+﻿namespace WlxMindMap
 {
     partial class MindMap_Panel
     {
@@ -30,7 +30,7 @@
         {
             this.NodeEdit_textBox = new System.Windows.Forms.TextBox();
             this.Scroll_panel = new System.Windows.Forms.Panel();
-            this.mindMapNode = new MindMap.View.MindMapNode();
+            this.mindMapNode = new WlxMindMap.MindMapNode();
             this.Scroll_panel.SuspendLayout();
             this.SuspendLayout();
             // 

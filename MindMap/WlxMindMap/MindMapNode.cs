@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MindMap.View
+namespace WlxMindMap
 {
     public partial class MindMapNode : UserControl
     {

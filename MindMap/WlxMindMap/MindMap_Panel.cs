@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MindMap.View;
+
 using System.Reflection;
 using System.Threading;
 
-namespace MindMap.View
+namespace WlxMindMap
 {
     public partial class MindMap_Panel : UserControl
     {
