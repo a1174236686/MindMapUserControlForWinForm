@@ -386,6 +386,7 @@ namespace WlxMindMap
 
         private void EmptyRange_MouseDown(object sender, MouseEventArgs e)
         {
+            
             if (EmptyRangeMouseDown != null) EmptyRangeMouseDown(this, e);
         }
         private void EmptyRange_MouseUp(object sender, MouseEventArgs e)

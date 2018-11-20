@@ -198,6 +198,7 @@ namespace MindMap
         /// <param name="e"></param>
         private void OnMouseWhell(object Send, MouseEventArgs e)
         {
+            return;
             int ChangeValue = 1;//每次放大或缩小的数值
             if (e.Delta < 0) FontSize = FontSize - ChangeValue <= ChangeValue ? ChangeValue : FontSize - ChangeValue;
             else FontSize = FontSize + ChangeValue;

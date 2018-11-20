@@ -18,6 +18,7 @@ namespace WlxMindMap
         public MindMap_Panel()
         {
             InitializeComponent();
+            this.MouseWheel += new MouseEventHandler(OnMouseWhell);
         }
 
         private TreeNode g_BaseNode = null;
@@ -464,7 +465,29 @@ namespace WlxMindMap
             this.HorizontalScroll.Minimum = Scroll_panel.Width;
             this.VerticalScroll.Minimum = Scroll_panel.Height;
         }
-        
+
+        private int FontSize = 13;
+        /// <summary> 滚轮放大缩小
+        /// 
+        /// </summary>
+        /// <param name="Send"></param>
+        /// <param name="e"></param>
+        private void OnMouseWhell(object Send, MouseEventArgs e)
+        {
+            if (Control.ModifierKeys == Keys.Control)
+            {
+                int ChangeValue = 1;//每次放大或缩小的数值
+                if (e.Delta < 0) FontSize = FontSize - ChangeValue <= ChangeValue ? ChangeValue : FontSize - ChangeValue;
+                else FontSize = FontSize + ChangeValue;
+
+                Font TextFontTemp = new Font(new FontFamily("微软雅黑"), FontSize);
+                this.Visible = false;
+                this.TextFont = TextFontTemp;
+                this.Visible = true;
+            }           
+        }
+
+
         #region 配套使用的内部类
         /// <summary> 用于指明SetDataSource的泛型类的结构
         /// [指明传入的哪个属性是ID，哪个属性是父ID，哪个属性是展示在前台的文本]
