@@ -321,6 +321,7 @@ namespace WlxMindMap
         private void MindMapNode_Paint(object sender, PaintEventArgs e)
         {
             DrawingConnectLine();
+            return;
 
         }
 
