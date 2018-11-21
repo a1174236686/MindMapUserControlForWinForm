@@ -1,6 +1,6 @@
-﻿namespace WlxMindMap
+﻿namespace WlxMindMap.MindMapNode
 {
-    partial class MindMapNode
+    public partial class MindMapNode
     {
         /// <summary> 
         /// 必需的设计器变量。

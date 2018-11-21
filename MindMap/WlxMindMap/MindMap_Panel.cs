@@ -7,20 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using System.Reflection;
 using System.Threading;
+using WlxMindMap.MindMapNode;
+using WlxMindMap.MindMapNodeContent;
 
 namespace WlxMindMap
 {
     public partial class MindMap_Panel : UserControl
     {
+        
+
         public MindMap_Panel()
         {
-            InitializeComponent();
+            InitializeComponent();         
             this.MouseWheel += new MouseEventHandler(OnMouseWhell);
-        }
-
+        }      
         private TreeNode g_BaseNode = null;
 
         private Font _TextFont = new Font(new FontFamily("微软雅黑"), 12);
@@ -102,9 +104,9 @@ namespace WlxMindMap
         /// 
         /// </summary>
         /// <returns></returns>
-        public List<MindMapNode> GetSelectedNode()
+        public List<MindMapNode.MindMapNode> GetSelectedNode()
         {
-            List<MindMapNode> ResultList = new List<MindMapNode>();
+            List<MindMapNode.MindMapNode> ResultList = new List<MindMapNode.MindMapNode>();
             ResultList = mindMapNode.GetChidrenNode(true);
             ResultList.Add(mindMapNode);
             ResultList = ResultList.Where(T1 => T1.Selected == true).ToList();
@@ -162,11 +164,11 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_MindMapNodeMouseClick(object sender, MouseEventArgs e)
         {
-            MindMapNode SenderObject = ((MindMapNode)sender);
+            MindMapNode.MindMapNode SenderObject = ((MindMapNode.MindMapNode)sender);
 
             if (Control.ModifierKeys != Keys.Control)//不按住ctrl就单选
             {
-                List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+                List<MindMapNode.MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
                 MindMapNodeList.Add(mindMapNode);
                 MindMapNodeList.ForEach(T1 => T1.Selected = false);
                 SenderObject.Selected = true;
@@ -285,7 +287,7 @@ namespace WlxMindMap
                 return;
             }
 
-            List<MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+            List<MindMapNode.MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
             MindMapNodeList.Add(mindMapNode);
             MindMapNodeList.ForEach(T1 => T1.Selected = false);
 
@@ -317,7 +319,7 @@ namespace WlxMindMap
         private void mindMapNode_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (sender == null) return;
-            MindMapNode SenderObject = ((MindMapNode)sender);
+            MindMapNode.MindMapNode SenderObject = ((MindMapNode.MindMapNode)sender);
 
             NodeEdit_textBox.Visible = true;
             NodeEdit_textBox.BringToFront();
@@ -333,7 +335,7 @@ namespace WlxMindMap
         private void mindMapNode_Resize(object sender, EventArgs e)
         {
 
-            ResetMindMapPanelSize(); 
+            ResetMindMapPanelSize();
             #region 注释，以前居中的方法
 
 
@@ -484,7 +486,7 @@ namespace WlxMindMap
                 this.Visible = false;
                 this.TextFont = TextFontTemp;
                 this.Visible = true;
-            }           
+            }
         }
 
 

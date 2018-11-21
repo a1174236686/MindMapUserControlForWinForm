@@ -49,6 +49,14 @@
     <Compile Include="MindMapNode.Designer.cs">
       <DependentUpon>MindMapNode.cs</DependentUpon>
     </Compile>
+    <Compile Include="MindMapNodeContent\Base\IMindMapNodeContent.cs" />
+    <Compile Include="MindMapNodeContent\Text_MindMapNodeContent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MindMapNodeContent\Text_MindMapNodeContent.Designer.cs">
+      <DependentUpon>Text_MindMapNodeContent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MindMapNode\MindMapNodeStructBase.cs" />
     <Compile Include="MindMap_Panel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -62,9 +70,13 @@
     <EmbeddedResource Include="MindMapNode.resx">
       <DependentUpon>MindMapNode.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MindMapNodeContent\Text_MindMapNodeContent.resx">
+      <DependentUpon>Text_MindMapNodeContent.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MindMap_Panel.resx">
       <DependentUpon>MindMap_Panel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

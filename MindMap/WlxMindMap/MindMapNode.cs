@@ -7,10 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WlxMindMap.MindMapNodeContent;
+using WlxMindMap.MindMapNode;
 
-namespace WlxMindMap
+namespace WlxMindMap.MindMapNode
 {
-    public partial class MindMapNode : UserControl
+    public partial class MindMapNode :UserControl 
     {
         public MindMapNode()
         {
