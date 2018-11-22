@@ -50,6 +50,9 @@
       <DependentUpon>MindMapNode.cs</DependentUpon>
     </Compile>
     <Compile Include="MindMapNodeContent\Base\IMindMapNodeContent.cs" />
+    <Compile Include="MindMapNodeContent\Base\MindMapNodeContentBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="MindMapNodeContent\Text_MindMapNodeContent.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -69,6 +72,9 @@
   <ItemGroup>
     <EmbeddedResource Include="MindMapNode.resx">
       <DependentUpon>MindMapNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MindMapNodeContent\Base\MindMapNodeContentBase.resx">
+      <DependentUpon>MindMapNodeContentBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MindMapNodeContent\Text_MindMapNodeContent.resx">
       <DependentUpon>Text_MindMapNodeContent.cs</DependentUpon>

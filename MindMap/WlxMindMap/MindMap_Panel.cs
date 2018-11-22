@@ -183,7 +183,52 @@ namespace WlxMindMap
             if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
         }
 
+        /// <summary> 双击某节点后编辑某节点
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMapNode_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (sender == null) return;
+            MindMapNode.MindMapNode SenderObject = ((MindMapNode.MindMapNode)sender);
 
+            NodeEdit_textBox.Visible = true;
+            NodeEdit_textBox.BringToFront();
+            NodeEdit_textBox.Size = SenderObject.NodeContentSize;
+            NodeEdit_textBox.Text = SenderObject.MindMapNodeText;
+            NodeEdit_textBox.Font = SenderObject.TextFont;
+            NodeEdit_textBox.Location = this.PointToClient(SenderObject.PointToScreen(SenderObject.NodeContentLocation));
+            NodeEdit_textBox.Focus();
+            if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(this, e);
+
+        }
+
+        /// <summary> 空白处被单击取消所有选中        
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMapNode_EmptyRangeClick(object sender, EventArgs e)
+        {
+
+
+            if (NodeEdit_textBox.Visible)//如果正在编辑某节点则完成编辑
+            {
+                NodeEdit_textBox.Visible = false;
+                GetSelectedNode().ForEach(Item => Item.MindMapNodeText = NodeEdit_textBox.Text);
+                return;
+            }
+
+            List<MindMapNode.MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+            MindMapNodeList.Add(mindMapNode);
+            MindMapNodeList.ForEach(T1 => T1.Selected = false);
+
+            if (EmptyRangeClick != null) EmptyRangeClick(sender, e);
+
+
+
+        }
 
 
 
@@ -271,31 +316,7 @@ namespace WlxMindMap
 
         #endregion 公开事件委托
 
-        /// <summary> 空白处被单击取消所有选中        
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void mindMapNode_EmptyRangeClick(object sender, EventArgs e)
-        {
-
-
-            if (NodeEdit_textBox.Visible)//如果正在编辑某节点则完成编辑
-            {
-                NodeEdit_textBox.Visible = false;
-                GetSelectedNode().ForEach(Item => Item.MindMapNodeText = NodeEdit_textBox.Text);
-                return;
-            }
-
-            List<MindMapNode.MindMapNode> MindMapNodeList = mindMapNode.GetChidrenNode(true);
-            MindMapNodeList.Add(mindMapNode);
-            MindMapNodeList.ForEach(T1 => T1.Selected = false);
-
-            if (EmptyRangeClick != null) EmptyRangeClick(sender, e);
-
-
-
-        }
+     
 
         /// <summary> 节点编辑完成
         /// 
@@ -311,26 +332,7 @@ namespace WlxMindMap
 
         }
 
-        /// <summary> 双击某节点后编辑某节点
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void mindMapNode_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (sender == null) return;
-            MindMapNode.MindMapNode SenderObject = ((MindMapNode.MindMapNode)sender);
-
-            NodeEdit_textBox.Visible = true;
-            NodeEdit_textBox.BringToFront();
-            NodeEdit_textBox.Size = SenderObject.NodeContentSize;
-            NodeEdit_textBox.Text = SenderObject.MindMapNodeText;
-            NodeEdit_textBox.Font = SenderObject.TextFont;
-            NodeEdit_textBox.Location = this.PointToClient(SenderObject.PointToScreen(SenderObject.NodeContentLocation));
-            NodeEdit_textBox.Focus();
-            if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(this, e);
-
-        }
+     
 
         private void mindMapNode_Resize(object sender, EventArgs e)
         {
@@ -510,5 +512,8 @@ namespace WlxMindMap
 
         }
         #endregion 配套使用的内部类
+
+
+
     }
 }

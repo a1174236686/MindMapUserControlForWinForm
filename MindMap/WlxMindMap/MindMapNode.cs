@@ -12,7 +12,7 @@ using WlxMindMap.MindMapNode;
 
 namespace WlxMindMap.MindMapNode
 {
-    public partial class MindMapNode :UserControl 
+    public partial class MindMapNode : UserControl
     {
         public MindMapNode()
         {
@@ -25,6 +25,23 @@ namespace WlxMindMap.MindMapNode
         }
 
         #region 属性
+
+        /// <summary> 获取或设置节点的内容布局，如果不设置默认为Text_MindMapNodeContent
+        /// 
+        /// </summary>
+        public MindMapNodeContentBase NodeContent { get; set; }
+        private MindMapNodeContentBase _NodeContent;
+
+
+        /// <summary>获取或设置当前的缩放比例（百分比）
+        /// 
+        /// </summary>
+        public int CurrentScalingRatio { get; set; }
+        private int _CurrentScalingRatio = 100;
+
+
+        private MindMapNodeStructBase _DataStruct;
+        public MindMapNodeStructBase DataStruct { set; get; }
 
 
         private MindMapNode _ParentNode = null;
@@ -69,10 +86,15 @@ namespace WlxMindMap.MindMapNode
         /// 
         /// </summary>
         [Description("节点的文本内容")]
-        public string MindMapNodeText { get { return Content_lable.Text; } set {
+        public string MindMapNodeText
+        {
+            get { return Content_lable.Text; }
+            set
+            {
                 Content_lable.Text = value;
                 ResetNodeSize();
-            } }
+            }
+        }
 
 
         private TreeNode _TreeNode = null;
@@ -153,7 +175,7 @@ namespace WlxMindMap.MindMapNode
         #endregion 属性               
 
         #region 方法
-     
+
 
         /// <summary> 再面板上画出当前节点的连接线
         /// 
@@ -191,28 +213,64 @@ namespace WlxMindMap.MindMapNode
         /// </summary>
         private void ReSetSize()
         {
-            Graphics g = this.CreateGraphics();
-            g.PageUnit = GraphicsUnit.Display;
-            SizeF ContentSize = g.MeasureString(Content_lable.Text, g_TextFont);
-            Content_Panel.Width = Convert.ToInt32(ContentSize.Width + (5));
+            #region 新代码
+            _NodeContent.RefreshContentSize();
 
-            int MaxChidrenWidth = 0;
-            int HeightCount = 0;
-            foreach (Control ControlItem in this.Chidren_Panel.Controls)
+            Size ContentSize = _NodeContent.Size;
+            Content_Panel.Width = ContentSize.Width;
+            int MaxChidrenWidth = 0;//子节点最宽的宽度
+            int HeightCount = 0;//子节点高度的总和
+            foreach (Control ControlItem in this.Chidren_Panel.Controls)//遍历所有子节点容器
             {
-                if (MaxChidrenWidth < ControlItem.Width) MaxChidrenWidth = ControlItem.Width;
-                HeightCount += ControlItem.Height + 4;
+                if (MaxChidrenWidth < ControlItem.Width) MaxChidrenWidth = ControlItem.Width;//获取子节点最宽的宽度
+                HeightCount += ControlItem.Height + 4;//获取子节点高度的总和
             }
 
+            //设置本节点容器的整体宽度（节点内容宽度+连接线宽度+最宽子节点的宽度）
             MaxChidrenWidth = MaxChidrenWidth + DrawingLine_panel.Width + Content_Panel.Width;
             this.Width = MaxChidrenWidth;
-            if (HeightCount < ContentSize.Height) HeightCount = Convert.ToInt32(ContentSize.Height);
+
+            //设置本节点容器的整体高度（所有子节点高度的总和，或节点内容的高度，两者较大的那一个）
+            if (HeightCount < ContentSize.Height) HeightCount = ContentSize.Height;
             this.Height = HeightCount;
 
+
             Content_lable.Width = Content_Panel.Width + 10;
-            Content_lable.Height = Convert.ToInt32(ContentSize.Height);
+            Content_lable.Height = ContentSize.Height;
             Content_lable.Left = 0;
             Content_lable.Top = (Content_Panel.Height - Content_lable.Height) / 2;
+
+            #endregion 新代码
+
+            #region 旧代码
+
+            //Graphics g = this.CreateGraphics();
+            //g.PageUnit = GraphicsUnit.Pixel;
+            //SizeF ContentSize = g.MeasureString(Content_lable.Text, g_TextFont);
+            //Content_Panel.Width = Convert.ToInt32(ContentSize.Width);
+
+            //int MaxChidrenWidth = 0;//子节点最宽的宽度
+            //int HeightCount = 0;//子节点高度的总和
+            //foreach (Control ControlItem in this.Chidren_Panel.Controls)//遍历所有子节点容器
+            //{
+            //    if (MaxChidrenWidth < ControlItem.Width) MaxChidrenWidth = ControlItem.Width;//获取子节点最宽的宽度
+            //    HeightCount += ControlItem.Height + 4;//获取子节点高度的总和
+            //}
+
+            ////设置本节点容器的整体宽度（节点内容宽度+连接线宽度+最宽子节点的宽度）
+            //MaxChidrenWidth = MaxChidrenWidth + DrawingLine_panel.Width + Content_Panel.Width;
+            //this.Width = MaxChidrenWidth;
+
+            ////设置本节点容器的整体高度（所有子节点高度的总和，或节点内容的高度，两者较大的那一个）
+            //if (HeightCount < ContentSize.Height) HeightCount = Convert.ToInt32(ContentSize.Height);
+            //this.Height = HeightCount;
+
+
+            //Content_lable.Width = Content_Panel.Width + 10;
+            //Content_lable.Height = Convert.ToInt32(ContentSize.Height);
+            //Content_lable.Left = 0;
+            //Content_lable.Top = (Content_Panel.Height - Content_lable.Height) / 2;
+            #endregion 旧代码
 
         }
 
@@ -379,7 +437,7 @@ namespace WlxMindMap.MindMapNode
         private void Content_lable_MouseMove(object sender, MouseEventArgs e)
         {
             if (MindMapNodeMouseMove != null) MindMapNodeMouseMove(this, e);
-            
+
         }
 
         private void EmptyRange_Click(object sender, EventArgs e)
@@ -389,7 +447,7 @@ namespace WlxMindMap.MindMapNode
 
         private void EmptyRange_MouseDown(object sender, MouseEventArgs e)
         {
-            
+
             if (EmptyRangeMouseDown != null) EmptyRangeMouseDown(this, e);
         }
         private void EmptyRange_MouseUp(object sender, MouseEventArgs e)
@@ -498,6 +556,8 @@ namespace WlxMindMap.MindMapNode
 
         #endregion 事件
 
+
+
         #region 配套使用的内部类
         #region 用于指明节点的背景色
         /// <summary> 用于指明节点的背景色
@@ -586,10 +646,9 @@ namespace WlxMindMap.MindMapNode
 
 
         #endregion 用于指明节点的背景色
-
         #endregion 配套使用的内部类
 
-    
+
     }
 
 }

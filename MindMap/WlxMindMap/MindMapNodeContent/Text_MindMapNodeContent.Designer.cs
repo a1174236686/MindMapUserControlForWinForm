@@ -28,26 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.Content_lable = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
-            // linkLabel1
+            // Content_lable
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(75, 82);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(65, 12);
-            this.linkLabel1.TabIndex = 0;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "linkLabel1";
+            this.Content_lable.AutoSize = true;
+            this.Content_lable.BackColor = System.Drawing.Color.DodgerBlue;
+            this.Content_lable.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.Content_lable.LinkColor = System.Drawing.Color.White;
+            this.Content_lable.Location = new System.Drawing.Point(0, 0);
+            this.Content_lable.Name = "Content_lable";
+            this.Content_lable.Padding = new System.Windows.Forms.Padding(5);
+            this.Content_lable.Size = new System.Drawing.Size(63, 22);
+            this.Content_lable.TabIndex = 0;
+            this.Content_lable.TabStop = true;
+            this.Content_lable.Text = "新的节点";
+            this.Content_lable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Content_lable.VisitedLinkColor = System.Drawing.Color.White;
             // 
             // Text_MindMapNodeContent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.Content_lable);
             this.Name = "Text_MindMapNodeContent";
-            this.Size = new System.Drawing.Size(224, 200);
+            this.Size = new System.Drawing.Size(149, 32);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -55,6 +61,6 @@
 
         #endregion
 
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel Content_lable;
     }
 }
