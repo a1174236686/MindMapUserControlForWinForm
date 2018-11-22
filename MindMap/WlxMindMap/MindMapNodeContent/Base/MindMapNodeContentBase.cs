@@ -17,6 +17,7 @@ namespace WlxMindMap.MindMapNodeContent
     /// </summary>
     public abstract class MindMapNodeContentBase : UserControl
     {
+        #region 子类必须实现的抽象方法
         /// <summary> 指示DataItem的结构
         /// 
         /// </summary>
@@ -37,10 +38,42 @@ namespace WlxMindMap.MindMapNodeContent
         /// 
         /// </summary>
         public abstract object DataItem { get; set; }
+        
 
         /// <summary> 刷新节点内容的尺寸
         /// 
         /// </summary>
         public abstract void RefreshContentSize();
+
+        #endregion 子类必须实现的抽象方法
+
+        #region 基类提供的方法
+        /// <summary>获取该节点内容的所有控件（含自己）
+        /// 
+        /// </summary>
+        /// <param name="ControlParame"></param>
+        /// <returns></returns>
+        public List<Control> GetNodeControl(Control ControlParame = null)
+        {
+            List<Control> ResultList = new List<Control>();
+            if (ControlParame == null)
+            {
+                ResultList.Add(this);
+            }
+            foreach (Control Item in ControlParame.Controls)
+            {
+                ResultList.Add(Item);
+                ResultList.AddRange(GetNodeControl(Item));//递归取子控件
+            }
+            return ResultList;
+        }
+        #endregion 基类提供的方法
+
+        #region 属性
+        private MindMapNode.MindMapNode _ParentMindMapNode;
+        public MindMapNode.MindMapNode ParentMindMapNode { get => _ParentMindMapNode; set => _ParentMindMapNode = value; }
+        #endregion 属性
+
+
     }
 }
