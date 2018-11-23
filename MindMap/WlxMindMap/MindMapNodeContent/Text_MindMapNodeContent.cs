@@ -68,7 +68,7 @@ namespace WlxMindMap.MindMapNodeContent
             }
         }
 
-        private MindMapNodeStructBase _DataStruct;
+        private MindMapNodeStructBase _DataStruct = new MindMapNodeStructBase();
         /// <summary> 获取或设置指示DataItem的结构
         /// 
         /// </summary>
@@ -194,8 +194,16 @@ namespace WlxMindMap.MindMapNodeContent
                 return IntResult;
             }
         }
-
-
+        /// <summary> 用于指示DataItem的结构
+        /// 
+        /// </summary>
+        public class Text_ContentStruct : MindMapNodeStructBase
+        {
+            /// <summary> DataItem中用于显示文本的属性名
+            /// 
+            /// </summary>
+            public string Text { get; set; }
+        }
 
 
         #endregion 用于指明节点的背景色

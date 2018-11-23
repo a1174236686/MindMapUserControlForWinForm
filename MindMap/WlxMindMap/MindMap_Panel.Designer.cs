@@ -30,7 +30,7 @@
         {
             this.NodeEdit_textBox = new System.Windows.Forms.TextBox();
             this.Scroll_panel = new System.Windows.Forms.Panel();
-            this.mindMapNode = new WlxMindMap.MindMapNode.MindMapNode();
+            this.mindMapNode = new WlxMindMap.MindMapNode.MindMapNodeContainer();
             this.Scroll_panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -105,6 +105,6 @@
       
         private System.Windows.Forms.TextBox NodeEdit_textBox;
         private System.Windows.Forms.Panel Scroll_panel;
-        private MindMapNode.MindMapNode mindMapNode;
+        private MindMapNode.MindMapNodeContainer mindMapNode;
     }
 }

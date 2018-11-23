@@ -47,7 +47,7 @@ namespace WlxMindMap.MindMapNodeContent
 
         #endregion 子类必须实现的抽象方法
 
-        #region 基类提供的方法
+        #region 基类提供的方法     
         /// <summary>获取该节点内容的所有控件（含自己）
         /// 
         /// </summary>
@@ -70,8 +70,8 @@ namespace WlxMindMap.MindMapNodeContent
         #endregion 基类提供的方法
 
         #region 属性
-        private MindMapNode.MindMapNode _ParentMindMapNode;
-        public MindMapNode.MindMapNode ParentMindMapNode { get => _ParentMindMapNode; set => _ParentMindMapNode = value; }
+        private MindMapNode.MindMapNodeContainer _ParentMindMapNode;
+        public MindMapNode.MindMapNodeContainer ParentMindMapNode { get => _ParentMindMapNode; set => _ParentMindMapNode = value; }
         #endregion 属性
 
 

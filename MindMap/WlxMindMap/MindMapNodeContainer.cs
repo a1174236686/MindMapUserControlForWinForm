@@ -12,11 +12,12 @@ using WlxMindMap.MindMapNode;
 
 namespace WlxMindMap.MindMapNode
 {
-    public partial class MindMapNode : UserControl
+    public partial class MindMapNodeContainer : UserControl
     {
-        public MindMapNode()
+        public MindMapNodeContainer()
         {
             InitializeComponent();
+            this.Margin= new Padding(0, 2, 0, 2);
             Content_lable.ForeColor = Color.FromArgb(255, 255, 255);
             Content_lable.LinkColor = Color.FromArgb(255, 255, 255);
             Content_lable.VisitedLinkColor = Color.FromArgb(255, 255, 255);
@@ -26,10 +27,10 @@ namespace WlxMindMap.MindMapNode
 
         #region 属性
 
-        /// <summary> 获取或设置节点的内容布局，如果不设置默认为Text_MindMapNodeContent
+        /// <summary> 获取节点的内容布局的实例
         /// 
         /// </summary>
-        public MindMapNodeContentBase NodeContent { get; set; }
+        public MindMapNodeContentBase NodeContent { get;  }
         private MindMapNodeContentBase _NodeContent;
 
 
@@ -40,15 +41,17 @@ namespace WlxMindMap.MindMapNode
         private int _CurrentScalingRatio = 100;
 
 
-        private MindMapNodeStructBase _DataStruct;
+        private MindMapNodeStructBase _DataStruct=new MindMapNodeStructBase ();
         public MindMapNodeStructBase DataStruct { set; get; }
 
 
-        private MindMapNode _ParentNode = null;
+
+
+        private MindMapNodeContainer _ParentNode = null;
         /// <summary> 设置或获取父节点
         /// 
         /// </summary>
-        public MindMapNode ParentNode
+        public MindMapNodeContainer ParentNode
         {
             set
             {
@@ -113,7 +116,7 @@ namespace WlxMindMap.MindMapNode
                 Chidren_Panel.Controls.Clear();
                 foreach (TreeNode TreeNodeItem in _TreeNode.Nodes)
                 {
-                    MindMapNode MindMapNodeTemp = new MindMapNode();
+                    MindMapNodeContainer MindMapNodeTemp = new MindMapNodeContainer();
                     SetEvent(MindMapNodeTemp);
                     MindMapNodeTemp.TextFont = g_TextFont;
                     MindMapNodeTemp.TreeNode = TreeNodeItem;
@@ -175,7 +178,16 @@ namespace WlxMindMap.MindMapNode
         #endregion 属性               
 
         #region 方法
-
+        /// <summary> 设置内容布局样式
+        /// 
+        /// </summary>
+        /// <typeparam name="NodeContentClass"></typeparam>
+        /// <param name="Struct"></param>
+        public void SetNodeContent<NodeContentClass>(MindMapNodeStructBase Struct) where NodeContentClass : MindMapNodeContentBase, new()
+        {
+            this._NodeContent = new NodeContentClass();
+            this.NodeContent.DataStruct = Struct;
+        }
 
         /// <summary> 再面板上画出当前节点的连接线
         /// 
@@ -279,10 +291,10 @@ namespace WlxMindMap.MindMapNode
         /// </summary>
         /// <param name="IsAll">是否包含孙节点在内的所有子节点</param>
         /// <returns></returns>
-        public List<MindMapNode> GetChidrenNode(bool IsAll = false)
+        public List<MindMapNodeContainer> GetChidrenNode(bool IsAll = false)
         {
-            List<MindMapNode> ResultList = new List<MindMapNode>();
-            foreach (MindMapNode MindMapNodeItem in Chidren_Panel.Controls)
+            List<MindMapNodeContainer> ResultList = new List<MindMapNodeContainer>();
+            foreach (MindMapNodeContainer MindMapNodeItem in Chidren_Panel.Controls)
             {
                 ResultList.Add(MindMapNodeItem);
                 if (IsAll)
@@ -321,28 +333,14 @@ namespace WlxMindMap.MindMapNode
         /// <summary> 添加一个节点
         /// 
         /// </summary>
-        public void AddNode(TreeNode TreeNodeParame)
-        {
-            _TreeNode.Nodes.Add(TreeNodeParame);
-            MindMapNode NewNode = new MindMapNode();
-            SetEvent(NewNode);
-            NewNode.TextFont = g_TextFont;
-            NewNode.TreeNode = TreeNodeParame;
-            NewNode.Margin = new Padding(0, 2, 0, 2);
-            Chidren_Panel.Controls.Add(NewNode);
-            ResetNodeSize();
-        }
-        /// <summary> 添加一个节点
-        /// 
-        /// </summary>
-        public void AddNode(MindMapNode MindMapNodeParame)
+        public void AddNode(MindMapNodeContainer MindMapNodeParame)
         {
             if (MindMapNodeParame == null) return;
-            List<MindMapNode> MindMapNodeList = GetChidrenNode();
+            List<MindMapNodeContainer> MindMapNodeList = GetChidrenNode();
             int FindCount = MindMapNodeList.Where(T1 => T1 == MindMapNodeParame).Count();
             if (FindCount != 0) return;//如果要添加的节点已经存在就直接返回
 
-            MindMapNode NewNode = MindMapNodeParame;
+            MindMapNodeContainer NewNode = MindMapNodeParame;
             SetEvent(NewNode);
             NewNode.TextFont = g_TextFont;
             NewNode.Margin = new Padding(0, 2, 0, 2);
@@ -355,13 +353,13 @@ namespace WlxMindMap.MindMapNode
         /// <summary> 移除一个节点
         /// 
         /// </summary>
-        public void Remove(MindMapNode MindMapNodeParame)
+        public void Remove(MindMapNodeContainer MindMapNodeParame)
         {
             if (MindMapNodeParame == null) return;
-            MindMapNode MindMapNodeTemp = null;
+            MindMapNodeContainer MindMapNodeTemp = null;
             foreach (Control ControlItem in Chidren_Panel.Controls)
             {
-                MindMapNodeTemp = (MindMapNode)ControlItem;
+                MindMapNodeTemp = (MindMapNodeContainer)ControlItem;
                 if (MindMapNodeParame == MindMapNodeTemp)
                 {
                     MindMapNodeTemp.Parent = null;
@@ -463,8 +461,19 @@ namespace WlxMindMap.MindMapNode
         /// 
         /// </summary>
         /// <param name="MindMapNodeTemp"></param>
-        private void SetEvent(MindMapNode MindMapNodeTemp)
+        private void SetEvent(MindMapNodeContainer MindMapNodeTemp)
         {
+            List<Control>ControlList= MindMapNodeTemp.NodeContent.GetNodeControl();
+
+            ControlList.ForEach(ControlItem=> {
+
+
+                ControlItem.MouseDown +=new MouseEventHandler(this.NodeContent.MouseDown);
+            })
+
+
+
+
             if (this.MindMapNodeMouseDown != null && MindMapNodeTemp.MindMapNodeMouseDown == null)
                 MindMapNodeTemp.MindMapNodeMouseDown += new MouseEventHandler(this.MindMapNodeMouseDown);
             if (this.MindMapNodeMouseEnter != null && MindMapNodeTemp.MindMapNodeMouseEnter == null)
