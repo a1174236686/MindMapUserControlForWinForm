@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WlxMindMap.MindMapNode;
 
@@ -23,6 +17,7 @@ namespace WlxMindMap.MindMapNodeContent
             Content_lable.LinkColor = Color.FromArgb(255, 255, 255);
             Content_lable.VisitedLinkColor = Color.FromArgb(255, 255, 255);
             Content_lable.ActiveLinkColor = Color.FromArgb(255, 255, 255);
+            Content_lable.BackColor = NodeBackColor.Normaly.Value;
         }
 
         #region 实现基类的抽象方法
@@ -50,7 +45,33 @@ namespace WlxMindMap.MindMapNodeContent
         /// <summary>  获取或设置节点是否处于编辑状态
         /// 
         /// </summary>
-        public override bool Edited { get => _Edited; set => _Edited = value; }
+        public override bool Edited
+        {
+            get => _Edited;
+            set
+            {
+                if (value)
+                {
+
+                    Edit_TextBox.Visible = true;
+
+                    Edit_TextBox.Size = Content_lable.Size;
+                    Edit_TextBox.Location = Content_lable.Location;
+                    Edit_TextBox.Font = Content_lable.Font;
+                    Edit_TextBox.Text = Content_lable.Text;
+                    Edit_TextBox.BringToFront();
+                    Edit_TextBox.Focus();
+                    Content_lable.Visible = false;
+                }
+                else
+                {
+                    Edit_TextBox.Visible = false;
+                    Content_lable.Visible = true;
+                    ParentMindMapNode.ResetNodeSize();
+                }
+                _Edited = value;
+            }
+        }
 
         private object _DataItem;
         /// <summary> 获取或设置用于显示内容的数据源
@@ -64,15 +85,17 @@ namespace WlxMindMap.MindMapNodeContent
             }
             set
             {
-                _DataItem = value;               
-                 
-                Content_lable.Text= GetDataValue(g_DataStruct.Text).ToString();
+                _DataItem = value;
+
+                Content_lable.Text = GetDataValue(g_DataStruct.Text).ToString();
+
+
                 if (ParentMindMapNode != null) ParentMindMapNode.ResetNodeSize();
             }
         }
 
-        
-            private Text_ContentStruct g_DataStruct = new Text_ContentStruct();
+
+        private Text_ContentStruct g_DataStruct = new Text_ContentStruct();
         private MindMapNodeStructBase _DataStruct = new MindMapNodeStructBase();
         /// <summary> 获取或设置指示DataItem的结构
         /// 
@@ -117,9 +140,80 @@ namespace WlxMindMap.MindMapNodeContent
             }
         }
         private MindMapNodeBackColor _NodeBackColor = new MindMapNodeBackColor(Color.FromArgb(48, 120, 215));
+        
+        #region 鼠标移入移出的动画效果
+        private void Content_lable_MouseEnter(object sender, EventArgs e)
+        {
+            Color ResultColor = _NodeBackColor.Enter.Value;
+            if (_Selected)
+            {
+                ResultColor = _NodeBackColor.Down.Value;
+            }
+            Content_lable.BackColor = ResultColor;
+        }
 
+        private void Content_lable_MouseLeave(object sender, EventArgs e)
+        {
+            Color ResultColor = _NodeBackColor.Normaly.Value;
+            if (_Selected)
+            {
+                ResultColor = _NodeBackColor.Down.Value;
+            }
+            Content_lable.BackColor = ResultColor;
+        }
+
+        private void Content_lable_MouseDown(object sender, MouseEventArgs e)
+        {
+            Content_lable.BackColor = _NodeBackColor.Down.Value;
+        }
+
+        private void Content_lable_MouseUp(object sender, MouseEventArgs e)
+        {
+            Color ResultColor = _NodeBackColor.Normaly.Value;
+            if (_Selected)
+            {
+                ResultColor = _NodeBackColor.Down.Value;
+            }
+            Content_lable.BackColor = ResultColor;
+        }
+        #endregion 鼠标移入移出的动画效果
+
+        
+
+        /// <summary> 用于编辑的TextBox按下回车完成编辑，按下esc取消编辑        
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Edit_TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Enter:
+                    Content_lable.Text = Edit_TextBox.Text;
+                    RefreshContentSize();
+                    Edited = false;
+                    break;
+
+                case Keys.Escape:
+                    Edited = false;
+                    break;
+            }
+            e.Handled = true;
+        }
 
         #region 配套使用的内部类
+        /// <summary> Text_MindMapNodeContent中指示DataItem的结构
+        /// 
+        /// </summary>
+        public class Text_ContentStruct : MindMapNodeStructBase
+        {
+            /// <summary> DataItem中用于显示文本的属性名
+            /// 
+            /// </summary>
+            public string Text { get; set; }
+        }
+
         #region 用于指明节点的背景色
         /// <summary> 用于指明节点的背景色
         /// 
@@ -203,19 +297,13 @@ namespace WlxMindMap.MindMapNodeContent
             }
         }
 
-        /// <summary> 用于指示DataItem的结构
-        /// 
-        /// </summary>
-        public class Text_ContentStruct : MindMapNodeStructBase
-        {
-            /// <summary> DataItem中用于显示文本的属性名
-            /// 
-            /// </summary>
-            public string Text { get; set; }
-        }
+
+
+
 
 
         #endregion 用于指明节点的背景色
+
         #endregion 配套使用的内部类
     }
 }

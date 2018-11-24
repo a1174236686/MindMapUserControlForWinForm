@@ -28,26 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.NodeEdit_textBox = new System.Windows.Forms.TextBox();
             this.Scroll_panel = new System.Windows.Forms.Panel();
-          
-            this.Scroll_panel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // NodeEdit_textBox
-            // 
-            this.NodeEdit_textBox.Location = new System.Drawing.Point(332, 155);
-            this.NodeEdit_textBox.Name = "NodeEdit_textBox";
-            this.NodeEdit_textBox.Size = new System.Drawing.Size(100, 21);
-            this.NodeEdit_textBox.TabIndex = 1;
-            this.NodeEdit_textBox.Visible = false;
-            this.NodeEdit_textBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NodeEdit_textBox_KeyDown);
             // 
             // Scroll_panel
             // 
             this.Scroll_panel.BackColor = System.Drawing.Color.White;
-            
-            this.Scroll_panel.Controls.Add(this.NodeEdit_textBox);
             this.Scroll_panel.Location = new System.Drawing.Point(0, 0);
             this.Scroll_panel.Name = "Scroll_panel";
             this.Scroll_panel.Size = new System.Drawing.Size(467, 389);
@@ -56,7 +42,6 @@
             this.Scroll_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
             this.Scroll_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseMove);
             this.Scroll_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
-   
             // 
             // MindMap_Panel
             // 
@@ -70,16 +55,12 @@
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
             this.Resize += new System.EventHandler(this.MindMap_Panel_Resize);
-            this.Scroll_panel.ResumeLayout(false);
-            this.Scroll_panel.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-      
-        private System.Windows.Forms.TextBox NodeEdit_textBox;
         private System.Windows.Forms.Panel Scroll_panel;
         
     }

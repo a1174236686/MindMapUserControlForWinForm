@@ -43,13 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionMethod.cs" />
     <Compile Include="MindMapNodeContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MindMapNodeContainer.Designer.cs">
       <DependentUpon>MindMapNodeContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="MindMapNodeContent\Base\IMindMapNodeContent.cs" />
     <Compile Include="MindMapNodeContent\Base\MindMapNodeContentBase.cs">
       <SubType>UserControl</SubType>
     </Compile>

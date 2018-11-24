@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WlxMindMap.MindMapNodeContent;
 using WlxMindMap.MindMapNode;
+using System.Reflection;
 
 namespace WlxMindMap.MindMapNode
 {
@@ -17,8 +18,8 @@ namespace WlxMindMap.MindMapNode
         public MindMapNodeContainer()
         {
             InitializeComponent();
-            this.Margin= new Padding(0, 2, 0, 2);
-    
+            this.Margin = new Padding(0, 2, 0, 2);
+
         }
 
         #region 属性
@@ -26,7 +27,7 @@ namespace WlxMindMap.MindMapNode
         /// <summary> 获取节点的内容布局的实例
         /// 
         /// </summary>
-        public MindMapNodeContentBase NodeContent { get { return _NodeContent; }  }
+        public MindMapNodeContentBase NodeContent { get { return _NodeContent; } }
         private MindMapNodeContentBase _NodeContent;
 
 
@@ -36,14 +37,12 @@ namespace WlxMindMap.MindMapNode
         public int CurrentScalingRatio { get; set; }
         private int _CurrentScalingRatio = 100;
 
-
-        private MindMapNodeStructBase _DataStruct=new MindMapNodeStructBase ();
+        /// <summary> 设置节点内容的结构
+        /// 
+        /// </summary>
         public MindMapNodeStructBase DataStruct { set; get; }
+        private MindMapNodeStructBase _DataStruct = new MindMapNodeStructBase();
 
-
-
-
-        private MindMapNodeContainer _ParentNode = null;
         /// <summary> 设置或获取父节点
         /// 
         /// </summary>
@@ -52,123 +51,15 @@ namespace WlxMindMap.MindMapNode
             set
             {
                 if (_ParentNode == value) return;
-                if (_ParentNode != null) _ParentNode.Remove(this);
-
+                if (_ParentNode != null) _ParentNode.Remove(this);//将本容器从原有父容器中移出
                 _ParentNode = value;
-                if (_ParentNode != null) _ParentNode.AddNode(this);
+                if (_ParentNode != null) _ParentNode.AddNode(this);//将本容器添加到新的父容器中
 
             }
             get { return _ParentNode; }
         }
-
-        private Font g_TextFont = new Font(new FontFamily("微软雅黑"), 12);
-        /// <summary> 当前节点的字体
-        /// 
-        /// </summary>
-        [Description("节点内容的字体"), DisplayName("字体对象")]
-        public Font TextFont
-        {
-            get
-            {
-                return g_TextFont;
-            }
-            set
-            {
-                g_TextFont = value;
-                
-                ResetNodeSize();//重新设置节点尺寸
-
-            }
-        }
-
-        /// <summary> 节点的文本内容
-        /// 
-        /// </summary>
-        [Description("节点的文本内容")]
-        public string MindMapNodeText
-        {
-            get { return ""; }
-            set
-            {
-                
-                ResetNodeSize();
-            }
-        }
-
-
-        private TreeNode _TreeNode = null;
-        /// <summary> 设置当前节点的内容
-        /// 
-        /// </summary>
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never), DisplayName("节点对象")]//不允许编辑器修改，否则设计器会自动给他默认值导致需要手动删掉
-        public TreeNode TreeNode
-        {
-            set
-            {
-                if (value == null) return;
-                _TreeNode = value;
-                Chidren_Panel.Controls.Clear();
-                foreach (TreeNode TreeNodeItem in _TreeNode.Nodes)
-                {
-                    MindMapNodeContainer MindMapNodeTemp = new MindMapNodeContainer();
-                    SetEvent(MindMapNodeTemp);
-                    MindMapNodeTemp.TextFont = g_TextFont;
-                    MindMapNodeTemp.TreeNode = TreeNodeItem;
-                    MindMapNodeTemp.Margin = new Padding(0, 2, 0, 2);
-
-                    MindMapNodeTemp.ParentNode = this;
-                    //Chidren_Panel.Controls.Add(MindMapNodeTemp);
-                }
-                ReSetSize();
-                DrawingConnectLine();
-            }
-        }
-
-        private bool _Selected = false;
-        /// <summary>当前节点是否被选中
-        /// 
-        /// </summary>
-        public bool Selected
-        {
-            get { return _Selected; }
-            set
-            {
-                _Selected = value;
-                if (_Selected)
-                {
-                    //Content_lable.BackColor = NodeBackColor.Down.Value;
-                }
-                else
-                {
-                    //Content_lable.BackColor = NodeBackColor.Normaly.Value;
-                }
-
-            }
-        }
-
-
-        /// <summary> 设置当前节点的背景颜色
-        /// 
-        /// </summary>
-        public MindMapNodeBackColor NodeBackColor
-        {
-            get { return _NodeBackColor; }
-            set
-            {
-                if (value == null) return;
-                //Content_lable.BackColor = _NodeBackColor.Normaly.Value;
-                _NodeBackColor = value;
-            }
-        }
-        private MindMapNodeBackColor _NodeBackColor = new MindMapNodeBackColor(Color.FromArgb(48, 120, 215));
-
-        /// <summary>节点中的内容位置[用于节点编辑时TextBox暂时覆盖内容]
-        /// 
-        /// </summary>
-        public Point NodeContentLocation { get { return new Point(); } }
-
-        public Size NodeContentSize { get { return new Size (); } }
-
+        private MindMapNodeContainer _ParentNode = null;
+    
         #endregion 属性               
 
         #region 方法
@@ -177,12 +68,10 @@ namespace WlxMindMap.MindMapNode
         /// </summary>
         /// <typeparam name="NodeContentClass"></typeparam>
         /// <param name="Struct"></param>
-        public void SetNodeContent<NodeContentClass>(MindMapNodeStructBase Struct,MindMapNodeContentBase NodeContentParame=null) where NodeContentClass : MindMapNodeContentBase, new()
+        public void SetNodeContent<NodeContentClass>(MindMapNodeStructBase Struct, MindMapNodeContentBase NodeContentParame = null) where NodeContentClass : MindMapNodeContentBase, new()
         {
             if (NodeContentParame == null) NodeContentParame = new NodeContentClass();
             if (this._NodeContent == NodeContentParame) return;
-
-            
             else this._NodeContent = NodeContentParame;
             this.NodeContent.DataStruct = Struct;
             this.Content_Panel.Controls.Add(this.NodeContent);
@@ -190,7 +79,7 @@ namespace WlxMindMap.MindMapNode
             ReSetSize();
         }
 
-        /// <summary> 再面板上画出当前节点的连接线
+        /// <summary> 在面板上画出当前节点的连接线
         /// 
         /// </summary>
         private void DrawingConnectLine()
@@ -221,8 +110,6 @@ namespace WlxMindMap.MindMapNode
             }
         }
 
- 
-
         /// <summary> 获取该节点下的子节点
         /// 
         /// </summary>
@@ -241,31 +128,20 @@ namespace WlxMindMap.MindMapNode
             }
             return ResultList;
         }
-
-        /// <summary> 递归设置子节点
-        /// 
-        /// </summary>
-        /// <param name="FontSource"></param>
-        public void SetTextFont(Font FontSource)
-        {
-            if (FontSource == null) return;
-            g_TextFont = FontSource;
-         
-            GetChidrenNode(false).ForEach(T1 => T1.SetTextFont(FontSource));//递归将子节点也设置字体
-            ReSetSize();
-        }
-
-        /// <summary> 刷新单个节点的宽度和高度
+                
+        /// <summary> 刷新节点的宽度和高度
         /// 
         /// </summary>
         private void ReSetSize()
         {
-            #region 新代码
+            Size ContentSize = new Size(0, 0);
+            if (_NodeContent != null)
+            {
+                _NodeContent.RefreshContentSize();
+                ContentSize = _NodeContent.Size;
+            }
 
-            if (_NodeContent == null) return;
-            _NodeContent.RefreshContentSize();
 
-            Size ContentSize = _NodeContent.Size;
             Content_Panel.Width = ContentSize.Width;
             int MaxChidrenWidth = 0;//子节点最宽的宽度
             int HeightCount = 0;//子节点高度的总和
@@ -282,44 +158,11 @@ namespace WlxMindMap.MindMapNode
             //设置本节点容器的整体高度（所有子节点高度的总和，或节点内容的高度，两者较大的那一个）
             if (HeightCount < ContentSize.Height) HeightCount = ContentSize.Height;
             this.Height = HeightCount;
-
-
-      
-            _NodeContent.Left = 0;
-            _NodeContent.Top = (Content_Panel.Height - _NodeContent.Height) / 2;
-
-            #endregion 新代码
-
-            #region 旧代码
-
-            //Graphics g = this.CreateGraphics();
-            //g.PageUnit = GraphicsUnit.Pixel;
-            //SizeF ContentSize = g.MeasureString(Content_lable.Text, g_TextFont);
-            //Content_Panel.Width = Convert.ToInt32(ContentSize.Width);
-
-            //int MaxChidrenWidth = 0;//子节点最宽的宽度
-            //int HeightCount = 0;//子节点高度的总和
-            //foreach (Control ControlItem in this.Chidren_Panel.Controls)//遍历所有子节点容器
-            //{
-            //    if (MaxChidrenWidth < ControlItem.Width) MaxChidrenWidth = ControlItem.Width;//获取子节点最宽的宽度
-            //    HeightCount += ControlItem.Height + 4;//获取子节点高度的总和
-            //}
-
-            ////设置本节点容器的整体宽度（节点内容宽度+连接线宽度+最宽子节点的宽度）
-            //MaxChidrenWidth = MaxChidrenWidth + DrawingLine_panel.Width + Content_Panel.Width;
-            //this.Width = MaxChidrenWidth;
-
-            ////设置本节点容器的整体高度（所有子节点高度的总和，或节点内容的高度，两者较大的那一个）
-            //if (HeightCount < ContentSize.Height) HeightCount = Convert.ToInt32(ContentSize.Height);
-            //this.Height = HeightCount;
-
-
-            //Content_lable.Width = Content_Panel.Width + 10;
-            //Content_lable.Height = Convert.ToInt32(ContentSize.Height);
-            //Content_lable.Left = 0;
-            //Content_lable.Top = (Content_Panel.Height - Content_lable.Height) / 2;
-            #endregion 旧代码
-
+            if (_NodeContent != null)
+            {
+                _NodeContent.Left = 0;
+                _NodeContent.Top = (Content_Panel.Height - ContentSize.Height) / 2;
+            }
         }
 
         /// <summary> 递归向上设置父节点的尺寸
@@ -345,7 +188,7 @@ namespace WlxMindMap.MindMapNode
             if (FindCount != 0) return;//如果要添加的节点已经存在就直接返回
 
             MindMapNodeContainer NewNode = MindMapNodeParame;
-                       
+
             Chidren_Panel.Controls.Add(NewNode);
             MindMapNodeParame.ParentNode = this;
             NewNode.ResetNodeSize();
@@ -385,61 +228,7 @@ namespace WlxMindMap.MindMapNode
 
         }
 
-        #region 关于事件的注释
-        /*
-         * 需要注意的是尽量不要将Label或其他控件的事件直接Public开放。
-         * 如果事件需要对MindMap开放尽量使用这种方法进行一次中转并重新定义开放的委托
-         * 这些委托的方法列表尽量只允许存入一个方法。
-         * 否则一旦委托出现Bug真的很难维护，很难发现哪里的问题。因为下断点后委托飞来飞去最后还得找这个委托在哪里被多次定义了。。
-         */
-        #endregion 关于事件的注释
-        private void Content_lable_MouseEnter(object sender, EventArgs e)
-        {
-            //Content_lable.BackColor = _NodeBackColor.Enter.Value;
-            if (MindMapNodeMouseEnter != null) MindMapNodeMouseEnter(this, e);
-        }
-
-        private void Content_lable_MouseDown(object sender, MouseEventArgs e)
-        {
-
-            //Content_lable.BackColor = _NodeBackColor.Down.Value;
-            if (MindMapNodeMouseDown != null) MindMapNodeMouseDown(this, e);
-        }
-
-        private void Content_lable_MouseLeave(object sender, EventArgs e)
-        {
-            Color ResultColor = _NodeBackColor.Normaly.Value;
-            if (_Selected)
-            {
-                ResultColor = _NodeBackColor.Down.Value;
-            }
-            //Content_lable.BackColor = ResultColor;
-            if (MindMapNodeMouseLeave != null) MindMapNodeMouseLeave(this, e);
-        }
-
-        private void Content_lable_MouseUp(object sender, MouseEventArgs e)
-        {
-            //if (!Selected) Content_lable.BackColor = _NodeBackColor.Normaly.Value;
-            if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
-        }
-
-        private void Content_lable_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
-        }
-
-        private void Content_lable_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(this, e);
-
-        }
-
-        private void Content_lable_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (MindMapNodeMouseMove != null) MindMapNodeMouseMove(this, e);
-
-        }
-
+    
         private void EmptyRange_Click(object sender, EventArgs e)
         {
             if (EmptyRangeClick != null) EmptyRangeClick(this, e);
@@ -450,91 +239,18 @@ namespace WlxMindMap.MindMapNode
 
             if (EmptyRangeMouseDown != null) EmptyRangeMouseDown(this, e);
         }
+
         private void EmptyRange_MouseUp(object sender, MouseEventArgs e)
         {
             if (EmptyRangeMouseUp != null) EmptyRangeMouseUp(this, e);
         }
+
         private void EmptyRange_MouseMove(object sender, MouseEventArgs e)
         {
             if (EmptyRangeMouseMove != null) EmptyRangeMouseMove(this, e);
         }
 
-        /// <summary>统一将事件触发到MindMapPanel控件
-        /// 
-        /// </summary>
-        /// <param name="MindMapNodeTemp"></param>
-        private void SetEvent(MindMapNodeContainer MindMapNodeTemp)
-        {
-          
-
-
-
-            if (this.MindMapNodeMouseDown != null && MindMapNodeTemp.MindMapNodeMouseDown == null)
-                MindMapNodeTemp.MindMapNodeMouseDown += new MouseEventHandler(this.MindMapNodeMouseDown);
-            if (this.MindMapNodeMouseEnter != null && MindMapNodeTemp.MindMapNodeMouseEnter == null)
-                MindMapNodeTemp.MindMapNodeMouseEnter += new EventHandler(this.MindMapNodeMouseEnter);
-            if (this.MindMapNodeMouseLeave != null && MindMapNodeTemp.MindMapNodeMouseLeave == null)
-                MindMapNodeTemp.MindMapNodeMouseLeave += new EventHandler(this.MindMapNodeMouseLeave);
-            if (this.MindMapNodeMouseUp != null && MindMapNodeTemp.MindMapNodeMouseUp == null)
-                MindMapNodeTemp.MindMapNodeMouseUp += new MouseEventHandler(this.MindMapNodeMouseUp);
-            if (this.MindMapNodeMouseClick != null && MindMapNodeTemp.MindMapNodeMouseClick == null)
-                MindMapNodeTemp.MindMapNodeMouseClick += new MouseEventHandler(this.MindMapNodeMouseClick);
-            if (this.MindMapNodeMouseDoubleClick != null && MindMapNodeTemp.MindMapNodeMouseDoubleClick == null)
-                MindMapNodeTemp.MindMapNodeMouseDoubleClick += new MouseEventHandler(this.MindMapNodeMouseDoubleClick);
-            if (this.MindMapNodeMouseMove != null && MindMapNodeTemp.MindMapNodeMouseMove == null)
-                MindMapNodeTemp.MindMapNodeMouseMove += new MouseEventHandler(this.MindMapNodeMouseMove);
-
-
-            if (this.EmptyRangeMouseDown != null && MindMapNodeTemp.EmptyRangeMouseDown == null)
-                MindMapNodeTemp.EmptyRangeMouseDown += new MouseEventHandler(this.EmptyRangeMouseDown);
-            if (this.EmptyRangeMouseUp != null && MindMapNodeTemp.EmptyRangeMouseUp == null)
-                MindMapNodeTemp.EmptyRangeMouseUp += new MouseEventHandler(this.EmptyRangeMouseUp);
-            if (this.EmptyRangeMouseMove != null && MindMapNodeTemp.EmptyRangeMouseMove == null)
-                MindMapNodeTemp.EmptyRangeMouseMove += new MouseEventHandler(this.EmptyRangeMouseMove);
-            if (this.EmptyRangeClick != null && MindMapNodeTemp.EmptyRangeClick == null)
-                MindMapNodeTemp.EmptyRangeClick += new EventHandler(this.EmptyRangeClick);
-        }
-
-
-        /// <summary>鼠标进入节点范围事件
-        /// 
-        /// </summary>
-        [Description("鼠标进入节点范围事件")]
-        public event EventHandler MindMapNodeMouseEnter;
-
-        /// <summary>鼠标离开节点范围事件
-        /// 
-        /// </summary>
-        [Description("鼠标离开节点范围事件")]
-        public event EventHandler MindMapNodeMouseLeave;
-
-        /// <summary> 节点被鼠标按下事件
-        /// 
-        /// </summary>
-        [Description("节点被鼠标按下事件")]
-        public event MouseEventHandler MindMapNodeMouseDown;
-
-        /// <summary> 节点被鼠标弹起事件
-        /// 
-        /// </summary>
-        [Description("节点被鼠标弹起事件")]
-        public event MouseEventHandler MindMapNodeMouseUp;
-
-        /// <summary> 鼠标在节点上移动时
-        /// 
-        /// </summary>
-        [Description("鼠标在节点上移动时")]
-        public event MouseEventHandler MindMapNodeMouseMove;
-
-        /// <summary> 节点被单击时
-        /// 
-        /// </summary>
-        [Browsable(true), Description("节点被单击时")]
-        public event MouseEventHandler MindMapNodeMouseClick;
-
-        [Browsable(true), Description("节点被双击时")]
-        public event MouseEventHandler MindMapNodeMouseDoubleClick;
-
+        
         /// <summary> 点击空白处
         /// 
         /// </summary>
@@ -559,100 +275,6 @@ namespace WlxMindMap.MindMapNode
         public event MouseEventHandler EmptyRangeMouseMove;
 
         #endregion 事件
-
-
-
-        #region 配套使用的内部类
-        #region 用于指明节点的背景色
-        /// <summary> 用于指明节点的背景色
-        /// 
-        /// </summary>
-        public class MindMapNodeBackColor
-        {
-            /// <summary> 必须设置节点在正常时的背景颜色，如果其他颜色为空则，其他色在取值时会基于正常色自动给出缺省颜色
-            /// 
-            /// </summary>
-            /// <param name="ColorParame"></param>
-            public MindMapNodeBackColor(Color NormalyColor)
-            {
-                _Normaly = NormalyColor;
-            }
-
-            /// <summary>节点在正常时的背景颜色
-            /// 
-            /// </summary>
-            public Color? Normaly { get { return _Normaly; } set { _Normaly = value; } }
-            private Color? _Normaly = null;
-
-            /// <summary> 节点在鼠标进入时的背景颜色 [如果为空取值时将取到比正常色稍亮一些的颜色]
-            /// 
-            /// </summary>
-            public Color? Enter
-            {
-                get
-                {
-                    if (_Enter == null)
-                    {
-                        int IntRed = _Normaly.Value.R + 30;
-                        int IntGreen = _Normaly.Value.G + 30;
-                        int IntBlue = _Normaly.Value.B + 30;
-                        IntRed = GetColorValue(IntRed);
-                        IntGreen = GetColorValue(IntGreen);
-                        IntBlue = GetColorValue(IntBlue);
-                        _Enter = Color.FromArgb(IntRed, IntGreen, IntBlue);
-                    }
-                    return _Enter;
-                }
-                set { _Enter = value; }
-            }
-            private Color? _Enter = null;
-
-            /// <summary> 节点在鼠标按下时的背景颜色 [如果为空取值时将取到比正常色稍暗一些的颜色]
-            /// 
-            /// </summary>
-            public Color? Down
-            {
-                get
-                {
-                    if (_Down == null)
-                    {
-                        int IntRed = _Normaly.Value.R - 50;
-                        int IntGreen = _Normaly.Value.G - 50;
-                        int IntBlue = _Normaly.Value.B - 50;
-                        IntRed = GetColorValue(IntRed);
-                        IntGreen = GetColorValue(IntGreen);
-                        IntBlue = GetColorValue(IntBlue);
-                        _Down = Color.FromArgb(IntRed, IntGreen, IntBlue);
-                    }
-                    return _Down;
-
-
-                }
-                set { _Down = value; }
-            }
-            private Color? _Down = null;
-
-            /// <summary> 限制int不能超过0-255的范围，超过最小值则取最小值超过最大值则取最大值
-            /// 
-            /// </summary>
-            /// <param name="ColorValue"></param>
-            /// <returns></returns>
-            private int GetColorValue(int ColorValue)
-            {
-                int IntResult = ColorValue;
-                IntResult = IntResult > 255 ? 255 : IntResult;//不能大于255，如果大于就取255
-                IntResult = IntResult < 0 ? 0 : IntResult;//不能小于0，如果小于0那就取0
-                return IntResult;
-            }
-        }
-
-
-
-
-        #endregion 用于指明节点的背景色
-        #endregion 配套使用的内部类
-
-
     }
 
 }

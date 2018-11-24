@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.Content_lable = new System.Windows.Forms.LinkLabel();
+            this.Edit_TextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // Content_lable
@@ -36,7 +37,7 @@
             this.Content_lable.AutoSize = true;
             this.Content_lable.BackColor = System.Drawing.Color.DodgerBlue;
             this.Content_lable.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Content_lable.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.Content_lable.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.Content_lable.LinkColor = System.Drawing.Color.White;
             this.Content_lable.Location = new System.Drawing.Point(0, 0);
             this.Content_lable.Name = "Content_lable";
@@ -47,11 +48,25 @@
             this.Content_lable.Text = "新的节点";
             this.Content_lable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.Content_lable.VisitedLinkColor = System.Drawing.Color.White;
+            this.Content_lable.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseDown);
+            this.Content_lable.MouseEnter += new System.EventHandler(this.Content_lable_MouseEnter);
+            this.Content_lable.MouseLeave += new System.EventHandler(this.Content_lable_MouseLeave);
+            this.Content_lable.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Content_lable_MouseUp);
+            // 
+            // Edit_TextBox
+            // 
+            this.Edit_TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Edit_TextBox.Location = new System.Drawing.Point(78, 8);
+            this.Edit_TextBox.Name = "Edit_TextBox";
+            this.Edit_TextBox.Size = new System.Drawing.Size(52, 21);
+            this.Edit_TextBox.TabIndex = 1;
+            this.Edit_TextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Edit_TextBox_KeyDown);
             // 
             // Text_MindMapNodeContent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.Edit_TextBox);
             this.Controls.Add(this.Content_lable);
             this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Name = "Text_MindMapNodeContent";
@@ -64,5 +79,6 @@
         #endregion
 
         private System.Windows.Forms.LinkLabel Content_lable;
+        private System.Windows.Forms.TextBox Edit_TextBox;
     }
 }
