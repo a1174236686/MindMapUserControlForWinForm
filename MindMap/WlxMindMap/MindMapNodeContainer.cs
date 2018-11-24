@@ -18,11 +18,7 @@ namespace WlxMindMap.MindMapNode
         {
             InitializeComponent();
             this.Margin= new Padding(0, 2, 0, 2);
-            Content_lable.ForeColor = Color.FromArgb(255, 255, 255);
-            Content_lable.LinkColor = Color.FromArgb(255, 255, 255);
-            Content_lable.VisitedLinkColor = Color.FromArgb(255, 255, 255);
-            Content_lable.ActiveLinkColor = Color.FromArgb(255, 255, 255);
-            Content_lable.BackColor = _NodeBackColor.Normaly.Value;
+    
         }
 
         #region 属性
@@ -30,7 +26,7 @@ namespace WlxMindMap.MindMapNode
         /// <summary> 获取节点的内容布局的实例
         /// 
         /// </summary>
-        public MindMapNodeContentBase NodeContent { get;  }
+        public MindMapNodeContentBase NodeContent { get { return _NodeContent; }  }
         private MindMapNodeContentBase _NodeContent;
 
 
@@ -79,7 +75,7 @@ namespace WlxMindMap.MindMapNode
             set
             {
                 g_TextFont = value;
-                Content_lable.Font = g_TextFont;//设置字体
+                
                 ResetNodeSize();//重新设置节点尺寸
 
             }
@@ -91,10 +87,10 @@ namespace WlxMindMap.MindMapNode
         [Description("节点的文本内容")]
         public string MindMapNodeText
         {
-            get { return Content_lable.Text; }
+            get { return ""; }
             set
             {
-                Content_lable.Text = value;
+                
                 ResetNodeSize();
             }
         }
@@ -111,8 +107,6 @@ namespace WlxMindMap.MindMapNode
             {
                 if (value == null) return;
                 _TreeNode = value;
-                Content_lable.Text = _TreeNode.Text;
-                Content_lable.Font = g_TextFont;
                 Chidren_Panel.Controls.Clear();
                 foreach (TreeNode TreeNodeItem in _TreeNode.Nodes)
                 {
@@ -142,11 +136,11 @@ namespace WlxMindMap.MindMapNode
                 _Selected = value;
                 if (_Selected)
                 {
-                    Content_lable.BackColor = NodeBackColor.Down.Value;
+                    //Content_lable.BackColor = NodeBackColor.Down.Value;
                 }
                 else
                 {
-                    Content_lable.BackColor = NodeBackColor.Normaly.Value;
+                    //Content_lable.BackColor = NodeBackColor.Normaly.Value;
                 }
 
             }
@@ -162,7 +156,7 @@ namespace WlxMindMap.MindMapNode
             set
             {
                 if (value == null) return;
-                Content_lable.BackColor = _NodeBackColor.Normaly.Value;
+                //Content_lable.BackColor = _NodeBackColor.Normaly.Value;
                 _NodeBackColor = value;
             }
         }
@@ -171,9 +165,9 @@ namespace WlxMindMap.MindMapNode
         /// <summary>节点中的内容位置[用于节点编辑时TextBox暂时覆盖内容]
         /// 
         /// </summary>
-        public Point NodeContentLocation { get { return Content_lable.Location; } }
+        public Point NodeContentLocation { get { return new Point(); } }
 
-        public Size NodeContentSize { get { return Content_lable.Size; } }
+        public Size NodeContentSize { get { return new Size (); } }
 
         #endregion 属性               
 
@@ -183,10 +177,17 @@ namespace WlxMindMap.MindMapNode
         /// </summary>
         /// <typeparam name="NodeContentClass"></typeparam>
         /// <param name="Struct"></param>
-        public void SetNodeContent<NodeContentClass>(MindMapNodeStructBase Struct) where NodeContentClass : MindMapNodeContentBase, new()
+        public void SetNodeContent<NodeContentClass>(MindMapNodeStructBase Struct,MindMapNodeContentBase NodeContentParame=null) where NodeContentClass : MindMapNodeContentBase, new()
         {
-            this._NodeContent = new NodeContentClass();
+            if (NodeContentParame == null) NodeContentParame = new NodeContentClass();
+            if (this._NodeContent == NodeContentParame) return;
+
+            
+            else this._NodeContent = NodeContentParame;
             this.NodeContent.DataStruct = Struct;
+            this.Content_Panel.Controls.Add(this.NodeContent);
+            this._NodeContent.ParentMindMapNode = this;
+            ReSetSize();
         }
 
         /// <summary> 再面板上画出当前节点的连接线
@@ -220,12 +221,48 @@ namespace WlxMindMap.MindMapNode
             }
         }
 
+ 
+
+        /// <summary> 获取该节点下的子节点
+        /// 
+        /// </summary>
+        /// <param name="IsAll">是否包含孙节点在内的所有子节点</param>
+        /// <returns></returns>
+        public List<MindMapNodeContainer> GetChidrenNode(bool IsAll = false)
+        {
+            List<MindMapNodeContainer> ResultList = new List<MindMapNodeContainer>();
+            foreach (MindMapNodeContainer MindMapNodeItem in Chidren_Panel.Controls)
+            {
+                ResultList.Add(MindMapNodeItem);
+                if (IsAll)
+                {
+                    ResultList.AddRange(MindMapNodeItem.GetChidrenNode(IsAll));
+                }
+            }
+            return ResultList;
+        }
+
+        /// <summary> 递归设置子节点
+        /// 
+        /// </summary>
+        /// <param name="FontSource"></param>
+        public void SetTextFont(Font FontSource)
+        {
+            if (FontSource == null) return;
+            g_TextFont = FontSource;
+         
+            GetChidrenNode(false).ForEach(T1 => T1.SetTextFont(FontSource));//递归将子节点也设置字体
+            ReSetSize();
+        }
+
         /// <summary> 刷新单个节点的宽度和高度
         /// 
         /// </summary>
         private void ReSetSize()
         {
             #region 新代码
+
+            if (_NodeContent == null) return;
             _NodeContent.RefreshContentSize();
 
             Size ContentSize = _NodeContent.Size;
@@ -247,10 +284,9 @@ namespace WlxMindMap.MindMapNode
             this.Height = HeightCount;
 
 
-            Content_lable.Width = Content_Panel.Width + 10;
-            Content_lable.Height = ContentSize.Height;
-            Content_lable.Left = 0;
-            Content_lable.Top = (Content_Panel.Height - Content_lable.Height) / 2;
+      
+            _NodeContent.Left = 0;
+            _NodeContent.Top = (Content_Panel.Height - _NodeContent.Height) / 2;
 
             #endregion 新代码
 
@@ -286,38 +322,6 @@ namespace WlxMindMap.MindMapNode
 
         }
 
-        /// <summary> 获取该节点下的子节点
-        /// 
-        /// </summary>
-        /// <param name="IsAll">是否包含孙节点在内的所有子节点</param>
-        /// <returns></returns>
-        public List<MindMapNodeContainer> GetChidrenNode(bool IsAll = false)
-        {
-            List<MindMapNodeContainer> ResultList = new List<MindMapNodeContainer>();
-            foreach (MindMapNodeContainer MindMapNodeItem in Chidren_Panel.Controls)
-            {
-                ResultList.Add(MindMapNodeItem);
-                if (IsAll)
-                {
-                    ResultList.AddRange(MindMapNodeItem.GetChidrenNode(IsAll));
-                }
-            }
-            return ResultList;
-        }
-
-        /// <summary> 递归设置子节点
-        /// 
-        /// </summary>
-        /// <param name="FontSource"></param>
-        public void SetTextFont(Font FontSource)
-        {
-            if (FontSource == null) return;
-            g_TextFont = FontSource;
-            Content_lable.Font = g_TextFont;
-            GetChidrenNode(false).ForEach(T1 => T1.SetTextFont(FontSource));//递归将子节点也设置字体
-            ReSetSize();
-        }
-
         /// <summary> 递归向上设置父节点的尺寸
         /// 用于如果某节点修改了文本或字体，需要重新计算该节点的大小，其父节点的子节点容器也需要调节大小
         /// </summary>
@@ -341,9 +345,7 @@ namespace WlxMindMap.MindMapNode
             if (FindCount != 0) return;//如果要添加的节点已经存在就直接返回
 
             MindMapNodeContainer NewNode = MindMapNodeParame;
-            SetEvent(NewNode);
-            NewNode.TextFont = g_TextFont;
-            NewNode.Margin = new Padding(0, 2, 0, 2);
+                       
             Chidren_Panel.Controls.Add(NewNode);
             MindMapNodeParame.ParentNode = this;
             NewNode.ResetNodeSize();
@@ -393,14 +395,14 @@ namespace WlxMindMap.MindMapNode
         #endregion 关于事件的注释
         private void Content_lable_MouseEnter(object sender, EventArgs e)
         {
-            Content_lable.BackColor = _NodeBackColor.Enter.Value;
+            //Content_lable.BackColor = _NodeBackColor.Enter.Value;
             if (MindMapNodeMouseEnter != null) MindMapNodeMouseEnter(this, e);
         }
 
         private void Content_lable_MouseDown(object sender, MouseEventArgs e)
         {
 
-            Content_lable.BackColor = _NodeBackColor.Down.Value;
+            //Content_lable.BackColor = _NodeBackColor.Down.Value;
             if (MindMapNodeMouseDown != null) MindMapNodeMouseDown(this, e);
         }
 
@@ -411,13 +413,13 @@ namespace WlxMindMap.MindMapNode
             {
                 ResultColor = _NodeBackColor.Down.Value;
             }
-            Content_lable.BackColor = ResultColor;
+            //Content_lable.BackColor = ResultColor;
             if (MindMapNodeMouseLeave != null) MindMapNodeMouseLeave(this, e);
         }
 
         private void Content_lable_MouseUp(object sender, MouseEventArgs e)
         {
-            if (!Selected) Content_lable.BackColor = _NodeBackColor.Normaly.Value;
+            //if (!Selected) Content_lable.BackColor = _NodeBackColor.Normaly.Value;
             if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
         }
 
@@ -463,14 +465,7 @@ namespace WlxMindMap.MindMapNode
         /// <param name="MindMapNodeTemp"></param>
         private void SetEvent(MindMapNodeContainer MindMapNodeTemp)
         {
-            List<Control>ControlList= MindMapNodeTemp.NodeContent.GetNodeControl();
-
-            ControlList.ForEach(ControlItem=> {
-
-
-                ControlItem.MouseDown +=new MouseEventHandler(this.NodeContent.MouseDown);
-            })
-
+          
 
 
 

@@ -35,6 +35,7 @@
             // 
             this.Content_lable.AutoSize = true;
             this.Content_lable.BackColor = System.Drawing.Color.DodgerBlue;
+            this.Content_lable.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Content_lable.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.Content_lable.LinkColor = System.Drawing.Color.White;
             this.Content_lable.Location = new System.Drawing.Point(0, 0);
@@ -52,6 +53,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.Content_lable);
+            this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Name = "Text_MindMapNodeContent";
             this.Size = new System.Drawing.Size(149, 32);
             this.ResumeLayout(false);

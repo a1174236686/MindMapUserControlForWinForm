@@ -64,10 +64,15 @@ namespace WlxMindMap.MindMapNodeContent
             }
             set
             {
-                _DataItem = value;
+                _DataItem = value;               
+                 
+                Content_lable.Text= GetDataValue(g_DataStruct.Text).ToString();
+                if (ParentMindMapNode != null) ParentMindMapNode.ResetNodeSize();
             }
         }
 
+        
+            private Text_ContentStruct g_DataStruct = new Text_ContentStruct();
         private MindMapNodeStructBase _DataStruct = new MindMapNodeStructBase();
         /// <summary> 获取或设置指示DataItem的结构
         /// 
@@ -81,6 +86,9 @@ namespace WlxMindMap.MindMapNodeContent
             set
             {
                 _DataStruct = value;
+                if (!(_DataStruct is Text_ContentStruct)) throw new Exception("指示内容结构的类必须为Text_ContentStruct");
+                g_DataStruct = (Text_ContentStruct)_DataStruct;
+
             }
         }
 
@@ -91,7 +99,7 @@ namespace WlxMindMap.MindMapNodeContent
         public override void RefreshContentSize()
         {
             this.Width = Content_lable.Width;
-            this.Height = Content_lable.Width;
+            this.Height = Content_lable.Height;
         }
         #endregion 实现基类的抽象方法
 
@@ -194,6 +202,7 @@ namespace WlxMindMap.MindMapNodeContent
                 return IntResult;
             }
         }
+
         /// <summary> 用于指示DataItem的结构
         /// 
         /// </summary>

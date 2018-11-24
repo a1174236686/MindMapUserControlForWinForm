@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WlxMindMap;
-
+using WlxMindMap.MindMapNodeContent;
 namespace MindMap
 {
     public partial class frmMainForm : Form
@@ -25,20 +25,26 @@ namespace MindMap
             #region List数据源
             List<TestEntity> DataSourceList = new List<TestEntity>();
             TestEntity TestEntityTemp = new TestEntity();
-            TestEntityTemp.ID = "1";
+            TestEntityTemp.ID = "0";
             TestEntityTemp.ParentID = "";
+            TestEntityTemp.Text = "编程语言";
+            DataSourceList.Add(TestEntityTemp);
+
+            TestEntityTemp = new TestEntity();
+            TestEntityTemp.ID = "1";
+            TestEntityTemp.ParentID = "0";
             TestEntityTemp.Text = "面向过程";
             DataSourceList.Add(TestEntityTemp);
 
             TestEntityTemp = new TestEntity();
             TestEntityTemp.ID = "2";
-            TestEntityTemp.ParentID = "";
+            TestEntityTemp.ParentID = "0";
             TestEntityTemp.Text = "面向对象";
             DataSourceList.Add(TestEntityTemp);
 
             TestEntityTemp = new TestEntity();
             TestEntityTemp.ID = "23";
-            TestEntityTemp.ParentID = "";
+            TestEntityTemp.ParentID = "0";
             TestEntityTemp.Text = "标记语言";
             DataSourceList.Add(TestEntityTemp);
 
@@ -181,12 +187,16 @@ namespace MindMap
             DataSourceList.Add(TestEntityTemp);
             #endregion List数据源
 
-            MindMap_Panel.TreeViewNodeStruct NodeStruct = new MindMap_Panel.TreeViewNodeStruct();
-            NodeStruct.KeyName="ID";
-            NodeStruct.ParentName = "ParentID";
-            NodeStruct.ValueName = "Text";
+            Text_MindMapNodeContent.Text_ContentStruct NodeStruct =new Text_MindMapNodeContent.Text_ContentStruct ();
+            NodeStruct.MindMapID="ID";
+            NodeStruct.MindMapParentID = "ParentID";
+            NodeStruct.Text= "Text";
 
-            mindMap_Panel1.SetDataSource<TestEntity>(DataSourceList, NodeStruct);
+            mindMap_Panel1.DataStruct = NodeStruct;
+            mindMap_Panel1.SetDataSource<WlxMindMap.MindMapNodeContent.Text_MindMapNodeContent, TestEntity>(DataSourceList);
+
+
+            //mindMap_Panel1.SetDataSource<TestEntity>(DataSourceList, NodeStruct);
 
 
         }

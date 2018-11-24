@@ -38,7 +38,7 @@ namespace WlxMindMap.MindMapNodeContent
         /// 
         /// </summary>
         public abstract object DataItem { get; set; }
-        
+
 
         /// <summary> 刷新节点内容的尺寸
         /// 
@@ -58,8 +58,10 @@ namespace WlxMindMap.MindMapNodeContent
             List<Control> ResultList = new List<Control>();
             if (ControlParame == null)
             {
+                ControlParame = this;
                 ResultList.Add(this);
             }
+
             foreach (Control Item in ControlParame.Controls)
             {
                 ResultList.Add(Item);
@@ -71,7 +73,33 @@ namespace WlxMindMap.MindMapNodeContent
 
         #region 属性
         private MindMapNode.MindMapNodeContainer _ParentMindMapNode;
-        public MindMapNode.MindMapNodeContainer ParentMindMapNode { get => _ParentMindMapNode; set => _ParentMindMapNode = value; }
+        public MindMapNode.MindMapNodeContainer ParentMindMapNode
+        {
+            get { return _ParentMindMapNode; }
+            set
+            {
+                if (_ParentMindMapNode == value) return;
+                _ParentMindMapNode = value;
+                if (_ParentMindMapNode != null)
+                {
+                    _ParentMindMapNode.SetNodeContent<Text_MindMapNodeContent>(DataStruct, this);
+                }
+            }
+        }
+        protected object GetDataValue(string Propertyname)
+        {
+            object ResultObj = null;
+            try
+            {
+                ResultObj = DataItem.GetType().GetProperty(Propertyname).GetValue(DataItem);
+            }
+            catch
+            {
+                ResultObj = "";//如果无法找到该属性就填空字符串
+            }
+           return ResultObj;
+        }
+        
         #endregion 属性
 
 
