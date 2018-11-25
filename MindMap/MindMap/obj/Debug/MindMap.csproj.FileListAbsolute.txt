@@ -27,10 +27,11 @@ C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\bin
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\bin\Debug\MindMap.pdb
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.frmMainForm.resources
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.Properties.Resources.resources
-C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.View.MindMap_Panel.resources
-C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.View.MindMapNode.resources
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.csproj.GenerateResource.cache
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.csproj.CoreCompileInputs.cache
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.exe
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.pdb
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.csprojAssemblyReference.cache
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\bin\Debug\WlxMindMap.dll
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\bin\Debug\WlxMindMap.pdb
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.csproj.CopyComplete

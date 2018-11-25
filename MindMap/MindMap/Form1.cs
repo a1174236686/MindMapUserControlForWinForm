@@ -215,7 +215,7 @@ namespace MindMap
 
             Font TextFontTemp = new Font(new FontFamily("微软雅黑"), FontSize);
             mindMap_Panel1.Visible = false;
-            mindMap_Panel1.TextFont = TextFontTemp;
+            
             mindMap_Panel1.Visible = true;
                                  
         }

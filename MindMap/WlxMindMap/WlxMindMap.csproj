@@ -59,7 +59,7 @@
     <Compile Include="MindMapNodeContent\Text_MindMapNodeContent.Designer.cs">
       <DependentUpon>Text_MindMapNodeContent.cs</DependentUpon>
     </Compile>
-    <Compile Include="MindMapNode\MindMapNodeStructBase.cs" />
+    <Compile Include="MindMapNodeStructBase.cs" />
     <Compile Include="MindMap_Panel.cs">
       <SubType>UserControl</SubType>
     </Compile>

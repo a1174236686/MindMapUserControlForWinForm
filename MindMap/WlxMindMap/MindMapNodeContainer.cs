@@ -60,6 +60,8 @@ namespace WlxMindMap.MindMapNode
         }
         private MindMapNodeContainer _ParentNode = null;
     
+        
+        
         #endregion 属性               
 
         #region 方法

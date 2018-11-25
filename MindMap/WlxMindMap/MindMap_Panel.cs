@@ -29,17 +29,9 @@ namespace WlxMindMap
             this.mindMapNode.BackColor = System.Drawing.Color.White;
             this.mindMapNode.Location = new System.Drawing.Point(181, 166);            
             this.mindMapNode.Name = "mindMapNode";
-            this.mindMapNode.ParentNode = null;
-            this.mindMapNode.Selected = false;
+            this.mindMapNode.ParentNode = null;         
             this.mindMapNode.Size = new System.Drawing.Size(86, 23);
-            this.mindMapNode.TabIndex = 0;            
-            this.mindMapNode.MindMapNodeMouseEnter += new System.EventHandler(this.mindMapNode_MindMapNodeMouseEnter);
-            this.mindMapNode.MindMapNodeMouseLeave += new System.EventHandler(this.mindMapNode_MindMapNodeMouseLeave);
-            this.mindMapNode.MindMapNodeMouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MindMapNodeMouseDown);
-            this.mindMapNode.MindMapNodeMouseUp += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MindMapNodeMouseUp);
-            this.mindMapNode.MindMapNodeMouseMove += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MindMapNodeMouseMove);
-            this.mindMapNode.MindMapNodeMouseClick += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MindMapNodeMouseClick);
-            this.mindMapNode.MindMapNodeMouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_MouseDoubleClick);
+            this.mindMapNode.TabIndex = 0;           
             this.mindMapNode.EmptyRangeClick += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
             this.mindMapNode.EmptyRangeMouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseDown);
             this.mindMapNode.EmptyRangeMouseUp += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseUp);
@@ -517,7 +509,7 @@ namespace WlxMindMap
 
                 Font TextFontTemp = new Font(new FontFamily("微软雅黑"), FontSize);
                 this.Visible = false;
-                this.TextFont = TextFontTemp;
+                
                 this.Visible = true;
             }
         }

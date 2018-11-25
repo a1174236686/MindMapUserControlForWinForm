@@ -39,8 +39,7 @@
             this.mindMap_Panel1.Location = new System.Drawing.Point(0, 0);
             this.mindMap_Panel1.Name = "mindMap_Panel1";
             this.mindMap_Panel1.Size = new System.Drawing.Size(718, 802);
-            this.mindMap_Panel1.TabIndex = 0;
-            this.mindMap_Panel1.TextFont = new System.Drawing.Font("微软雅黑", 12F);
+            this.mindMap_Panel1.TabIndex = 0;            
             this.mindMap_Panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMap_Panel1_MouseDown);
             // 
             // frmMainForm

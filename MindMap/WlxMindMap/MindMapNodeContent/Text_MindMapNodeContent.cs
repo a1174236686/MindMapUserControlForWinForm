@@ -19,7 +19,7 @@ namespace WlxMindMap.MindMapNodeContent
             Content_lable.ActiveLinkColor = Color.FromArgb(255, 255, 255);
             Content_lable.BackColor = NodeBackColor.Normaly.Value;
         }
-
+        
         #region 实现基类的抽象方法
         private bool _Selected = false;
         /// <summary> 获取或设置节点是否选中
@@ -114,8 +114,7 @@ namespace WlxMindMap.MindMapNodeContent
 
             }
         }
-
-
+        
         /// <summary> 刷新节点内容的尺寸
         /// 
         /// </summary>
@@ -126,21 +125,6 @@ namespace WlxMindMap.MindMapNodeContent
         }
         #endregion 实现基类的抽象方法
 
-        /// <summary> 设置当前节点的背景颜色
-        /// 
-        /// </summary>
-        public MindMapNodeBackColor NodeBackColor
-        {
-            get { return _NodeBackColor; }
-            set
-            {
-                if (value == null) return;
-                Content_lable.BackColor = _NodeBackColor.Normaly.Value;
-                _NodeBackColor = value;
-            }
-        }
-        private MindMapNodeBackColor _NodeBackColor = new MindMapNodeBackColor(Color.FromArgb(48, 120, 215));
-        
         #region 鼠标移入移出的动画效果
         private void Content_lable_MouseEnter(object sender, EventArgs e)
         {
@@ -178,7 +162,20 @@ namespace WlxMindMap.MindMapNodeContent
         }
         #endregion 鼠标移入移出的动画效果
 
-        
+        /// <summary> 设置当前节点的背景颜色
+        /// 
+        /// </summary>
+        public MindMapNodeBackColor NodeBackColor
+        {
+            get { return _NodeBackColor; }
+            set
+            {
+                if (value == null) return;
+                Content_lable.BackColor = _NodeBackColor.Normaly.Value;
+                _NodeBackColor = value;
+            }
+        }
+        private MindMapNodeBackColor _NodeBackColor = new MindMapNodeBackColor(Color.FromArgb(48, 120, 215));
 
         /// <summary> 用于编辑的TextBox按下回车完成编辑，按下esc取消编辑        
         /// 
