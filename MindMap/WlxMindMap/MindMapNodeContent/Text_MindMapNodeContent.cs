@@ -13,6 +13,7 @@ namespace WlxMindMap.MindMapNodeContent
         public Text_MindMapNodeContent()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
             Content_lable.ForeColor = Color.FromArgb(255, 255, 255);
             Content_lable.LinkColor = Color.FromArgb(255, 255, 255);
             Content_lable.VisitedLinkColor = Color.FromArgb(255, 255, 255);
@@ -124,10 +125,14 @@ namespace WlxMindMap.MindMapNodeContent
         /// </summary>
         public override float CurrentScaling
         {
-            get => _CurrentScaling; set
+            get
+            {
+                return _CurrentScaling;
+            }
+            set
             {
                 _CurrentScaling = value;
-                this.RefreshContentSize();                
+                //this.RefreshContentSize();
             }
         }
 

@@ -18,12 +18,16 @@ namespace WlxMindMap.MindMapNode
         public MindMapNodeContainer()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
             RecordScaling();
             this.Margin = new Padding(0, 2, 0, 2);
 
         }
 
         #region 缩放相关
+        /// <summary>记录当前尺寸为100%时的尺寸，缩放时将会基类该值进行调整
+        /// 
+        /// </summary>
         private void RecordScaling()
         {
             Scaling_LineSize = DrawingLine_panel.Size;
@@ -59,6 +63,7 @@ namespace WlxMindMap.MindMapNode
                 ContainerList.ForEach(Item => Item.CurrentScaling = _CurrentScaling);//将子节点的缩放比例也修改
 
                 this._NodeContent.CurrentScaling = _CurrentScaling;
+                DrawingLine_panel.Width = Scaling_LineSize.ByScaling(_CurrentScaling).Width;//更新连接线尺寸
                 ReSetSize();
             }
         }
@@ -125,10 +130,7 @@ namespace WlxMindMap.MindMapNode
             foreach (Control ControlItem in this.Chidren_Panel.Controls)
             {
                 int TopTemp = ControlItem.Top + (ControlItem.Height / 2);
-                Point PointTemp = new Point(this.DrawingLine_panel.Width, TopTemp);
-
-
-                //LineGraphics.DrawLine(PenTemp, StartPoint, PointTemp);
+                Point PointTemp = new Point(this.DrawingLine_panel.Width, TopTemp);                
 
                 List<Point> PointArray = new List<Point>();
                 PointArray.Add(StartPoint);
@@ -181,8 +183,7 @@ namespace WlxMindMap.MindMapNode
                 HeightCount += ControlItem.Height + 4;//获取子节点高度的总和
             }
 
-            //设置本节点容器的整体宽度（节点内容宽度+连接线宽度+最宽子节点的宽度）
-            DrawingLine_panel.Width = Scaling_LineSize.ByScaling(_CurrentScaling).Width;//更新连接线尺寸
+            //设置本节点容器的整体宽度（节点内容宽度+连接线宽度+最宽子节点的宽度）            
             MaxChidrenWidth = MaxChidrenWidth + DrawingLine_panel.Width + Content_Panel.Width;
             this.Width = MaxChidrenWidth;
 

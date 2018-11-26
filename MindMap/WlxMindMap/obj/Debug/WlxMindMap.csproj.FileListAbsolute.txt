@@ -10,3 +10,4 @@ C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\bin
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.MindMapNode.MindMapNodeContainer.resources
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.MindMapNodeContent.MindMapNodeContentBase.resources
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.MindMapNodeContent.Text_MindMapNodeContent.resources
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.csprojAssemblyReference.cache

@@ -81,7 +81,7 @@ namespace WlxMindMap
         {
             Font Result = null;
             float FontSize = 1;
-            if (Scaling < 1)
+            if (Scaling <= 0)
             {
                 FontSize = 1;
             }
@@ -103,7 +103,7 @@ namespace WlxMindMap
         /// <returns>返回缩放后的实例</returns>
         public static Padding ByScaling(this Padding ThisPadding, float Scaling)
         {
-            if (Scaling < 1)
+            if (Scaling <= 0)
             {
                 return new Padding(0, 0, 0, 0);
             }
@@ -125,7 +125,7 @@ namespace WlxMindMap
         /// <returns>返回缩放后的实例</returns>
         public static Size ByScaling(this Size ThisSize, float Scaling)
         {
-            if (Scaling < 1)
+            if (Scaling <= 0)
             {
                 return new Size(0, 0);
             }
