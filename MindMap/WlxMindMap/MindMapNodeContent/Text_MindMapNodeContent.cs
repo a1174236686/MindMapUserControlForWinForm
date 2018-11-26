@@ -18,8 +18,32 @@ namespace WlxMindMap.MindMapNodeContent
             Content_lable.VisitedLinkColor = Color.FromArgb(255, 255, 255);
             Content_lable.ActiveLinkColor = Color.FromArgb(255, 255, 255);
             Content_lable.BackColor = NodeBackColor.Normaly.Value;
+            Edit_TextBox.Visible = false;
+            RecordScling();
         }
-        
+      
+        #region 缩放相关
+
+        /// <summary>记录当前尺寸为100%时的尺寸，缩放时将会基类该值进行调整
+        /// 
+        /// </summary>
+        private void RecordScling()
+        {
+            Scaling_ContentFont = Content_lable.Font;
+            Scaling_ContentPadding = Content_lable.Padding;
+        }
+
+        /// <summary> 缩放比例为100%时内容字体的大小
+        /// 
+        /// </summary>
+        private Font Scaling_ContentFont;
+        /// <summary> 缩放比例为100%时内容的边距
+        /// 
+        /// </summary>
+        private Padding Scaling_ContentPadding;
+
+        #endregion 缩放相关
+
         #region 实现基类的抽象方法
         private bool _Selected = false;
         /// <summary> 获取或设置节点是否选中
@@ -94,6 +118,18 @@ namespace WlxMindMap.MindMapNodeContent
             }
         }
 
+        private float _CurrentScaling = 1;
+        /// <summary> 获取或设置当前内容的缩放比例
+        /// 
+        /// </summary>
+        public override float CurrentScaling
+        {
+            get => _CurrentScaling; set
+            {
+                _CurrentScaling = value;
+                this.RefreshContentSize();                
+            }
+        }
 
         private Text_ContentStruct g_DataStruct = new Text_ContentStruct();
         private MindMapNodeStructBase _DataStruct = new MindMapNodeStructBase();
@@ -120,6 +156,8 @@ namespace WlxMindMap.MindMapNodeContent
         /// </summary>
         public override void RefreshContentSize()
         {
+            Content_lable.Font = Scaling_ContentFont.ByScaling(_CurrentScaling);
+            Content_lable.Padding = Scaling_ContentPadding.ByScaling(_CurrentScaling);
             this.Width = Content_lable.Width;
             this.Height = Content_lable.Height;
         }

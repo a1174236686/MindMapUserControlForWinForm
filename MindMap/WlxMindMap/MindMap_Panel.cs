@@ -41,8 +41,23 @@ namespace WlxMindMap
             #endregion 根节点容器
             this.MouseWheel += new MouseEventHandler(OnMouseWhell);
             
-        }      
+        }
+
+
+
+        /// <summary>获取或设置数据源数据结构
+        /// 
+        /// </summary>
         public MindMapNodeStructBase DataStruct { get; set; }
+
+        public float _CurrentScaling = 1;
+        public float CurrentScaling { get { return _CurrentScaling; } set
+            {
+                _CurrentScaling = value;
+                mindMapNode.CurrentScaling = value;
+            }
+        }
+
 
         #region 公开方法
 
@@ -370,8 +385,9 @@ namespace WlxMindMap
 
         #region 鼠标中键拖动滚动条
 
-        private bool IsMouseMove = false;
-        private Point MoveValue = new Point();
+        private bool IsMouseMove = false;//是否可以开始拖动鼠标了
+        private Point MoveValue = new Point();//鼠标拖动前的位置;
+        
         /// <summary> 按下中键时可拖动滚动条
         /// 
         /// </summary>
@@ -503,13 +519,26 @@ namespace WlxMindMap
             
             if (Control.ModifierKeys == Keys.Control)
             {
-                int ChangeValue = 1;//每次放大或缩小的数值
-                if (e.Delta < 0) FontSize = FontSize - ChangeValue <= ChangeValue ? ChangeValue : FontSize - ChangeValue;
-                else FontSize = FontSize + ChangeValue;
 
-                Font TextFontTemp = new Font(new FontFamily("微软雅黑"), FontSize);
-                this.Visible = false;
+
+                float ChangeValue = 0.1F;//每次放大或缩小的数值
+                float ResultScaling=1;
+
+                if (e.Delta < 0)
+                {
+                    ResultScaling = mindMapNode.CurrentScaling - ChangeValue;
+                    if (ResultScaling <= 0) ResultScaling = 0.1F;
+                }
+                else
+                {
+                    ResultScaling = mindMapNode.CurrentScaling + ChangeValue;
+                    
+                }
                 
+
+                
+                this.Visible = false;
+                this.CurrentScaling = ResultScaling;
                 this.Visible = true;
             }
         }

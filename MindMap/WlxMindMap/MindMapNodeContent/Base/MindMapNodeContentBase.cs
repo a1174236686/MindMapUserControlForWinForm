@@ -32,13 +32,16 @@ namespace WlxMindMap.MindMapNodeContent
         /// 
         /// </summary>
         public abstract bool Edited { get; set; }
-
-
+        
         /// <summary> 表示用于显示内容的数据源
         /// 
         /// </summary>
         public abstract object DataItem { get; set; }
 
+        /// <summary> 获取或设置当前内容的缩放比例
+        /// 
+        /// </summary>
+        public abstract float CurrentScaling { get; set; }
 
         /// <summary> 刷新节点内容的尺寸
         /// 
@@ -73,6 +76,9 @@ namespace WlxMindMap.MindMapNodeContent
 
         #region 属性
         private MindMapNode.MindMapNodeContainer _ParentMindMapNode;
+        /// <summary> 获取或设置节点容器
+        /// 
+        /// </summary>
         public MindMapNode.MindMapNodeContainer ParentMindMapNode
         {
             get { return _ParentMindMapNode; }
@@ -86,6 +92,12 @@ namespace WlxMindMap.MindMapNodeContent
                 }
             }
         }
+
+        /// <summary>获取DataItem下的指定属性的值[如果找不到返回空字符串]
+        /// 
+        /// </summary>
+        /// <param name="Propertyname"></param>
+        /// <returns></returns>
         protected object GetDataValue(string Propertyname)
         {
             object ResultObj = null;

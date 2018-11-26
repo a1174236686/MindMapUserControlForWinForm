@@ -18,9 +18,23 @@ namespace WlxMindMap.MindMapNode
         public MindMapNodeContainer()
         {
             InitializeComponent();
+            RecordScaling();
             this.Margin = new Padding(0, 2, 0, 2);
 
         }
+
+        #region 缩放相关
+        private void RecordScaling()
+        {
+            Scaling_LineSize = DrawingLine_panel.Size;
+            Scaling_Margin = this.Margin;
+
+        }
+        private Size Scaling_LineSize=new Size ();
+        private Padding Scaling_Margin = new Padding();
+
+
+        #endregion 缩放相关
 
         #region 属性
 
@@ -34,8 +48,21 @@ namespace WlxMindMap.MindMapNode
         /// <summary>获取或设置当前的缩放比例（百分比）
         /// 
         /// </summary>
-        public int CurrentScalingRatio { get; set; }
-        private int _CurrentScalingRatio = 100;
+        public float CurrentScaling
+        {
+            get { return _CurrentScaling; }
+            set
+            {
+                _CurrentScaling = value;
+
+                List<MindMapNodeContainer>ContainerList= GetChidrenNode();//获取子节点
+                ContainerList.ForEach(Item => Item.CurrentScaling = _CurrentScaling);//将子节点的缩放比例也修改
+
+                this._NodeContent.CurrentScaling = _CurrentScaling;
+                ReSetSize();
+            }
+        }
+        private float _CurrentScaling = 1;
 
         /// <summary> 设置节点内容的结构
         /// 
@@ -76,8 +103,9 @@ namespace WlxMindMap.MindMapNode
             if (this._NodeContent == NodeContentParame) return;
             else this._NodeContent = NodeContentParame;
             this.NodeContent.DataStruct = Struct;
-            this.Content_Panel.Controls.Add(this.NodeContent);
+            this.Content_Panel.Controls.Add(this.NodeContent);            
             this._NodeContent.ParentMindMapNode = this;
+            this._NodeContent.CurrentScaling = this.CurrentScaling;
             ReSetSize();
         }
 
@@ -154,6 +182,7 @@ namespace WlxMindMap.MindMapNode
             }
 
             //设置本节点容器的整体宽度（节点内容宽度+连接线宽度+最宽子节点的宽度）
+            DrawingLine_panel.Width = Scaling_LineSize.ByScaling(_CurrentScaling).Width;//更新连接线尺寸
             MaxChidrenWidth = MaxChidrenWidth + DrawingLine_panel.Width + Content_Panel.Width;
             this.Width = MaxChidrenWidth;
 
