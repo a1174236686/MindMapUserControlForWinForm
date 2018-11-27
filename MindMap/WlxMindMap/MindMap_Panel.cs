@@ -20,8 +20,7 @@ namespace WlxMindMap
           
         public MindMap_Panel()
         {
-            InitializeComponent();
-            this.DoubleBuffered = true;
+            InitializeComponent();            
             #region 根节点容器
 
             // 
@@ -56,6 +55,7 @@ namespace WlxMindMap
         /// </summary>
         public float CurrentScaling { get { return _CurrentScaling; } set
             {
+                Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString() + "%";//将当前比例显示到前台
                 _CurrentScaling = value;
                 mindMapNode.CurrentScaling = value;
             }
@@ -437,8 +437,8 @@ namespace WlxMindMap
                 Point PointTemp = new Point();
                 PointTemp.X = MoveValue.X - e.Location.X;
                 PointTemp.Y = MoveValue.Y - e.Location.Y;
-                Point ResultPoint = new Point(this.HorizontalScroll.Value + PointTemp.X, this.VerticalScroll.Value + PointTemp.Y);
-                this.AutoScrollPosition = ResultPoint;             
+                Point ResultPoint = new Point(Main_Panel.HorizontalScroll.Value + PointTemp.X, Main_Panel.VerticalScroll.Value + PointTemp.Y);
+                Main_Panel.AutoScrollPosition = ResultPoint;             
             }
         }
 
@@ -483,10 +483,10 @@ namespace WlxMindMap
         /// </summary>
         private void ResetMindMapPanelSize()
         {           
-            Scroll_panel.Location = new Point(-this.HorizontalScroll.Value, -this.VerticalScroll.Value);
+            Scroll_panel.Location = new Point(-Main_Panel.HorizontalScroll.Value, -Main_Panel.VerticalScroll.Value);
 
-            int MaxHeight = this.Height * 2;//容器最大高度，父容器的2倍
-            int MaxWidth = this.Width * 2;//容器最大宽度，父容器的2倍
+            int MaxHeight = Main_Panel.Height * 2;//容器最大高度，父容器的2倍
+            int MaxWidth = Main_Panel.Width * 2;//容器最大宽度，父容器的2倍
             int MinHeight = mindMapNode.Height * 2;//容器最小高度，自身高度的两倍
             int MinWidth = mindMapNode.Width * 2;//容器最小宽度，自身宽度的两倍
             Scroll_panel.Height = MaxHeight > MinHeight ? MaxHeight : MinHeight;//优先最大高度
@@ -503,7 +503,7 @@ namespace WlxMindMap
             int IntX = this.Scroll_panel.Width - this.Width;
             int IntY = this.Scroll_panel.Height - this.Height;
             Point PointTemp = new Point(IntX / 2, IntY / 2);
-            this.AutoScrollPosition = PointTemp;
+            Main_Panel.AutoScrollPosition = PointTemp;
             #endregion 将容器滚动至居中位置
 
             #region 思维导图相对于容器居中
@@ -573,6 +573,7 @@ namespace WlxMindMap
                         ResultScaling = this._CurrentScaling + ChangeValue;
                     }
                     this._CurrentScaling = ResultScaling;
+                    Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString()+"%";
                     DelayShow(); //延时200毫秒显示,如果200毫秒之内没有再请求显示那就显示，减少重复绘制的次数
                     return true;
                 }
@@ -583,6 +584,18 @@ namespace WlxMindMap
         }
 
 
+        /// <summary> 当前比例被单击就返回100%比例
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Scaling_button_Click(object sender, EventArgs e)
+        {
+            mindMapNode.Visible = false;
+            CurrentScaling = 1;//将比例设置为100%
+            mindMapNode.Visible = true;
+        }
+
         /// <summary> 禁止每当空间获得焦点后横向滚动条总会滚动到根节点
         /// 
         /// </summary>
@@ -590,9 +603,9 @@ namespace WlxMindMap
         /// <returns></returns>
         protected override Point ScrollToControl(Control activeControl)
         {
-            return this.AutoScrollPosition;
+            return Main_Panel.AutoScrollPosition;
         }
         #endregion 按住Ctrl+滚轮缩放
-        
+
     }
 }
