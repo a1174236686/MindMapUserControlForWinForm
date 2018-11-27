@@ -75,6 +75,7 @@ namespace WlxMindMap.MindMapNodeContent
             get => _Edited;
             set
             {
+                if (value == _Edited) return;
                 if (value)
                 {
 

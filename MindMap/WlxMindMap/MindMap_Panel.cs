@@ -51,6 +51,9 @@ namespace WlxMindMap
         public MindMapNodeStructBase DataStruct { get; set; }
 
         public float _CurrentScaling = 1;
+        /// <summary> 获取或设置当前的缩放比例
+        /// 
+        /// </summary>
         public float CurrentScaling { get { return _CurrentScaling; } set
             {
                 _CurrentScaling = value;
@@ -231,11 +234,21 @@ namespace WlxMindMap
         {
 
             MindMapNodeContentBase SenderObject = ((Control)sender).GetNodeContent();
-
-            if (Control.ModifierKeys != Keys.Control)//不按住ctrl就单选
+            #region 取消所有节点的编辑状态
+            List<MindMapNode.MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+            MindMapNodeList.Add(mindMapNode);
+            foreach (MindMapNodeContainer ContainerItem in MindMapNodeList)
             {
-                List<MindMapNode.MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
-                MindMapNodeList.Add(mindMapNode);
+                if (ContainerItem.NodeContent.Edited)
+                {
+                    if (SenderObject.ParentMindMapNode == ContainerItem) return;
+                    ContainerItem.NodeContent.Edited = false;
+                    return;
+                }
+            }
+            #endregion 取消所有节点的编辑状态
+            if (Control.ModifierKeys != Keys.Control)//不按住ctrl就单选
+            {                                
                 MindMapNodeList.ForEach(T1 => T1.NodeContent.Selected = false);
                 SenderObject.Selected = true;
             }
@@ -280,9 +293,6 @@ namespace WlxMindMap
             MindMapNodeList.ForEach(T1 => T1.NodeContent.Selected = false);
 
             if (EmptyRangeClick != null) EmptyRangeClick(sender, e);
-
-
-
         }
                
         /// <summary> 空白处鼠标按下
