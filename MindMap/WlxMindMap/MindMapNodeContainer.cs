@@ -112,6 +112,7 @@ namespace WlxMindMap.MindMapNode
             this._NodeContent.ParentMindMapNode = this;
             this._NodeContent.CurrentScaling = this.CurrentScaling;
             ReSetSize();
+            if(AddNodeContent!=null) AddNodeContent(this, null);
         }
 
         /// <summary> 在面板上画出当前节点的连接线
@@ -224,6 +225,8 @@ namespace WlxMindMap.MindMapNode
             MindMapNodeParame.ParentNode = this;
             MindMapNodeParame.CurrentScaling = this.CurrentScaling;
             NewNode.ResetNodeSize();
+
+            if (AddChidrenNode != null) AddChidrenNode(this, NewNode);
         }
 
 
@@ -241,6 +244,7 @@ namespace WlxMindMap.MindMapNode
                 {
                     MindMapNodeTemp.Parent = null;
                     MindMapNodeTemp.ParentNode = null;
+                    if (RemoveChidrenNode != null) RemoveChidrenNode(this, MindMapNodeTemp);
                     break;
                 }
             }
@@ -259,8 +263,7 @@ namespace WlxMindMap.MindMapNode
             return;
 
         }
-
-    
+            
         private void EmptyRange_Click(object sender, EventArgs e)
         {
             if (EmptyRangeClick != null) EmptyRangeClick(this, e);
@@ -306,6 +309,27 @@ namespace WlxMindMap.MindMapNode
         [Browsable(true), Description("空白处鼠标移动")]
         public event MouseEventHandler EmptyRangeMouseMove;
 
+        /// <summary> 添加节点
+        /// 
+        /// </summary>
+        [Browsable(true), Description("添加子节点")]
+        public event MindMapEventHandler AddChidrenNode;
+
+        /// <summary> 删除节点
+        /// 
+        /// </summary>
+        [Browsable(true), Description("删除节点")]
+        public event MindMapEventHandler RemoveChidrenNode;
+
+        [Browsable(true), Description("为节点添加节点内容时发生")]
+        public event MindMapEventHandler AddNodeContent;
+
+        /// <summary> 删除或添加节点的委托类型
+        /// 
+        /// </summary>
+        /// <param name="Sender">发生事件的节点</param>
+        /// <param name="Chidren">被添加/删除的节点</param>
+        public delegate void MindMapEventHandler(MindMapNodeContainer Sender, MindMapNodeContainer MindMapNodeContainer);
         #endregion 事件
     }
 
