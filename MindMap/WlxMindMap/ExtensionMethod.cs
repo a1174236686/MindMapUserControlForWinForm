@@ -71,6 +71,23 @@ namespace WlxMindMap
             }
         }
 
+        /// <summary> 获取某控件下的所有子控件
+        /// 
+        /// </summary>
+        /// <param name="ControlParame"></param>
+        /// <returns></returns>
+        public static List<Control> GetAllControl(this Control ControlParame)
+        {
+            List<Control> ResultList = new List<Control>();
+
+            foreach (Control Item in ControlParame.Controls)
+            {
+                ResultList.Add(Item);
+                ResultList.AddRange(Item.GetAllControl());//递归取子控件
+            }
+            return ResultList;
+        }
+
         /// <summary> 按比例进行缩放，返回缩放后的实例
         /// 
         /// </summary>

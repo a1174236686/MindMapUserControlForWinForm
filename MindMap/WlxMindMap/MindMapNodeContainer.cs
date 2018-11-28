@@ -61,8 +61,8 @@ namespace WlxMindMap.MindMapNode
 
                 List<MindMapNodeContainer>ContainerList= GetChidrenNode();//获取子节点
                 ContainerList.ForEach(Item => Item.CurrentScaling = _CurrentScaling);//将子节点的缩放比例也修改
+                if(this._NodeContent!=null) this._NodeContent.CurrentScaling = _CurrentScaling;
 
-                this._NodeContent.CurrentScaling = _CurrentScaling;
                 DrawingLine_panel.Width = Scaling_LineSize.ByScaling(_CurrentScaling).Width;//更新连接线尺寸
                 ReSetSize();
             }
@@ -220,9 +220,9 @@ namespace WlxMindMap.MindMapNode
             if (FindCount != 0) return;//如果要添加的节点已经存在就直接返回
 
             MindMapNodeContainer NewNode = MindMapNodeParame;
-
             Chidren_Panel.Controls.Add(NewNode);
             MindMapNodeParame.ParentNode = this;
+            MindMapNodeParame.CurrentScaling = this.CurrentScaling;
             NewNode.ResetNodeSize();
         }
 

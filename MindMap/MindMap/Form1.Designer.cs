@@ -29,18 +29,29 @@
         private void InitializeComponent()
         {
             this.mindMap_Panel1 = new WlxMindMap.MindMap_Panel();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // mindMap_Panel1
             // 
             this.mindMap_Panel1.AutoScroll = true;
             this.mindMap_Panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.mindMap_Panel1.CurrentScaling = 1F;
+            this.mindMap_Panel1.DataStruct = null;
             this.mindMap_Panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mindMap_Panel1.Location = new System.Drawing.Point(0, 0);
             this.mindMap_Panel1.Name = "mindMap_Panel1";
-            this.mindMap_Panel1.Size = new System.Drawing.Size(718, 802);
-            this.mindMap_Panel1.TabIndex = 0;            
+            this.mindMap_Panel1.Size = new System.Drawing.Size(718, 781);
+            this.mindMap_Panel1.TabIndex = 0;
             this.mindMap_Panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMap_Panel1_MouseDown);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.textBox1.Location = new System.Drawing.Point(0, 781);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(718, 21);
+            this.textBox1.TabIndex = 1;
             // 
             // frmMainForm
             // 
@@ -48,10 +59,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(718, 802);
             this.Controls.Add(this.mindMap_Panel1);
+            this.Controls.Add(this.textBox1);
             this.Name = "frmMainForm";
             this.Text = "frmMainForm";
             this.Load += new System.EventHandler(this.frmMainForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -59,6 +72,7 @@
         #endregion
 
         private WlxMindMap.MindMap_Panel mindMap_Panel1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

@@ -62,56 +62,104 @@ namespace WlxMindMap
         }
 
 
+
         #region 公开方法
 
-        /// <summary> 为思维导图载入数据
+        /// <summary> 为思维导图绑定数据
         /// 
         /// </summary>
         /// <typeparam name="NodeContent">采用哪种内容布局</typeparam>
         /// <typeparam name="DataEntity">数据的模型</typeparam>
-        /// <param name="DataSource"></param>
-        public void SetDataSource<NodeContent, DataEntity>(List<DataEntity> DataSource) where NodeContent : MindMapNodeContentBase, new()
+        /// <param name="DataSource">数据源</param>
+        /// <param name="ParentID">父ID，留空为根节点</param>
+        /// <returns>返回添加后的节点容器</returns>
+        public List<MindMapNodeContainer> SetDataSource<NodeContent, DataEntity>(List<DataEntity> DataSource, string ParentID = null) where NodeContent : MindMapNodeContentBase, new()
         {
             if (DataStruct == null) throw new Exception("DataStruct为空：你需要先指定数据源的结构，再绑定数据源");
             PropertyInfo IDProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapID);
             PropertyInfo ParentProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapParentID);
-            //没有父节点就取父节点为空的记录
-            List<DataEntity> CurrentAddList = DataSource.Where(T1 => string.IsNullOrEmpty(ParentProperty.GetValue(T1).ToString())).ToList();
+            bool NullParent = string.IsNullOrEmpty(ParentID);
+            List<DataEntity> CurrentAddList = new List<DataEntity>();
 
+            if (NullParent)
+            {
+                CurrentAddList = DataSource.Where(T1 => string.IsNullOrEmpty(ParentProperty.GetValue(T1).ToString())).ToList();//没有父节点就取父节点为空的记录
+                if (CurrentAddList.Count == 0) throw new Exception("未找到根节点");
+                if (CurrentAddList.Count > 1) throw new Exception("不允许有多个根节点");
+            }
+            else
+            {
+                CurrentAddList = DataSource.Where(T1 => ParentProperty.GetValue(T1).ToString() == ParentID).ToList();
+            }
 
-            if (CurrentAddList.Count == 0) throw new Exception ("未找到根节点");
-            if (CurrentAddList.Count > 1) throw new Exception("不允许有多个根节点");
-
-            string CurrentId = IDProperty.GetValue(CurrentAddList[0]).ToString();
-            List<MindMapNodeContainer> ContainerList = SetDataSource<NodeContent, DataEntity>(DataSource, CurrentId);
-            ContainerList.ForEach(item => mindMapNode.AddNode(item));
-            mindMapNode.SetNodeContent<NodeContent>(DataStruct);
-            mindMapNode.NodeContent.DataItem = CurrentAddList[0];
-
-            SetEvent(mindMapNode);
-
-        }
-
-        private List<MindMapNodeContainer> SetDataSource<NodeContent, DataEntity>(List<DataEntity> DataSource, string ParentID) where NodeContent : MindMapNodeContentBase, new()
-        {
-            PropertyInfo IDProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapID);
-            PropertyInfo ParentProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapParentID);
-            //有父节点就取ParentID为父节点的记录
-            List<DataEntity> CurrentAddList = DataSource.Where(T1 => ParentProperty.GetValue(T1).ToString() == ParentID).ToList();
             List<MindMapNodeContainer> ContainerList = new List<MindMapNodeContainer>();
 
             foreach (DataEntity AddDataItem in CurrentAddList)
             {
                 string CurrentId = IDProperty.GetValue(AddDataItem).ToString();
                 List<MindMapNodeContainer> ContainerListTemp = SetDataSource<NodeContent, DataEntity>(DataSource, CurrentId);
-                MindMapNodeContainer NewNode = new MindMapNodeContainer ();
+                MindMapNodeContainer NewNode = new MindMapNodeContainer();
+                if (NullParent) NewNode = mindMapNode;
+
+
+
                 NewNode.SetNodeContent<NodeContent>(DataStruct);
-                ContainerListTemp.ForEach(item => NewNode.AddNode(item));              
+                ContainerListTemp.ForEach(item => NewNode.AddNode(item));
                 NewNode.NodeContent.DataItem = AddDataItem;
                 ContainerList.Add(NewNode);
             }
-            return ContainerList;
+            if (NullParent) SetEvent(mindMapNode);//所有节点都绑定完了就统一为这些节点绑定事件
+            return ContainerList;                   
         }
+        #region 绑定数据老代码
+        /// <summary> 为思维导图载入数据
+        /// 
+        /// </summary>
+        /// <typeparam name="NodeContent">采用哪种内容布局</typeparam>
+        /// <typeparam name="DataEntity">数据的模型</typeparam>
+        /// <param name="DataSource"></param>
+        //public void SetDataSource<NodeContent, DataEntity>(List<DataEntity> DataSource) where NodeContent : MindMapNodeContentBase, new()
+        //{
+        //    if (DataStruct == null) throw new Exception("DataStruct为空：你需要先指定数据源的结构，再绑定数据源");
+        //    PropertyInfo IDProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapID);
+        //    PropertyInfo ParentProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapParentID);
+        //    //没有父节点就取父节点为空的记录
+        //    List<DataEntity> CurrentAddList = DataSource.Where(T1 => string.IsNullOrEmpty(ParentProperty.GetValue(T1).ToString())).ToList();
+
+
+        //    if (CurrentAddList.Count == 0) throw new Exception ("未找到根节点");
+        //    if (CurrentAddList.Count > 1) throw new Exception("不允许有多个根节点");
+
+        //    string CurrentId = IDProperty.GetValue(CurrentAddList[0]).ToString();
+        //    List<MindMapNodeContainer> ContainerList = SetDataSource<NodeContent, DataEntity>(DataSource, CurrentId);
+        //    ContainerList.ForEach(item => mindMapNode.AddNode(item));
+        //    mindMapNode.SetNodeContent<NodeContent>(DataStruct);
+        //    mindMapNode.NodeContent.DataItem = CurrentAddList[0];
+
+        //    SetEvent(mindMapNode);
+        //}
+
+        //private List<MindMapNodeContainer> SetDataSource<NodeContent, DataEntity>(List<DataEntity> DataSource, string ParentID) where NodeContent : MindMapNodeContentBase, new()
+        //{
+        //    PropertyInfo IDProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapID);
+        //    PropertyInfo ParentProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapParentID);
+        //    //有父节点就取ParentID为父节点的记录
+        //    List<DataEntity> CurrentAddList = DataSource.Where(T1 => ParentProperty.GetValue(T1).ToString() == ParentID).ToList();
+        //    List<MindMapNodeContainer> ContainerList = new List<MindMapNodeContainer>();
+
+        //    foreach (DataEntity AddDataItem in CurrentAddList)
+        //    {
+        //        string CurrentId = IDProperty.GetValue(AddDataItem).ToString();
+        //        List<MindMapNodeContainer> ContainerListTemp = SetDataSource<NodeContent, DataEntity>(DataSource, CurrentId);
+        //        MindMapNodeContainer NewNode = new MindMapNodeContainer ();
+        //        NewNode.SetNodeContent<NodeContent>(DataStruct);
+        //        ContainerListTemp.ForEach(item => NewNode.AddNode(item));              
+        //        NewNode.NodeContent.DataItem = AddDataItem;
+        //        ContainerList.Add(NewNode);
+        //    }
+        //    return ContainerList;
+        //} 
+        #endregion 绑定数据老代码
 
         /// <summary> 获取所有被选中的节点
         /// 
@@ -302,7 +350,8 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_EmptyRangeMouseDown(object sender, MouseEventArgs e)
         {
-            MindMap_Panel_MouseDown(sender, e);
+            this.Focus();
+            MindMap_Panel_MouseDown(sender, e);            
             if (EmptyRangeMouseDown != null) EmptyRangeMouseDown(sender, e);
         }
 
@@ -392,6 +441,11 @@ namespace WlxMindMap
         [Description("鼠标在节点上移动时")]
         public event MouseEventHandler MindMapNodeMouseMove;
 
+        /// <summary> 焦点在思维导图任何位置时，键盘按下事件
+        /// 
+        /// </summary>
+        public event KeyEventHandler MindNodemapKeyDown;
+
         #endregion 公开事件委托    
 
         #region 鼠标中键拖动滚动条
@@ -406,10 +460,10 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void MindMap_Panel_MouseDown(object sender, MouseEventArgs e)
         {
+            this.Focus();
             if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right)
             {
-                MoveValue = e.Location;
-                
+                MoveValue = e.Location;                
                 IsMouseMove = true;
             }
         }
@@ -552,38 +606,45 @@ namespace WlxMindMap
         /// </summary>       
         public bool PreFilterMessage(ref Message m)
         {
-            if (m.Msg == 522)
+
+            switch (m.Msg)
             {
-                if (Control.ModifierKeys == Keys.Control)
-                {
-                    int WheelValue = m.WParam.ToInt32();
-
-                    this.mindMapNode.Resize -= new System.EventHandler(this.mindMapNode_Resize);
-                    this.Resize -= new System.EventHandler(this.MindMap_Panel_Resize);
-
-                    float ChangeValue = 0.1F;//每次放大或缩小10%
-                    float ResultScaling = 1;
-                    if (WheelValue < 0)
+                case 522:
+                //case 0x0100:
+                    List<IntPtr> HandleList = this.GetAllControl().Select(T1 => T1.Handle).ToList();
+                    IntPtr MouseHandle = WindowsAPI.WindowFromPoint(Control.MousePosition);
+                    if (!HandleList.Contains(MouseHandle)) break;//鼠标不在思维导图控件上时就不缩放
+                    #region 缩放相关代码
+                    if (Control.ModifierKeys == Keys.Control)
                     {
-                        ResultScaling = this._CurrentScaling - ChangeValue;
-                        if (ResultScaling <= 0) ResultScaling = 0.1F;
-                    }
-                    else
-                    {
-                        ResultScaling = this._CurrentScaling + ChangeValue;
-                    }
-                    this._CurrentScaling = ResultScaling;
-                    Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString()+"%";
-                    DelayShow(); //延时200毫秒显示,如果200毫秒之内没有再请求显示那就显示，减少重复绘制的次数
-                    return true;
-                }
 
-                
-            }
+                        int WheelValue = m.WParam.ToInt32();
+                        this.mindMapNode.Resize -= new System.EventHandler(this.mindMapNode_Resize);
+                        this.Resize -= new System.EventHandler(this.MindMap_Panel_Resize);
+
+                        float ChangeValue = 0.1F;//每次放大或缩小10%
+                        float ResultScaling = 1;
+                        if (WheelValue < 0)
+                        {
+                            ResultScaling = this._CurrentScaling - ChangeValue;
+                            if (ResultScaling <= 0) ResultScaling = 0.1F;
+                        }
+                        else
+                        {
+                            ResultScaling = this._CurrentScaling + ChangeValue;
+                        }
+                        this._CurrentScaling = ResultScaling;
+                        Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString() + "%";
+                        DelayShow(); //延时200毫秒显示,如果200毫秒之内没有再请求显示那就显示，减少重复绘制的次数
+                        return true;
+                    }
+                    #endregion 缩放相关代码
+                    break;
+
+            }           
             return false;            
         }
-
-
+        
         /// <summary> 当前比例被单击就返回100%比例
         /// 
         /// </summary>
@@ -607,5 +668,15 @@ namespace WlxMindMap
         }
         #endregion 按住Ctrl+滚轮缩放
 
+        /// <summary> 控件中键盘按下事件
+        /// 
+        /// </summary>
+        /// <param name="keyData"></param>
+        /// <returns></returns>
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (MindNodemapKeyDown != null) MindNodemapKeyDown(this, new KeyEventArgs(keyData));
+            return base.ProcessDialogKey(keyData);
+        }
     }
 }
