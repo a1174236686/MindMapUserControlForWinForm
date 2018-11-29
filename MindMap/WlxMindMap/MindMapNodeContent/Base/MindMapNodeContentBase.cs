@@ -75,11 +75,11 @@ namespace WlxMindMap.MindMapNodeContent
         #endregion 基类提供的方法
 
         #region 属性
-        private MindMapNode.MindMapNodeContainer _ParentMindMapNode;
+        private MindMapNodeContainer _ParentMindMapNode;
         /// <summary> 获取或设置节点容器
         /// 
         /// </summary>
-        public MindMapNode.MindMapNodeContainer ParentMindMapNode
+        public MindMapNodeContainer ParentMindMapNode
         {
             get { return _ParentMindMapNode; }
             set
@@ -88,7 +88,7 @@ namespace WlxMindMap.MindMapNodeContent
                 _ParentMindMapNode = value;
                 if (_ParentMindMapNode != null)
                 {
-                    _ParentMindMapNode.SetNodeContent<Text_MindMapNodeContent>(DataStruct, this);
+                    _ParentMindMapNode.SetNodeContent(DataStruct, this);
                 }
             }
         }

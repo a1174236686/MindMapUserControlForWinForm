@@ -12,7 +12,7 @@ namespace WlxMindMap
 {
     public static class ExtensionMethod
     {
-        /// <summary> 通过节点内容里的某个控件，获取节点内容控件
+        /// <summary> 通过节点内容里的某个控件，递归向上获取节点内容控件
         /// 
         /// </summary>
         /// <param name="thisControl"></param>

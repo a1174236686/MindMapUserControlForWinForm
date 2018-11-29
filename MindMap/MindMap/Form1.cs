@@ -195,8 +195,13 @@ namespace MindMap
             mindMap_Panel1.DataStruct = NodeStruct;
             mindMap_Panel1.SetDataSource<WlxMindMap.MindMapNodeContent.Text_MindMapNodeContent, TestEntity>(DataSourceList);
 
+            MindMapNodeContainer ContainerTemp = new MindMapNodeContainer();
+            ContainerTemp.SetNodeContent<Text_MindMapNodeContent>(NodeStruct);
+            ContainerTemp.DataItem = new TestEntity() { ID = "100", ParentID = "123", Text = "手动添加" };
+            mindMap_Panel1.BaseNode.AddNode(ContainerTemp);
 
-            //mindMap_Panel1.SetDataSource<TestEntity>(DataSourceList, NodeStruct);
+
+            
 
 
         }

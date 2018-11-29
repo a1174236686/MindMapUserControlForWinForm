@@ -9,14 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Threading;
-using WlxMindMap.MindMapNode;
+using WlxMindMap;
 using WlxMindMap.MindMapNodeContent;
+using WlxMindMap.MindMapNode;
 
 namespace WlxMindMap
 {
     public partial class MindMap_Panel : UserControl, IMessageFilter
     {
-        private MindMapNode.MindMapNodeContainer mindMapNode = new WlxMindMap.MindMapNode.MindMapNodeContainer();
+        private MindMapNodeContainer mindMapNode = new MindMapNodeContainer();
 
         public MindMap_Panel()
         {
@@ -36,7 +37,7 @@ namespace WlxMindMap
             this.mindMapNode.EmptyRangeMouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseDown);
             this.mindMapNode.EmptyRangeMouseUp += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseUp);
             this.mindMapNode.EmptyRangeMouseMove += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseMove);
-            this.mindMapNode.AddChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
+            //this.mindMapNode.AddChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
             this.mindMapNode.RemoveChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
 
             this.mindMapNode.Resize += new System.EventHandler(this.mindMapNode_Resize);
@@ -67,6 +68,7 @@ namespace WlxMindMap
             }
         }
 
+        public MindMapNodeContainer BaseNode { get { return mindMapNode; } set { mindMapNode = value; } }
 
 
         #region 公开方法
@@ -105,7 +107,7 @@ namespace WlxMindMap
                 string CurrentId = IDProperty.GetValue(AddDataItem).ToString();
                 List<MindMapNodeContainer> ContainerListTemp = SetDataSource<NodeContent, DataEntity>(DataSource, CurrentId);
                 MindMapNodeContainer NewNode = new MindMapNodeContainer();
-                if (NullParent) NewNode = mindMapNode;
+                if (NullParent) NewNode = mindMapNode;//如果没有父节点就赋值根节点
 
 
 
@@ -171,9 +173,9 @@ namespace WlxMindMap
         /// 
         /// </summary>
         /// <returns></returns>
-        public List<MindMapNode.MindMapNodeContainer> GetSelectedNode()
+        public List<MindMapNodeContainer> GetSelectedNode()
         {
-            List<MindMapNode.MindMapNodeContainer> ResultList = new List<MindMapNode.MindMapNodeContainer>();
+            List<MindMapNodeContainer> ResultList = new List<MindMapNodeContainer>();
             ResultList = mindMapNode.GetChidrenNode(true);
             ResultList.Add(mindMapNode);
             ResultList = ResultList.Where(T1 => T1.NodeContent.Selected == true).ToList();
@@ -186,7 +188,7 @@ namespace WlxMindMap
         private void SetEvent(MindMapNodeContainer MindMapContainerParame)
         {
             AddOrRemoveEvent(MindMapContainerParame, false);//先删除事件，避免重复添加
-            AddOrRemoveEvent(MindMapContainerParame,true);//添加事件
+            AddOrRemoveEvent(MindMapContainerParame, true);//添加事件
         }
 
         /// <summary> 为节点添加或删除事件
@@ -199,7 +201,7 @@ namespace WlxMindMap
             #region 为节点容器添加事件
             //节点容器添加事件
             List<MindMapNodeContainer> NodeContainsList = MindMapContainerParame.GetChidrenNode(true);//获取所有节点容器
-            NodeContainsList.Add(mindMapNode);//包括自己
+            NodeContainsList.Add(MindMapContainerParame);//包括自己
 
             List<Control> NodeContentList = new List<Control>();//用List来收集所有节点内容的控件
             NodeContainsList.ForEach(NodeItem =>
@@ -210,9 +212,9 @@ namespace WlxMindMap
                     NodeItem.EmptyRangeMouseDown += new MouseEventHandler(mindMapNode_EmptyRangeMouseDown);
                     NodeItem.EmptyRangeMouseMove += new MouseEventHandler(mindMapNode_EmptyRangeMouseMove);
                     NodeItem.EmptyRangeMouseUp += new MouseEventHandler(mindMapNode_EmptyRangeMouseUp);
-                    mindMapNode.AddChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
-                    mindMapNode.RemoveChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
-                    mindMapNode.AddNodeContent += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);                    
+                    NodeItem.AddChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
+                    NodeItem.RemoveChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
+                    NodeItem.AddNodeContent += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);                    
                 }
                 else
                 {
@@ -221,9 +223,9 @@ namespace WlxMindMap
                     NodeItem.EmptyRangeMouseDown -= new MouseEventHandler(mindMapNode_EmptyRangeMouseDown);
                     NodeItem.EmptyRangeMouseMove -= new MouseEventHandler(mindMapNode_EmptyRangeMouseMove);
                     NodeItem.EmptyRangeMouseUp -= new MouseEventHandler(mindMapNode_EmptyRangeMouseUp);
-                    mindMapNode.AddChidrenNode -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
-                    mindMapNode.RemoveChidrenNode -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
-                    mindMapNode.AddNodeContent -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
+                    NodeItem.AddChidrenNode -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
+                    NodeItem.RemoveChidrenNode -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
+                    NodeItem.AddNodeContent -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
                 }
                 if(NodeItem.NodeContent!=null) NodeContentList.AddRange(NodeItem.NodeContent.GetNodeControl());//获取当前节点内容的所有控件
              
@@ -316,7 +318,7 @@ namespace WlxMindMap
 
             MindMapNodeContentBase SenderObject = ((Control)sender).GetNodeContent();
             #region 取消所有节点的编辑状态
-            List<MindMapNode.MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+            List<MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
             MindMapNodeList.Add(mindMapNode);
             foreach (MindMapNodeContainer ContainerItem in MindMapNodeList)
             {
@@ -361,7 +363,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_EmptyRangeClick(object sender, EventArgs e)
         {
-            List<MindMapNode.MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+            List<MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
             MindMapNodeList.Add(mindMapNode);
             foreach (MindMapNodeContainer ContainerItem in MindMapNodeList)
             {
@@ -417,6 +419,7 @@ namespace WlxMindMap
         /// <param name="Chidren">被添加的节点</param>
         private void MindMapNodeAddChidrenNode(MindMapNodeContainer Sender, MindMapNodeContainer Chidren)
         {
+            AddOrRemoveEvent(Chidren, false);
             AddOrRemoveEvent(Chidren,true);
             if (MindMapAddNode != null) MindMapAddNode(Sender, Chidren);
 

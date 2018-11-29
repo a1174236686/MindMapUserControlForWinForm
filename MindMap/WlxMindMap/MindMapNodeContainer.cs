@@ -11,7 +11,7 @@ using WlxMindMap.MindMapNodeContent;
 using WlxMindMap.MindMapNode;
 using System.Reflection;
 
-namespace WlxMindMap.MindMapNode
+namespace WlxMindMap
 {
     public partial class MindMapNodeContainer : UserControl
     {
@@ -59,9 +59,9 @@ namespace WlxMindMap.MindMapNode
             {
                 _CurrentScaling = value;
 
-                List<MindMapNodeContainer>ContainerList= GetChidrenNode();//获取子节点
+                List<MindMapNodeContainer> ContainerList = GetChidrenNode();//获取子节点
                 ContainerList.ForEach(Item => Item.CurrentScaling = _CurrentScaling);//将子节点的缩放比例也修改
-                if(this._NodeContent!=null) this._NodeContent.CurrentScaling = _CurrentScaling;
+                if (this._NodeContent != null) this._NodeContent.CurrentScaling = _CurrentScaling;
 
                 DrawingLine_panel.Width = Scaling_LineSize.ByScaling(_CurrentScaling).Width;//更新连接线尺寸
                 ReSetSize();
@@ -72,8 +72,37 @@ namespace WlxMindMap.MindMapNode
         /// <summary> 设置节点内容的结构
         /// 
         /// </summary>
-        public MindMapNodeStructBase DataStruct { set; get; }
-        private MindMapNodeStructBase _DataStruct = new MindMapNodeStructBase();
+        public MindMapNodeStructBase DataStruct
+        {
+            set
+            {
+                if (_NodeContent == null) return;
+                _NodeContent.DataStruct = value;
+            }
+            get
+            {
+                if (_NodeContent == null) return null;
+                return _NodeContent.DataStruct;
+            }
+        }
+
+        /// <summary> 获取或设置节点的数据源
+        /// 
+        /// </summary>
+        public object DataItem
+        {
+            get
+            {
+                if (_NodeContent == null) return null;
+                return _NodeContent.DataItem;
+            }
+            set
+            {
+                if (_NodeContent == null) throw new Exception("NodeContent：你需要先为节点容器设置节点内容");
+                _NodeContent.DataItem = value;
+            }
+
+        }
 
         /// <summary> 设置或获取父节点
         /// 
@@ -91,29 +120,37 @@ namespace WlxMindMap.MindMapNode
             get { return _ParentNode; }
         }
         private MindMapNodeContainer _ParentNode = null;
-    
-        
-        
+
+
+
         #endregion 属性               
 
         #region 方法
-        /// <summary> 设置内容布局样式
+
+        /// <summary> 为节点设置内容布局样式
         /// 
         /// </summary>
-        /// <typeparam name="NodeContentClass"></typeparam>
         /// <param name="Struct"></param>
-        public void SetNodeContent<NodeContentClass>(MindMapNodeStructBase Struct, MindMapNodeContentBase NodeContentParame = null) where NodeContentClass : MindMapNodeContentBase, new()
+        /// <param name="NodeContentParame"></param>
+        public void SetNodeContent(MindMapNodeStructBase Struct, MindMapNodeContentBase NodeContentParame )
         {
-            if (NodeContentParame == null) NodeContentParame = new NodeContentClass();
+            if (NodeContentParame == null) throw new Exception("节点内容的布局不能为空");
             if (this._NodeContent == NodeContentParame) return;
             else this._NodeContent = NodeContentParame;
             this.NodeContent.DataStruct = Struct;
-            this.Content_Panel.Controls.Add(this.NodeContent);            
+            this.Content_Panel.Controls.Add(this.NodeContent);
             this._NodeContent.ParentMindMapNode = this;
             this._NodeContent.CurrentScaling = this.CurrentScaling;
             ReSetSize();
-            if(AddNodeContent!=null) AddNodeContent(this, null);
+            if (AddNodeContent != null) AddNodeContent(this, null);
         }
+
+        public void SetNodeContent<NodeContentClass>(MindMapNodeStructBase Struct) where NodeContentClass : MindMapNodeContentBase, new()
+        {
+            SetNodeContent(Struct, new NodeContentClass());
+        }
+
+        
 
         /// <summary> 在面板上画出当前节点的连接线
         /// 

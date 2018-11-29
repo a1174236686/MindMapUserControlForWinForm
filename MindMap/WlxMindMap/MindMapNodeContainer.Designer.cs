@@ -1,4 +1,4 @@
-﻿namespace WlxMindMap.MindMapNode
+﻿namespace WlxMindMap
 {
     public partial class MindMapNodeContainer
     {
