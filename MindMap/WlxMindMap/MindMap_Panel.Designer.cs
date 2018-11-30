@@ -30,7 +30,7 @@
         {
             this.Scroll_panel = new System.Windows.Forms.Panel();
             this.Scaling_button = new System.Windows.Forms.Button();
-            this.Main_Panel = new System.Windows.Forms.Panel();
+            this.Main_Panel = new User_Main_Panel();
             this.Main_Panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,6 +67,7 @@
             this.Main_Panel.Name = "Main_Panel";
             this.Main_Panel.Size = new System.Drawing.Size(467, 389);
             this.Main_Panel.TabIndex = 3;
+            this.Main_Panel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.Main_Panel_Scroll);
             // 
             // MindMap_Panel
             // 
@@ -89,6 +90,6 @@
 
         private System.Windows.Forms.Panel Scroll_panel;
         private System.Windows.Forms.Button Scaling_button;
-        private System.Windows.Forms.Panel Main_Panel;
+        private User_Main_Panel Main_Panel;
     }
 }

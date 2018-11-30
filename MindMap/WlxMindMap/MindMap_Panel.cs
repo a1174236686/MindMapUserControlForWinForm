@@ -46,8 +46,7 @@ namespace WlxMindMap
             Application.AddMessageFilter(this);//当按住Control后滚轮无法控制滚动条
         }
 
-
-
+        #region 属性   
         /// <summary>获取或设置数据源数据结构
         /// 
         /// </summary>
@@ -62,14 +61,18 @@ namespace WlxMindMap
             get { return _CurrentScaling; }
             set
             {
+              
                 Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString() + "%";//将当前比例显示到前台
                 _CurrentScaling = value;
                 mindMapNode.CurrentScaling = value;
             }
         }
 
+        /// <summary> 获取或设置根节点容器
+        /// 
+        /// </summary>
         public MindMapNodeContainer BaseNode { get { return mindMapNode; } set { mindMapNode = value; } }
-
+        #endregion 属性
 
         #region 公开方法
 
@@ -116,7 +119,11 @@ namespace WlxMindMap
                 NewNode.NodeContent.DataItem = AddDataItem;
                 ContainerList.Add(NewNode);
             }
-            if (NullParent) SetEvent(mindMapNode);//所有节点都绑定完了就统一为这些节点绑定事件
+            if (NullParent)
+            {
+                SetEvent(mindMapNode);//所有节点都绑定完了就统一为这些节点绑定事件
+                ScrollCenter();
+            }
             return ContainerList;
         }
         #region 绑定数据老代码
@@ -262,6 +269,7 @@ namespace WlxMindMap
             #endregion 为节点内容添加事件
         }
 
+        #region 节点内容相关事件方法
 
         /// <summary>节点被按下时
         /// 
@@ -356,6 +364,46 @@ namespace WlxMindMap
 
         }
 
+        /// <summary> 当节点添加时发生
+        /// 
+        /// </summary>
+        /// <param name="Sender">发生事件的节点</param>
+        /// <param name="Chidren">被添加的节点</param>
+        private void MindMapNodeAddChidrenNode(MindMapNodeContainer Sender, MindMapNodeContainer Chidren)
+        {
+            AddOrRemoveEvent(Chidren, false);
+            AddOrRemoveEvent(Chidren, true);
+            if (MindMapAddNode != null) MindMapAddNode(Sender, Chidren);
+
+
+
+        }
+        /// <summary> 当节点被移除时发生
+        /// 
+        /// </summary>
+        /// <param name="Sender">发生事件的节点</param>
+        /// <param name="Chidren">被移除的节点</param>
+        private void MindMapNodeRemoveChidrenNode(MindMapNodeContainer Sender, MindMapNodeContainer Chidren)
+        {
+            AddOrRemoveEvent(Chidren, false);
+            if (MindMapRemoveNode != null) MindMapRemoveNode(Sender, Chidren);
+        }
+
+        /// <summary>添加节点内容时发生
+        /// 
+        /// </summary>
+        /// <param name="Sender"></param>
+        /// <param name="e"></param>
+        private void MindMapNodeAddContent(MindMapNodeContainer Sender, MindMapNodeContainer e)
+        {
+            SetEvent(Sender);
+            if (MindMapAddContent != null) MindMapAddContent(Sender, null);
+        }
+
+        #endregion 节点内容相关事件方法
+
+        #region 非节点内容的事件方法
+
         /// <summary> 空白处被单击取消所有选中        
         /// 
         /// </summary>
@@ -412,43 +460,9 @@ namespace WlxMindMap
             if (EmptyRangeMouseUp != null) EmptyRangeMouseUp(sender, e);
         }
 
-        /// <summary> 当节点添加时发生
-        /// 
-        /// </summary>
-        /// <param name="Sender">发生事件的节点</param>
-        /// <param name="Chidren">被添加的节点</param>
-        private void MindMapNodeAddChidrenNode(MindMapNodeContainer Sender, MindMapNodeContainer Chidren)
-        {
-            AddOrRemoveEvent(Chidren, false);
-            AddOrRemoveEvent(Chidren,true);
-            if (MindMapAddNode != null) MindMapAddNode(Sender, Chidren);
+        #endregion 非节点内容的事件方法
 
-
-
-        }
-        /// <summary> 当节点被移除时发生
-        /// 
-        /// </summary>
-        /// <param name="Sender">发生事件的节点</param>
-        /// <param name="Chidren">被移除的节点</param>
-        private void MindMapNodeRemoveChidrenNode(MindMapNodeContainer Sender, MindMapNodeContainer Chidren)
-        {
-            AddOrRemoveEvent(Chidren, false);
-            if (MindMapRemoveNode != null) MindMapRemoveNode(Sender, Chidren);
-        }
-        
-        /// <summary>添加节点内容时发生
-        /// 
-        /// </summary>
-        /// <param name="Sender"></param>
-        /// <param name="e"></param>
-        private void MindMapNodeAddContent(MindMapNodeContainer Sender, MindMapNodeContainer e)
-        {
-            SetEvent(Sender);          
-            if (MindMapAddContent != null) MindMapAddContent(Sender, null);
-        }
-
-        #region 对外开放的节点内容相关事件
+        #region 对外开放的节点内容相关事件委托
 
         /// <summary>鼠标进入节点范围事件
         /// 
@@ -509,9 +523,9 @@ namespace WlxMindMap
         /// </summary>
         [Description("某节点设置节点内容布局时发生")]
         public event MindMapNodeContainer.MindMapEventHandler MindMapAddContent;
-        #endregion 对外开放的节点内容相关事件
+        #endregion 对外开放的节点内容相关事件委托
 
-        #region 节点容器相关事件[在非节点处发生的事件]
+        #region 节点容器相关事件委托[在非节点处发生的事件]
 
         /// <summary> 空白处鼠标按下
         /// 
@@ -537,7 +551,7 @@ namespace WlxMindMap
         [Browsable(true), Description("点击空白处")]
         public event EventHandler EmptyRangeClick;
 
-        #endregion 节点容器相关事件[在非节点处发生的事件]
+        #endregion 节点容器相关事件委托[在非节点处发生的事件]
 
 
         /// <summary> 焦点在思维导图任何位置时，键盘按下事件
@@ -592,6 +606,7 @@ namespace WlxMindMap
                 PointTemp.Y = MoveValue.Y - e.Location.Y;
                 Point ResultPoint = new Point(Main_Panel.HorizontalScroll.Value + PointTemp.X, Main_Panel.VerticalScroll.Value + PointTemp.Y);
                 Main_Panel.AutoScrollPosition = ResultPoint;
+                RecordScalingPosition();
             }
         }
 
@@ -600,6 +615,7 @@ namespace WlxMindMap
         #endregion 鼠标中键拖动滚动条
 
         #region 当控件尺寸改变时更改滚动条尺寸
+
         /// <summary> 思维导图尺寸改变时，滚动条尺寸也要跟着变
         /// 
         /// </summary>
@@ -607,7 +623,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_Resize(object sender, EventArgs e)
         {
-            ResetMindMapPanelSize();
+            ResetMindMapPanelSize();            
         }
 
         /// <summary> 当本控件的尺寸改变时，滚动条尺寸也要改变
@@ -619,46 +635,24 @@ namespace WlxMindMap
         {
             //不知道什么原因，如果本控件尺寸改变后如果立即设置滚动条的尺寸，会出现Bug
             //例如外部Winform添加本控件后，Dock设为Fill，在窗体最大化，或从最大或变成正常态时将会出现Bug
-            //所以当本控件尺寸发生改变时延迟200毫秒设置滚动条尺寸
-            new Thread(() =>
-            {
-                Thread.Sleep(200);
-                this.Invoke(new Action(() =>
-                {
-                    ResetMindMapPanelSize();
-                }
-                    ));
-            }).Start();
+            //所以当本控件尺寸发生改变时延迟200毫秒设置滚动条尺寸        
+            DelayShow();
         }
 
-        /// <summary> 重新设置导图和容器在控件中的尺寸
+        /// <summary> 重新设置导图的容器在控件中的尺寸
         /// 
         /// </summary>
         private void ResetMindMapPanelSize()
         {
+            #region 设置思维导图的容器的尺寸
             Scroll_panel.Location = new Point(-Main_Panel.HorizontalScroll.Value, -Main_Panel.VerticalScroll.Value);
-
             int MaxHeight = Main_Panel.Height * 2;//容器最大高度，父容器的2倍
             int MaxWidth = Main_Panel.Width * 2;//容器最大宽度，父容器的2倍
             int MinHeight = mindMapNode.Height * 2;//容器最小高度，自身高度的两倍
             int MinWidth = mindMapNode.Width * 2;//容器最小宽度，自身宽度的两倍
             Scroll_panel.Height = MaxHeight > MinHeight ? MaxHeight : MinHeight;//优先最大高度
-            Scroll_panel.Width = MaxWidth > MinWidth ? MaxWidth : MinWidth;//优先最大宽度
-            Center();
-        }
-
-
-        private void Center()
-        {
-
-            #region 将容器滚动至居中位置
-
-            int IntX = this.Scroll_panel.Width - this.Width;
-            int IntY = this.Scroll_panel.Height - this.Height;
-            Point PointTemp = new Point(IntX / 2, IntY / 2);
-            Main_Panel.AutoScrollPosition = PointTemp;
-            #endregion 将容器滚动至居中位置
-
+            Scroll_panel.Width = MaxWidth > MinWidth ? MaxWidth : MinWidth;//优先最大宽度 
+            #endregion 设置思维导图的容器的尺寸
             #region 思维导图相对于容器居中
             int IntTemp = Scroll_panel.Height - mindMapNode.Height;
             IntTemp = IntTemp / 2;
@@ -667,12 +661,58 @@ namespace WlxMindMap
             IntTemp = IntTemp / 2;
             mindMapNode.Left = IntTemp;
             #endregion 思维导图相对于容器居中
+            SetScroll();
+
         }
+        
+        PointF CurrentProportion = new PointF ();//当前滚动条比例
+        /// <summary> 记录当前滚动条比例 [配合SetScroll方法可以按比例滚动]
+        /// 
+        /// </summary>
+        private void RecordScalingPosition()
+        {
+            float LeftProportionTemp = (Main_Panel.Width / 2) + Main_Panel.HorizontalScroll.Value;
+            float TopProportionTemp = (Main_Panel.Height / 2) + Main_Panel.VerticalScroll.Value;
+            
+            CurrentProportion.X = LeftProportionTemp / ((float)Scroll_panel.Width);
+            CurrentProportion.Y = TopProportionTemp / ((float)Scroll_panel.Height);
+        }
+
+        /// <summary> 将思维导图滚动至居中位置
+        /// 
+        /// </summary>
+        public void ScrollCenter()
+        {
+            #region 将容器滚动至居中位置
+            int IntX = this.Scroll_panel.Width - this.Width;
+            int IntY = this.Scroll_panel.Height - this.Height;
+            Point PointTemp = new Point(IntX / 2, IntY / 2);
+            Main_Panel.AutoScrollPosition = PointTemp;
+            #endregion 将容器滚动至居中位置
+            RecordScalingPosition();
+        }
+        
+        /// <summary> 设置滚动条比例
+        /// [ 调用前请使用RecordScalingPosition记录比例]
+        /// </summary>
+        private void SetScroll()
+        {
+          
+            int LeftTemp =(int)(Scroll_panel.Width* CurrentProportion.X);
+            int TopTemp = (int)(Scroll_panel.Height * CurrentProportion.Y);
+            LeftTemp = LeftTemp - (Main_Panel.Width / 2);
+            TopTemp = TopTemp - (Main_Panel.Height / 2);
+            Main_Panel.AutoScrollPosition = new Point(LeftTemp, TopTemp);
+        }
+
         #endregion 当控件尺寸改变时更改滚动条尺寸
 
         #region 按住Ctrl+滚轮缩放
         private int PaintNum = 0;//倒计时的时间
         private Thread PaintTread = null;//用于倒计时的线程（不阻塞UI线程）
+        /// <summary> 延时200毫秒刷新滚动条尺寸和位置
+        /// 
+        /// </summary>
         private void DelayShow()
         {
             PaintNum = 300;//倒计时300毫秒
@@ -690,9 +730,7 @@ namespace WlxMindMap
                         mindMapNode.Visible = false;//当所有尺寸设置完成后再显示，可以有效加快控件的绘制过程
                         this.CurrentScaling = this._CurrentScaling;
                         mindMapNode.Visible = true;
-                        ResetMindMapPanelSize();//将思维导图居中
-                        this.mindMapNode.Resize += new System.EventHandler(this.mindMapNode_Resize);
-                        this.Resize += new System.EventHandler(this.MindMap_Panel_Resize);
+                        ResetMindMapPanelSize();//将思维导图居中                        
                     }));
                     PaintTread = null;//将自己置空来表示自己已经运行结束了
                 });
@@ -710,26 +748,35 @@ namespace WlxMindMap
             {
                 case 522:
                     //case 0x0100:
-                    List<IntPtr> HandleList = this.GetAllControl().Select(T1 => T1.Handle).ToList();
-                    IntPtr MouseHandle = WindowsAPI.WindowFromPoint(Control.MousePosition);
+                    List<IntPtr> HandleList = this.GetAllControl().Select(T1 => T1.Handle).ToList();//获取思维导图所有控件的窗口句柄
+                    IntPtr MouseHandle = WindowsAPI.WindowFromPoint(Control.MousePosition);//获取鼠标所在窗口句柄
                     if (!HandleList.Contains(MouseHandle)) break;//鼠标不在思维导图控件上时就不缩放
                     #region 缩放相关代码
                     if (Control.ModifierKeys == Keys.Control)
                     {
-
-                        int WheelValue = m.WParam.ToInt32();
-                        this.mindMapNode.Resize -= new System.EventHandler(this.mindMapNode_Resize);
-                        this.Resize -= new System.EventHandler(this.MindMap_Panel_Resize);
-
+                        #region 获取本次缩放的值[1%-50%:每次缩放10%；50%-100%:每次缩放20%；100%以上:每次缩放50%]
                         float ChangeValue = 0.1F;//每次放大或缩小10%
-                        float ResultScaling = 1;
+                        if (0.5 <= this._CurrentScaling && this._CurrentScaling < 1.5)
+                        {
+                            ChangeValue = 0.2F;
+                        }
+                        else if (1.5 <= this._CurrentScaling)
+                        {
+                            ChangeValue = 0.5F;
+                        }
+                        #endregion 获取本次缩放的值[1%-50%:每次缩放10%；50%-100%:每次缩放20%；100%以上:每次缩放50%]
+
+                        float ResultScaling = 1;//结果的比例
+                        int WheelValue = m.WParam.ToInt32();
                         if (WheelValue < 0)
                         {
+                            //缩小
                             ResultScaling = this._CurrentScaling - ChangeValue;
                             if (ResultScaling <= 0) ResultScaling = 0.1F;
                         }
                         else
                         {
+                            //放大
                             ResultScaling = this._CurrentScaling + ChangeValue;
                         }
                         this._CurrentScaling = ResultScaling;
@@ -756,15 +803,15 @@ namespace WlxMindMap
             mindMapNode.Visible = true;
         }
 
-        /// <summary> 禁止每当空间获得焦点后横向滚动条总会滚动到根节点
+        /// <summary> 禁止每当控件获得焦点后横向滚动条总会自动滚动到根节点
         /// 
         /// </summary>
         /// <param name="activeControl"></param>
         /// <returns></returns>
-        protected override Point ScrollToControl(Control activeControl)
-        {
-            return Main_Panel.AutoScrollPosition;
-        }
+        //protected override Point ScrollToControl(Control activeControl)
+        //{
+        //    return Main_Panel.AutoScrollPosition;
+        //}
         #endregion 按住Ctrl+滚轮缩放
 
         /// <summary> 控件中键盘按下事件
@@ -776,6 +823,11 @@ namespace WlxMindMap
         {
             if (MindNodemapKeyDown != null) MindNodemapKeyDown(this, new KeyEventArgs(keyData));
             return base.ProcessDialogKey(keyData);
+        }
+
+        private void Main_Panel_Scroll(object sender, ScrollEventArgs e)
+        {
+            RecordScalingPosition();
         }
     }
 }

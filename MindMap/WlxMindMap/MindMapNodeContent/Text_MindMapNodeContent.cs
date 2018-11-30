@@ -111,6 +111,7 @@ namespace WlxMindMap.MindMapNodeContent
             }
             set
             {
+                
                 _DataItem = value;
 
                 Content_lable.Text = GetDataValue(g_DataStruct.Text).ToString();

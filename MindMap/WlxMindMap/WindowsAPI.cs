@@ -10,6 +10,11 @@ namespace WlxMindMap
 {
     class WindowsAPI
     {
+        /// <summary> 获取指定坐标的窗口句柄
+        /// 
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern IntPtr WindowFromPoint(Point point);
     }

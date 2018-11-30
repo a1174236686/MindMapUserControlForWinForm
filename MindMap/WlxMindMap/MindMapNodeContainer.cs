@@ -57,6 +57,7 @@ namespace WlxMindMap
             get { return _CurrentScaling; }
             set
             {
+                if (_CurrentScaling == value) return;
                 _CurrentScaling = value;
 
                 List<MindMapNodeContainer> ContainerList = GetChidrenNode();//获取子节点
@@ -86,7 +87,7 @@ namespace WlxMindMap
             }
         }
 
-        /// <summary> 获取或设置节点的数据源
+        /// <summary> 获取或设置节点的数据源[数据源来自于NodeContent中]
         /// 
         /// </summary>
         public object DataItem
@@ -130,8 +131,8 @@ namespace WlxMindMap
         /// <summary> 为节点设置内容布局样式
         /// 
         /// </summary>
-        /// <param name="Struct"></param>
-        /// <param name="NodeContentParame"></param>
+        /// <param name="Struct">指示DataItem的数据结构</param>
+        /// <param name="NodeContentParame">设置节点内容布局</param>
         public void SetNodeContent(MindMapNodeStructBase Struct, MindMapNodeContentBase NodeContentParame )
         {
             if (NodeContentParame == null) throw new Exception("节点内容的布局不能为空");
@@ -145,6 +146,11 @@ namespace WlxMindMap
             if (AddNodeContent != null) AddNodeContent(this, null);
         }
 
+        /// <summary> 为节点设置内容布局样式
+        /// 
+        /// </summary>
+        /// <typeparam name="NodeContentClass">指定该节点内容采用哪种布局</typeparam>
+        /// <param name="Struct">指示DataItem的数据结构</param>
         public void SetNodeContent<NodeContentClass>(MindMapNodeStructBase Struct) where NodeContentClass : MindMapNodeContentBase, new()
         {
             SetNodeContent(Struct, new NodeContentClass());
