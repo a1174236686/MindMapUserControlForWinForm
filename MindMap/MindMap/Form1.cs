@@ -204,7 +204,6 @@ namespace MindMap
 
 
         }
-        private int FontSize = 13;
         /// <summary> 滚轮放大缩小
         /// 
         /// </summary>
@@ -212,15 +211,7 @@ namespace MindMap
         /// <param name="e"></param>
         private void OnMouseWhell(object Send, MouseEventArgs e)
         {
-            return;
-            int ChangeValue = 1;//每次放大或缩小的数值
-            if (e.Delta < 0) FontSize = FontSize - ChangeValue <= ChangeValue ? ChangeValue : FontSize - ChangeValue;
-            else FontSize = FontSize + ChangeValue;
-
-            Font TextFontTemp = new Font(new FontFamily("微软雅黑"), FontSize);
-            mindMap_Panel1.Visible = false;
-            
-            mindMap_Panel1.Visible = true;
+            return;          
                                  
         }
 

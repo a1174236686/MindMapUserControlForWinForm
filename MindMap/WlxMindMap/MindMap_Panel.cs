@@ -563,9 +563,9 @@ namespace WlxMindMap
         #endregion 公开事件委托    
 
         #region 鼠标中键拖动滚动条
-        Form FormPanel = new Form();
 
-        private bool IsMouseMove = false;//是否可以开始拖动鼠标了
+
+   
         private Point MoveValue = new Point();//鼠标拖动前的位置;
 
         /// <summary> 按下中键时可拖动滚动条
@@ -579,11 +579,16 @@ namespace WlxMindMap
             if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right)
             {
                 MoveValue = e.Location;
-                IsMouseMove = true;
+              
             }
             else if (e.Button == MouseButtons.Left)
             {             
-                MoveValue = Scroll_panel.PointToClient(Control.MousePosition);            
+                MoveValue = Scroll_panel.PointToClient(Control.MousePosition);
+
+                Selected_Top_panel.Visible = true;
+                Selected_Left_panel.Visible = true;
+                Selected_Right_panel.Visible = true;
+                Selected_Bottom_panel.Visible = true;
             }
         }
 
@@ -594,15 +599,15 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void MindMap_Panel_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right)
-                IsMouseMove = false;
-            else if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
-                FormPanel.Visible = false ;
-                Graphics LineGraphics = Scroll_panel.CreateGraphics();
-                LineGraphics.Clear(Scroll_panel.BackColor);//清除之前的
+                Selected_Top_panel.Visible = false;
+                Selected_Left_panel.Visible = false;
+                Selected_Right_panel.Visible = false;
+                Selected_Bottom_panel.Visible = false;
+               
             }
-          
+
         }
 
         /// <summary>按住鼠标中间可拖动滚动条
@@ -648,14 +653,21 @@ namespace WlxMindMap
                     PanelLocation.Y = PointTemp1.Y;
                     PanelSize.Height = MoveValue.Y - PointTemp1.Y;
                 }
-                //FormPanel.Size = PanelSize;
-                //FormPanel.Location = PanelLocation;
 
-                Graphics LineGraphics = Scroll_panel.CreateGraphics();
-                LineGraphics.Clear(Scroll_panel.BackColor);//清除之前的
-                Pen PenTemp = new Pen(Color.Black, 1);
-                LineGraphics.DrawRectangle(PenTemp, new Rectangle(PanelLocation, PanelSize));
 
+                Selected_Top_panel.Location = PanelLocation;
+                Selected_Top_panel.Width = PanelSize.Width;
+
+                Selected_Left_panel.Location = PanelLocation;
+                Selected_Left_panel.Height = PanelSize.Height;
+
+                Selected_Right_panel.Location =new Point(PanelLocation.X+ PanelSize.Width,PanelLocation.Y);
+                Selected_Right_panel.Height = PanelSize.Height;
+
+                Selected_Bottom_panel.Location = new Point(PanelLocation.X , PanelLocation.Y + PanelSize.Height);
+                Selected_Bottom_panel.Width = PanelSize.Width;
+
+             
 
             }
         }

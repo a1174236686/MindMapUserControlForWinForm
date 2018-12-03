@@ -35,9 +35,9 @@
             // textBox1
             // 
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.textBox1.Location = new System.Drawing.Point(0, 781);
+            this.textBox1.Location = new System.Drawing.Point(0, 872);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(718, 21);
+            this.textBox1.Size = new System.Drawing.Size(1663, 21);
             this.textBox1.TabIndex = 1;
             // 
             // mindMap_Panel1
@@ -48,7 +48,7 @@
             this.mindMap_Panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mindMap_Panel1.Location = new System.Drawing.Point(0, 0);
             this.mindMap_Panel1.Name = "mindMap_Panel1";
-            this.mindMap_Panel1.Size = new System.Drawing.Size(718, 781);
+            this.mindMap_Panel1.Size = new System.Drawing.Size(1663, 872);
             this.mindMap_Panel1.TabIndex = 0;
             this.mindMap_Panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMap_Panel1_MouseDown);
             // 
@@ -56,10 +56,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(718, 802);
+            this.ClientSize = new System.Drawing.Size(1663, 893);
             this.Controls.Add(this.mindMap_Panel1);
             this.Controls.Add(this.textBox1);
             this.Name = "frmMainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmMainForm";
             this.Load += new System.EventHandler(this.frmMainForm_Load);
             this.ResumeLayout(false);
