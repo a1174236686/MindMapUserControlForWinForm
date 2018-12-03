@@ -28,13 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.mindMap_Panel1 = new WlxMindMap.MindMap_Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.mindMap_Panel1 = new WlxMindMap.MindMap_Panel();
             this.SuspendLayout();
+            // 
+            // textBox1
+            // 
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.textBox1.Location = new System.Drawing.Point(0, 781);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(718, 21);
+            this.textBox1.TabIndex = 1;
             // 
             // mindMap_Panel1
             // 
-            this.mindMap_Panel1.AutoScroll = true;
             this.mindMap_Panel1.BackColor = System.Drawing.SystemColors.Control;
             this.mindMap_Panel1.CurrentScaling = 1F;
             this.mindMap_Panel1.DataStruct = null;
@@ -44,14 +51,6 @@
             this.mindMap_Panel1.Size = new System.Drawing.Size(718, 781);
             this.mindMap_Panel1.TabIndex = 0;
             this.mindMap_Panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMap_Panel1_MouseDown);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.textBox1.Location = new System.Drawing.Point(0, 781);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(718, 21);
-            this.textBox1.TabIndex = 1;
             // 
             // frmMainForm
             // 

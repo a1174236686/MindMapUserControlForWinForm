@@ -17,7 +17,7 @@ namespace MindMap
         {
             InitializeComponent();
             mindMap_Panel1.MouseWheel += new MouseEventHandler(OnMouseWhell);
-
+            
         }
 
         private void frmMainForm_Load(object sender, EventArgs e)
@@ -200,8 +200,7 @@ namespace MindMap
             ContainerTemp.DataItem = new TestEntity() { ID = "100", ParentID = "123", Text = "手动添加" };
             mindMap_Panel1.BaseNode.AddNode(ContainerTemp);
 
-
-            
+          
 
 
         }

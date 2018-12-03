@@ -28,23 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Scroll_panel = new System.Windows.Forms.Panel();
             this.Scaling_button = new System.Windows.Forms.Button();
-            this.Main_Panel = new User_Main_Panel();
+            this.Main_Panel = new WlxMindMap.User_Main_Panel();
+            this.Scroll_panel = new System.Windows.Forms.Panel();
+            this.Selected_panel = new System.Windows.Forms.Panel();
             this.Main_Panel.SuspendLayout();
+            this.Scroll_panel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // Scroll_panel
-            // 
-            this.Scroll_panel.BackColor = System.Drawing.Color.White;
-            this.Scroll_panel.Location = new System.Drawing.Point(0, 0);
-            this.Scroll_panel.Name = "Scroll_panel";
-            this.Scroll_panel.Size = new System.Drawing.Size(467, 389);
-            this.Scroll_panel.TabIndex = 2;
-            this.Scroll_panel.Click += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
-            this.Scroll_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
-            this.Scroll_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseMove);
-            this.Scroll_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
             // 
             // Scaling_button
             // 
@@ -69,6 +59,29 @@
             this.Main_Panel.TabIndex = 3;
             this.Main_Panel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.Main_Panel_Scroll);
             // 
+            // Scroll_panel
+            // 
+            this.Scroll_panel.BackColor = System.Drawing.Color.White;
+            this.Scroll_panel.Controls.Add(this.Selected_panel);
+            this.Scroll_panel.Location = new System.Drawing.Point(0, 0);
+            this.Scroll_panel.Name = "Scroll_panel";
+            this.Scroll_panel.Size = new System.Drawing.Size(467, 389);
+            this.Scroll_panel.TabIndex = 2;
+            this.Scroll_panel.Click += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
+            this.Scroll_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
+            this.Scroll_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseMove);
+            this.Scroll_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
+            // 
+            // Selected_panel
+            // 
+            this.Selected_panel.BackColor = System.Drawing.Color.Transparent;
+            this.Selected_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Selected_panel.Location = new System.Drawing.Point(239, 151);
+            this.Selected_panel.Name = "Selected_panel";
+            this.Selected_panel.Size = new System.Drawing.Size(200, 100);
+            this.Selected_panel.TabIndex = 0;
+            this.Selected_panel.Visible = false;
+            // 
             // MindMap_Panel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -82,6 +95,7 @@
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
             this.Resize += new System.EventHandler(this.MindMap_Panel_Resize);
             this.Main_Panel.ResumeLayout(false);
+            this.Scroll_panel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -91,5 +105,6 @@
         private System.Windows.Forms.Panel Scroll_panel;
         private System.Windows.Forms.Button Scaling_button;
         private User_Main_Panel Main_Panel;
+        private System.Windows.Forms.Panel Selected_panel;
     }
 }

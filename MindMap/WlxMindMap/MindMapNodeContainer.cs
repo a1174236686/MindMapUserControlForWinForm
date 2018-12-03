@@ -161,12 +161,13 @@ namespace WlxMindMap
         /// <summary> 在面板上画出当前节点的连接线
         /// 
         /// </summary>
-        private void DrawingConnectLine()
+        public void DrawingConnectLine()
         {
             int CurrentNodeHeightCenter = Content_Panel.Height / 2;
             Point StartPoint = new Point(0, CurrentNodeHeightCenter);
 
             Graphics LineGraphics = DrawingLine_panel.CreateGraphics();
+
             LineGraphics.Clear(DrawingLine_panel.BackColor);//清除之前的
             LineGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;//开启抗锯齿
 
@@ -183,7 +184,7 @@ namespace WlxMindMap
 
                 PointArray.Add(PointTemp);
                 LineGraphics.DrawCurve(PenTemp, PointArray.ToArray(), 0);
-            }
+            }           
         }
 
         /// <summary> 获取该节点下的子节点
@@ -234,11 +235,13 @@ namespace WlxMindMap
             //设置本节点容器的整体高度（所有子节点高度的总和，或节点内容的高度，两者较大的那一个）
             if (HeightCount < ContentSize.Height) HeightCount = ContentSize.Height;
             this.Height = HeightCount;
+            DrawingConnectLine();
             if (_NodeContent != null)
             {
                 _NodeContent.Left = 0;
                 _NodeContent.Top = (Content_Panel.Height - ContentSize.Height) / 2;
             }
+
         }
 
         /// <summary> 递归向上设置父节点的尺寸
@@ -302,6 +305,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void MindMapNode_Paint(object sender, PaintEventArgs e)
         {
+            //return;
             DrawingConnectLine();
             return;
 

@@ -22,6 +22,7 @@ namespace WlxMindMap
         public MindMap_Panel()
         {
             InitializeComponent();
+            this.AutoScroll = false;
             #region 根节点容器
 
             // 
@@ -562,6 +563,7 @@ namespace WlxMindMap
         #endregion 公开事件委托    
 
         #region 鼠标中键拖动滚动条
+        Form FormPanel = new Form();
 
         private bool IsMouseMove = false;//是否可以开始拖动鼠标了
         private Point MoveValue = new Point();//鼠标拖动前的位置;
@@ -579,6 +581,10 @@ namespace WlxMindMap
                 MoveValue = e.Location;
                 IsMouseMove = true;
             }
+            else if (e.Button == MouseButtons.Left)
+            {             
+                MoveValue = Scroll_panel.PointToClient(Control.MousePosition);            
+            }
         }
 
         /// <summary> 弹起中键结束拖动滚动条
@@ -590,6 +596,13 @@ namespace WlxMindMap
         {
             if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right)
                 IsMouseMove = false;
+            else if (e.Button == MouseButtons.Left)
+            {
+                FormPanel.Visible = false ;
+                Graphics LineGraphics = Scroll_panel.CreateGraphics();
+                LineGraphics.Clear(Scroll_panel.BackColor);//清除之前的
+            }
+          
         }
 
         /// <summary>按住鼠标中间可拖动滚动条
@@ -599,18 +612,53 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void MindMap_Panel_MouseMove(object sender, MouseEventArgs e)
         {
-            if (IsMouseMove)
+            if (Control.MouseButtons==MouseButtons.Right)
             {
                 Point PointTemp = new Point();
                 PointTemp.X = MoveValue.X - e.Location.X;
                 PointTemp.Y = MoveValue.Y - e.Location.Y;
                 Point ResultPoint = new Point(Main_Panel.HorizontalScroll.Value + PointTemp.X, Main_Panel.VerticalScroll.Value + PointTemp.Y);
                 Main_Panel.AutoScrollPosition = ResultPoint;
-                RecordScalingPosition();
+                RecordScrollPosition();
+            }
+            else if (Control.MouseButtons == MouseButtons.Left)
+            {
+                Point PointTemp1 = Scroll_panel.PointToClient(Control.MousePosition);
+                Point PanelLocation = new Point(0, 0);
+                Size PanelSize = new Size();
+
+                if (MoveValue.X < PointTemp1.X)
+                {
+                    PanelLocation.X = MoveValue.X;
+                    PanelSize.Width = PointTemp1.X - MoveValue.X;
+                }
+                else
+                {
+                    PanelLocation.X = PointTemp1.X;
+                    PanelSize.Width = MoveValue.X - PointTemp1.X;
+                }
+
+                if (MoveValue.Y < PointTemp1.Y)
+                {
+                    PanelLocation.Y = MoveValue.Y;
+                    PanelSize.Height = PointTemp1.Y - MoveValue.Y;
+                }
+                else
+                {
+                    PanelLocation.Y = PointTemp1.Y;
+                    PanelSize.Height = MoveValue.Y - PointTemp1.Y;
+                }
+                //FormPanel.Size = PanelSize;
+                //FormPanel.Location = PanelLocation;
+
+                Graphics LineGraphics = Scroll_panel.CreateGraphics();
+                LineGraphics.Clear(Scroll_panel.BackColor);//清除之前的
+                Pen PenTemp = new Pen(Color.Black, 1);
+                LineGraphics.DrawRectangle(PenTemp, new Rectangle(PanelLocation, PanelSize));
+
+
             }
         }
-
-
 
         #endregion 鼠标中键拖动滚动条
 
@@ -669,7 +717,7 @@ namespace WlxMindMap
         /// <summary> 记录当前滚动条比例 [配合SetScroll方法可以按比例滚动]
         /// 
         /// </summary>
-        private void RecordScalingPosition()
+        private void RecordScrollPosition()
         {
             float LeftProportionTemp = (Main_Panel.Width / 2) + Main_Panel.HorizontalScroll.Value;
             float TopProportionTemp = (Main_Panel.Height / 2) + Main_Panel.VerticalScroll.Value;
@@ -689,7 +737,7 @@ namespace WlxMindMap
             Point PointTemp = new Point(IntX / 2, IntY / 2);
             Main_Panel.AutoScrollPosition = PointTemp;
             #endregion 将容器滚动至居中位置
-            RecordScalingPosition();
+            RecordScrollPosition();
         }
         
         /// <summary> 设置滚动条比例
@@ -730,7 +778,8 @@ namespace WlxMindMap
                         mindMapNode.Visible = false;//当所有尺寸设置完成后再显示，可以有效加快控件的绘制过程
                         this.CurrentScaling = this._CurrentScaling;
                         mindMapNode.Visible = true;
-                        ResetMindMapPanelSize();//将思维导图居中                        
+                        ResetMindMapPanelSize();//将思维导图居中      
+
                     }));
                     PaintTread = null;//将自己置空来表示自己已经运行结束了
                 });
@@ -802,16 +851,7 @@ namespace WlxMindMap
             CurrentScaling = 1;//将比例设置为100%
             mindMapNode.Visible = true;
         }
-
-        /// <summary> 禁止每当控件获得焦点后横向滚动条总会自动滚动到根节点
-        /// 
-        /// </summary>
-        /// <param name="activeControl"></param>
-        /// <returns></returns>
-        //protected override Point ScrollToControl(Control activeControl)
-        //{
-        //    return Main_Panel.AutoScrollPosition;
-        //}
+        
         #endregion 按住Ctrl+滚轮缩放
 
         /// <summary> 控件中键盘按下事件
@@ -827,7 +867,9 @@ namespace WlxMindMap
 
         private void Main_Panel_Scroll(object sender, ScrollEventArgs e)
         {
-            RecordScalingPosition();
+            RecordScrollPosition();
         }
+
+    
     }
 }

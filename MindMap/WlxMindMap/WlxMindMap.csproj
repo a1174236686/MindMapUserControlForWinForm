@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtensionMethod.cs" />
+    <Compile Include="PublicFunc\ExtensionMethod.cs" />
     <Compile Include="MindMapNodeContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -70,7 +70,7 @@
     <Compile Include="User_Main_Panel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WindowsAPI.cs" />
+    <Compile Include="PublicFunc\WindowsAPI.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
