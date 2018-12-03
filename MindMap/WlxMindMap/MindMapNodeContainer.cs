@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WlxMindMap.MindMapNodeContent;
-using WlxMindMap.MindMapNode;
+
 using System.Reflection;
 
 namespace WlxMindMap

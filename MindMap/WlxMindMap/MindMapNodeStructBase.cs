@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WlxMindMap.MindMapNode
+namespace WlxMindMap
 {
     /// <summary> 用于生成思维导图的结构的基类
     /// 只提供[指明传入的哪个属性是ID，哪个属性是父ID]

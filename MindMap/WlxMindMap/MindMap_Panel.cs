@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Threading;
 using WlxMindMap;
 using WlxMindMap.MindMapNodeContent;
-using WlxMindMap.MindMapNode;
+
 
 namespace WlxMindMap
 {
@@ -563,11 +563,8 @@ namespace WlxMindMap
         #endregion 公开事件委托    
 
         #region 鼠标中键拖动滚动条
-
-
-   
+        
         private Point MoveValue = new Point();//鼠标拖动前的位置;
-
         /// <summary> 按下中键时可拖动滚动条
         /// 
         /// </summary>
@@ -605,11 +602,22 @@ namespace WlxMindMap
                 Selected_Left_panel.Visible = false;
                 Selected_Right_panel.Visible = false;
                 Selected_Bottom_panel.Visible = false;
-               
+
+                Selected_Top_panel.Location = new Point ();
+                Selected_Left_panel.Location = new Point();
+                Selected_Right_panel.Location = new Point();
+                Selected_Bottom_panel.Location = new Point();
+
+                Selected_Top_panel.Width = 0;
+                Selected_Left_panel.Height =0;
+                Selected_Right_panel.Height = 0;
+                Selected_Bottom_panel.Width = 0;
+
             }
 
         }
 
+        
         /// <summary>按住鼠标中间可拖动滚动条
         /// 
         /// </summary>
@@ -619,19 +627,21 @@ namespace WlxMindMap
         {
             if (Control.MouseButtons==MouseButtons.Right)
             {
+                #region 右键拖动思维导图
                 Point PointTemp = new Point();
                 PointTemp.X = MoveValue.X - e.Location.X;
                 PointTemp.Y = MoveValue.Y - e.Location.Y;
                 Point ResultPoint = new Point(Main_Panel.HorizontalScroll.Value + PointTemp.X, Main_Panel.VerticalScroll.Value + PointTemp.Y);
                 Main_Panel.AutoScrollPosition = ResultPoint;
                 RecordScrollPosition();
+                #endregion 右键拖动思维导图
             }
             else if (Control.MouseButtons == MouseButtons.Left)
             {
+                #region 计算矩形的尺寸
                 Point PointTemp1 = Scroll_panel.PointToClient(Control.MousePosition);
                 Point PanelLocation = new Point(0, 0);
                 Size PanelSize = new Size();
-
                 if (MoveValue.X < PointTemp1.X)
                 {
                     PanelLocation.X = MoveValue.X;
@@ -653,24 +663,49 @@ namespace WlxMindMap
                     PanelLocation.Y = PointTemp1.Y;
                     PanelSize.Height = MoveValue.Y - PointTemp1.Y;
                 }
-
-
+                #endregion 计算矩形的尺寸
+                Rectangle CurrentRectangle = new Rectangle(PanelLocation, PanelSize);//计算出当前在控件中左键画出的矩形
+                #region 画出矩形
                 Selected_Top_panel.Location = PanelLocation;
                 Selected_Top_panel.Width = PanelSize.Width;
 
                 Selected_Left_panel.Location = PanelLocation;
                 Selected_Left_panel.Height = PanelSize.Height;
 
-                Selected_Right_panel.Location =new Point(PanelLocation.X+ PanelSize.Width,PanelLocation.Y);
+                Selected_Right_panel.Location = new Point(PanelLocation.X + PanelSize.Width, PanelLocation.Y);
                 Selected_Right_panel.Height = PanelSize.Height;
 
-                Selected_Bottom_panel.Location = new Point(PanelLocation.X , PanelLocation.Y + PanelSize.Height);
+                Selected_Bottom_panel.Location = new Point(PanelLocation.X, PanelLocation.Y + PanelSize.Height);
                 Selected_Bottom_panel.Width = PanelSize.Width;
 
-             
 
+                #endregion 画出矩形
+
+                List<MindMapNodeContainer> MindMapNodeContainerTemp = mindMapNode.GetChidrenNode(true);
+                MindMapNodeContainerTemp.Add(mindMapNode);
+
+                foreach (MindMapNodeContainer MindMapNodeContaineritem in MindMapNodeContainerTemp)
+                {
+                    Point ContentPoint = MindMapNodeContaineritem.NodeContent.PointToScreen(new Point());
+                    ContentPoint = Scroll_panel.PointToClient(ContentPoint);
+
+                    Rectangle RectangleTemp = new Rectangle(ContentPoint, MindMapNodeContaineritem.NodeContent.Size);
+
+                    if (CurrentRectangle.IntersectsWith(RectangleTemp))
+                    {
+                        MindMapNodeContaineritem.NodeContent.Selected = true;
+                    }
+                    else
+                    {
+                        MindMapNodeContaineritem.NodeContent.Selected = false ;
+                    }
+                    
+
+                }
             }
         }
+      
+     
 
         #endregion 鼠标中键拖动滚动条
 
