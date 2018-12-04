@@ -62,7 +62,7 @@ namespace WlxMindMap
             get { return _CurrentScaling; }
             set
             {
-              
+
                 Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString() + "%";//将当前比例显示到前台
                 _CurrentScaling = value;
                 mindMapNode.CurrentScaling = value;
@@ -222,7 +222,7 @@ namespace WlxMindMap
                     NodeItem.EmptyRangeMouseUp += new MouseEventHandler(mindMapNode_EmptyRangeMouseUp);
                     NodeItem.AddChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
                     NodeItem.RemoveChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
-                    NodeItem.AddNodeContent += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);                    
+                    NodeItem.AddNodeContent += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
                 }
                 else
                 {
@@ -235,8 +235,8 @@ namespace WlxMindMap
                     NodeItem.RemoveChidrenNode -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
                     NodeItem.AddNodeContent -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
                 }
-                if(NodeItem.NodeContent!=null) NodeContentList.AddRange(NodeItem.NodeContent.GetNodeControl());//获取当前节点内容的所有控件
-             
+                if (NodeItem.NodeContent != null) NodeContentList.AddRange(NodeItem.NodeContent.GetNodeControl());//获取当前节点内容的所有控件
+
             });
             #endregion 为节点容器添加事件
             #region 为节点内容添加事件
@@ -265,7 +265,7 @@ namespace WlxMindMap
                 }
 
 
-              
+
             });
             #endregion 为节点内容添加事件
         }
@@ -277,7 +277,7 @@ namespace WlxMindMap
         /// </summary>
         private void mindMapNode_MindMapNodeMouseDown(object sender, MouseEventArgs e)
         {
-            MindMap_Panel_MouseDown(sender, e);
+            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle) MindMap_Panel_MouseDown(sender, e);
             if (MindMapNodeMouseDown != null) MindMapNodeMouseDown(sender, e);
         }
 
@@ -286,7 +286,7 @@ namespace WlxMindMap
         /// </summary>
         private void mindMapNode_MindMapNodeMouseUp(object sender, MouseEventArgs e)
         {
-            MindMap_Panel_MouseUp(this, e);
+            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle) MindMap_Panel_MouseUp(this, e);
             if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
         }
 
@@ -297,7 +297,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_MindMapNodeMouseMove(object sender, MouseEventArgs e)
         {
-            MindMap_Panel_MouseMove(sender, e);
+            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle) MindMap_Panel_MouseMove(sender, e);
             if (MindMapNodeMouseMove != null) MindMapNodeMouseMove(sender, e);
         }
 
@@ -333,7 +333,7 @@ namespace WlxMindMap
             foreach (MindMapNodeContainer ContainerItem in MindMapNodeList)
             {
                 if (ContainerItem.NodeContent.Edited)
-                {                 
+                {
                     ContainerItem.NodeContent.Edited = false;
                     break;
                 }
@@ -414,7 +414,7 @@ namespace WlxMindMap
         {
 
             if (EmptyRangeMouseClick != null) EmptyRangeMouseClick(sender, e);
-      
+
         }
 
         /// <summary> 空白处鼠标按下
@@ -427,6 +427,7 @@ namespace WlxMindMap
             this.Focus();
             if (e.Button == MouseButtons.Left)
             {
+                #region 取消所有编辑状态
                 List<MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
                 MindMapNodeList.Add(mindMapNode);
                 foreach (MindMapNodeContainer ContainerItem in MindMapNodeList)
@@ -437,10 +438,16 @@ namespace WlxMindMap
                         return;
                     }
                 }
+                #endregion 取消所有编辑状态
+
                 if (Control.ModifierKeys != Keys.Control)//不按住ctrl就直接取消所有选中
+                {
                     MindMapNodeList.ForEach(T1 => T1.NodeContent.Selected = false);
+                }
+
+
             }
-           
+
 
             MindMap_Panel_MouseDown(sender, e);
             if (EmptyRangeMouseDown != null) EmptyRangeMouseDown(sender, e);
@@ -453,7 +460,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_EmptyRangeMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle) MindMap_Panel_MouseMove(sender, e);
+            MindMap_Panel_MouseMove(sender, e);
             if (EmptyRangeMouseMove != null) EmptyRangeMouseMove(sender, e);
         }
 
@@ -582,20 +589,37 @@ namespace WlxMindMap
 
         #region 鼠标中键拖动滚动条
 
-        private Point MoveValue = new Point();//鼠标拖动前的位置;
+
+        /// <summary> 左键拖动前就已经选中的节点
+        /// 
+        /// </summary>
+        List<MindMapNodeContainer> SelectedNodeList = new List<MindMapNodeContainer>();
+
+        /// <summary> 鼠标拖动前的位置
+        /// 
+        /// </summary>
+        private Point MoveValue = new Point();
         /// <summary> 按下中键时可拖动滚动条
         /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MindMap_Panel_MouseDown(object sender, MouseEventArgs e)
-        {         
+        {
             if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right)
             {
-                MoveValue = e.Location;              
+                MoveValue = e.Location;
             }
             else if (e.Button == MouseButtons.Left)
             {
+                if (Control.ModifierKeys == Keys.Control)//按住ctrl就记录已选中节点
+                {
+                    SelectedNodeList = GetSelectedNode();
+                }
+                else
+                {
+                    SelectedNodeList.Clear();//虽然不按住Control在调用本方法之前所有节点就已经取消选中了，但为了性能还是不要调用GetSelectedNode方法了吧
+                }
                 MoveValue = Scroll_panel.PointToClient(Control.MousePosition);
                 ShowOrHideLine(true);//显示矩形的线条
             }
@@ -614,7 +638,6 @@ namespace WlxMindMap
             }
 
         }
-
         
         /// <summary>按住鼠标中间可拖动滚动条
         /// 
@@ -623,7 +646,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void MindMap_Panel_MouseMove(object sender, MouseEventArgs e)
         {
-            if (Control.MouseButtons==MouseButtons.Right)
+            if (Control.MouseButtons == MouseButtons.Right)
             {
                 #region 右键拖动思维导图
                 Point PointTemp = new Point();
@@ -664,8 +687,7 @@ namespace WlxMindMap
                 }
                 #endregion 计算矩形的尺寸
                 Rectangle CurrentRectangle = new Rectangle(PanelLocation, PanelSize);//计算出当前在控件中左键画出的矩形
-                if (CurrentRectangle.Width < 3 || CurrentRectangle.Height < 3) return;//必须拖动一定距离才触发，否则单击也会触发
-                
+                if (CurrentRectangle.Width < 3 || CurrentRectangle.Height < 3) return;//必须拖动一定距离才触发，否则单击也会触发                
                 #region 画出矩形
                 Selected_Top_panel.Location = PanelLocation;
                 Selected_Top_panel.Width = PanelSize.Width;
@@ -684,7 +706,6 @@ namespace WlxMindMap
 
                 List<MindMapNodeContainer> MindMapNodeContainerTemp = mindMapNode.GetChidrenNode(true);
                 MindMapNodeContainerTemp.Add(mindMapNode);
-
                 foreach (MindMapNodeContainer MindMapNodeContaineritem in MindMapNodeContainerTemp)
                 {
                     Point ContentPoint = MindMapNodeContaineritem.NodeContent.PointToScreen(new Point());
@@ -694,17 +715,27 @@ namespace WlxMindMap
 
                     if (CurrentRectangle.IntersectsWith(RectangleTemp))
                     {
-                        MindMapNodeContaineritem.NodeContent.Selected = true;
+                        if (SelectedNodeList.Contains(MindMapNodeContaineritem))//如果已经选中了就取消选中
+                        {
+                            MindMapNodeContaineritem.NodeContent.Selected = false;
+                        }
+                        else
+                        {
+                            MindMapNodeContaineritem.NodeContent.Selected = true;
+                        }
                     }
                     else
                     {
-                        MindMapNodeContaineritem.NodeContent.Selected = false ;
+                        if (SelectedNodeList.Contains(MindMapNodeContaineritem))
+                            continue;//在拖动之前就已经选中了就不管
+                        MindMapNodeContaineritem.NodeContent.Selected = false;
                     }
-                    
-                    
+
+
                 }
             }
         }
+
         /// <summary> 显示或隐藏左键拖动的矩形线条
         /// 
         /// </summary>
@@ -740,8 +771,6 @@ namespace WlxMindMap
                 #endregion 隐藏矩形线条
             }
         }
-      
-     
 
         #endregion 鼠标中键拖动滚动条
 
@@ -754,7 +783,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_Resize(object sender, EventArgs e)
         {
-            ResetMindMapPanelSize();            
+            ResetMindMapPanelSize();
         }
 
         /// <summary> 当本控件的尺寸改变时，滚动条尺寸也要改变
@@ -795,8 +824,8 @@ namespace WlxMindMap
             SetScroll();
 
         }
-        
-        PointF CurrentProportion = new PointF ();//当前滚动条比例
+
+        PointF CurrentProportion = new PointF();//当前滚动条比例
         /// <summary> 记录当前滚动条比例 [配合SetScroll方法可以按比例滚动]
         /// 
         /// </summary>
@@ -804,7 +833,7 @@ namespace WlxMindMap
         {
             float LeftProportionTemp = (Main_Panel.Width / 2) + Main_Panel.HorizontalScroll.Value;
             float TopProportionTemp = (Main_Panel.Height / 2) + Main_Panel.VerticalScroll.Value;
-            
+
             CurrentProportion.X = LeftProportionTemp / ((float)Scroll_panel.Width);
             CurrentProportion.Y = TopProportionTemp / ((float)Scroll_panel.Height);
         }
@@ -822,14 +851,14 @@ namespace WlxMindMap
             #endregion 将容器滚动至居中位置
             RecordScrollPosition();
         }
-        
+
         /// <summary> 设置滚动条比例
         /// [ 调用前请使用RecordScalingPosition记录比例]
         /// </summary>
         private void SetScroll()
         {
-          
-            int LeftTemp =(int)(Scroll_panel.Width* CurrentProportion.X);
+
+            int LeftTemp = (int)(Scroll_panel.Width * CurrentProportion.X);
             int TopTemp = (int)(Scroll_panel.Height * CurrentProportion.Y);
             LeftTemp = LeftTemp - (Main_Panel.Width / 2);
             TopTemp = TopTemp - (Main_Panel.Height / 2);
@@ -934,10 +963,10 @@ namespace WlxMindMap
             CurrentScaling = 1;//将比例设置为100%
             mindMapNode.Visible = true;
         }
-        
+
         #endregion 按住Ctrl+滚轮缩放
 
-     
+
         /// <summary> 移动滚动条时记录滚动比例
         /// 
         /// </summary>
@@ -948,6 +977,6 @@ namespace WlxMindMap
             RecordScrollPosition();
         }
 
-    
+
     }
 }
