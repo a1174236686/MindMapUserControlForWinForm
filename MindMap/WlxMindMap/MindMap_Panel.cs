@@ -17,6 +17,9 @@ namespace WlxMindMap
 {
     public partial class MindMap_Panel : UserControl, IMessageFilter
     {
+        /// <summary> 根节点容器
+        /// 
+        /// </summary>
         private MindMapNodeContainer mindMapNode = new MindMapNodeContainer();
 
         public MindMap_Panel()
@@ -77,27 +80,72 @@ namespace WlxMindMap
 
         #region 公开方法
 
+        /// <summary> 根据DataStruct的结构取出根节点
+        /// 
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="DataSource">数据源</param>
+        /// <returns>根节点的实例</returns>
+        private T GetBaseData<T>(List<T> DataSource)
+        {
+            if (DataStruct == null) throw new Exception("DataStruct为空：你需要先指定数据源的结构");
+            PropertyInfo IDProperty = typeof(T).GetProperty(DataStruct.MindMapID);
+            PropertyInfo ParentProperty = typeof(T).GetProperty(DataStruct.MindMapParentID);
+
+            List<T> CurrentAddList;
+            var Temp1 = DataSource.Select(T1 => new { ID = IDProperty.GetValue(T1).ToString(), ParentID = ParentProperty.GetValue(T1).ToString() });//将父子关系的属性反射出来
+            List<string> IDList = Temp1.Select(T1 => T1.ID).ToList();//所有ID
+            Temp1 = Temp1.Where(T1 => !IDList.Contains(T1.ParentID)).ToList();//筛选出父节点不在当前DataSource的记录
+
+            if (Temp1.Count() > 1) throw new Exception("不允许有多个根节点");
+            if (Temp1.Count() != 1) throw new Exception("未找到根节点");
+
+            //筛选出来只有一个符合要求的那就把他作为根节点
+            string BaseNodeID = Temp1.FirstOrDefault().ID;
+            CurrentAddList = DataSource.Where(T1 => IDProperty.GetValue(T1).ToString() == BaseNodeID).ToList();//没有父节点就优先取父节点为空的记录
+            return CurrentAddList.FirstOrDefault();
+        }
+
         /// <summary> 为思维导图绑定数据
         /// 
         /// </summary>
         /// <typeparam name="NodeContent">采用哪种内容布局</typeparam>
         /// <typeparam name="DataEntity">数据的模型</typeparam>
         /// <param name="DataSource">数据源</param>
-        /// <param name="ParentID">父ID，留空为根节点</param>
+        /// <param name="ParentID">父ID，留空则表示智能获取根节点ID</param>
         /// <returns>返回添加后的节点容器</returns>
         public List<MindMapNodeContainer> SetDataSource<NodeContent, DataEntity>(List<DataEntity> DataSource, string ParentID = null) where NodeContent : MindMapNodeContentBase, new()
         {
             if (DataStruct == null) throw new Exception("DataStruct为空：你需要先指定数据源的结构，再绑定数据源");
             PropertyInfo IDProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapID);
             PropertyInfo ParentProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapParentID);
-            bool NullParent = string.IsNullOrEmpty(ParentID);
-            List<DataEntity> CurrentAddList = new List<DataEntity>();
-
-            if (NullParent)
+            List<DataEntity> CurrentAddList;
+            bool IsBaseNode = string.IsNullOrEmpty(ParentID);
+            if (IsBaseNode)
             {
-                CurrentAddList = DataSource.Where(T1 => string.IsNullOrEmpty(ParentProperty.GetValue(T1).ToString())).ToList();//没有父节点就取父节点为空的记录
-                if (CurrentAddList.Count == 0) throw new Exception("未找到根节点");
-                if (CurrentAddList.Count > 1) throw new Exception("不允许有多个根节点");
+                CurrentAddList = new List<DataEntity>();
+                CurrentAddList.Add(GetBaseData<DataEntity>(DataSource));
+                
+                #region MyRegion
+                //CurrentAddList = DataSource.Where(T1 => string.IsNullOrEmpty(ParentProperty.GetValue(T1).ToString())).ToList();//没有父节点就优先取父节点为空的记录               
+                //if (CurrentAddList.Count > 1) throw new Exception("不允许有多个根节点");
+
+                //if (CurrentAddList.Count == 0)//可能是不为空的记录
+                //{
+                //    var Temp1 = DataSource.Select(T1 => new { ID = IDProperty.GetValue(T1).ToString(), ParentID = ParentProperty.GetValue(T1).ToString() });//将父子关系的属性反射出来
+                //    List<string> IDList = Temp1.Select(T1 => T1.ID).ToList();//所有ID
+                //    Temp1 = Temp1.Where(T1 => IDList.Contains(T1.ParentID)).ToList();//筛选出父节点不在当前DataSource的记录
+                //    if (Temp1.Count() == 1)//筛选出来只有一个符合要求的那就把他作为根节点
+                //    {
+                //        string BaseNodeID = Temp1.FirstOrDefault().ID;
+                //        CurrentAddList = DataSource.Where(T1 => IDProperty.GetValue(T1).ToString() == BaseNodeID).ToList();//没有父节点就优先取父节点为空的记录
+                //    }
+                //    else
+                //    {
+                //        throw new Exception("未找到根节点");
+                //    }
+                //} 
+                #endregion
             }
             else
             {
@@ -111,72 +159,20 @@ namespace WlxMindMap
                 string CurrentId = IDProperty.GetValue(AddDataItem).ToString();
                 List<MindMapNodeContainer> ContainerListTemp = SetDataSource<NodeContent, DataEntity>(DataSource, CurrentId);
                 MindMapNodeContainer NewNode = new MindMapNodeContainer();
-                if (NullParent) NewNode = mindMapNode;//如果没有父节点就赋值根节点
-
-
-
+                if (IsBaseNode) NewNode = mindMapNode;//如果没有父节点就赋值根节点
                 NewNode.SetNodeContent<NodeContent>(DataStruct);
                 ContainerListTemp.ForEach(item => NewNode.AddNode(item));
                 NewNode.NodeContent.DataItem = AddDataItem;
                 ContainerList.Add(NewNode);
             }
-            if (NullParent)
+            if (IsBaseNode)
             {
                 SetEvent(mindMapNode);//所有节点都绑定完了就统一为这些节点绑定事件
                 ScrollCenter();
             }
             return ContainerList;
         }
-        #region 绑定数据老代码
-        /// <summary> 为思维导图载入数据
-        /// 
-        /// </summary>
-        /// <typeparam name="NodeContent">采用哪种内容布局</typeparam>
-        /// <typeparam name="DataEntity">数据的模型</typeparam>
-        /// <param name="DataSource"></param>
-        //public void SetDataSource<NodeContent, DataEntity>(List<DataEntity> DataSource) where NodeContent : MindMapNodeContentBase, new()
-        //{
-        //    if (DataStruct == null) throw new Exception("DataStruct为空：你需要先指定数据源的结构，再绑定数据源");
-        //    PropertyInfo IDProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapID);
-        //    PropertyInfo ParentProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapParentID);
-        //    //没有父节点就取父节点为空的记录
-        //    List<DataEntity> CurrentAddList = DataSource.Where(T1 => string.IsNullOrEmpty(ParentProperty.GetValue(T1).ToString())).ToList();
-
-
-        //    if (CurrentAddList.Count == 0) throw new Exception ("未找到根节点");
-        //    if (CurrentAddList.Count > 1) throw new Exception("不允许有多个根节点");
-
-        //    string CurrentId = IDProperty.GetValue(CurrentAddList[0]).ToString();
-        //    List<MindMapNodeContainer> ContainerList = SetDataSource<NodeContent, DataEntity>(DataSource, CurrentId);
-        //    ContainerList.ForEach(item => mindMapNode.AddNode(item));
-        //    mindMapNode.SetNodeContent<NodeContent>(DataStruct);
-        //    mindMapNode.NodeContent.DataItem = CurrentAddList[0];
-
-        //    SetEvent(mindMapNode);
-        //}
-
-        //private List<MindMapNodeContainer> SetDataSource<NodeContent, DataEntity>(List<DataEntity> DataSource, string ParentID) where NodeContent : MindMapNodeContentBase, new()
-        //{
-        //    PropertyInfo IDProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapID);
-        //    PropertyInfo ParentProperty = typeof(DataEntity).GetProperty(DataStruct.MindMapParentID);
-        //    //有父节点就取ParentID为父节点的记录
-        //    List<DataEntity> CurrentAddList = DataSource.Where(T1 => ParentProperty.GetValue(T1).ToString() == ParentID).ToList();
-        //    List<MindMapNodeContainer> ContainerList = new List<MindMapNodeContainer>();
-
-        //    foreach (DataEntity AddDataItem in CurrentAddList)
-        //    {
-        //        string CurrentId = IDProperty.GetValue(AddDataItem).ToString();
-        //        List<MindMapNodeContainer> ContainerListTemp = SetDataSource<NodeContent, DataEntity>(DataSource, CurrentId);
-        //        MindMapNodeContainer NewNode = new MindMapNodeContainer ();
-        //        NewNode.SetNodeContent<NodeContent>(DataStruct);
-        //        ContainerListTemp.ForEach(item => NewNode.AddNode(item));              
-        //        NewNode.NodeContent.DataItem = AddDataItem;
-        //        ContainerList.Add(NewNode);
-        //    }
-        //    return ContainerList;
-        //} 
-        #endregion 绑定数据老代码
-
+  
         /// <summary> 获取所有被选中的节点
         /// 
         /// </summary>
@@ -435,7 +431,7 @@ namespace WlxMindMap
                     if (ContainerItem.NodeContent.Edited)
                     {
                         ContainerItem.NodeContent.Edited = false;
-                        return;
+                        break;
                     }
                 }
                 #endregion 取消所有编辑状态

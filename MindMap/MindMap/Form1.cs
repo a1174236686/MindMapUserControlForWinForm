@@ -26,7 +26,7 @@ namespace MindMap
             List<TestEntity> DataSourceList = new List<TestEntity>();
             TestEntity TestEntityTemp = new TestEntity();
             TestEntityTemp.ID = "0";
-            TestEntityTemp.ParentID = "";
+            TestEntityTemp.ParentID = "-1";
             TestEntityTemp.Text = "编程语言";
             DataSourceList.Add(TestEntityTemp);
 
