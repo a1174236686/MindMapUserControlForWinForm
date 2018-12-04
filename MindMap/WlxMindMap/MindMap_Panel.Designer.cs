@@ -73,10 +73,10 @@
             this.Scroll_panel.Name = "Scroll_panel";
             this.Scroll_panel.Size = new System.Drawing.Size(467, 389);
             this.Scroll_panel.TabIndex = 2;
-            this.Scroll_panel.Click += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
-            this.Scroll_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
-            this.Scroll_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseMove);
-            this.Scroll_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
+            this.Scroll_panel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseClick);
+            this.Scroll_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseDown);
+            this.Scroll_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseMove);
+            this.Scroll_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.mindMapNode_EmptyRangeMouseUp);
             // 
             // Selected_Left_panel
             // 
@@ -126,7 +126,6 @@
             this.Controls.Add(this.Main_Panel);
             this.Name = "MindMap_Panel";
             this.Size = new System.Drawing.Size(467, 389);
-            this.Click += new System.EventHandler(this.mindMapNode_EmptyRangeClick);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseDown);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MindMap_Panel_MouseUp);
             this.Resize += new System.EventHandler(this.MindMap_Panel_Resize);

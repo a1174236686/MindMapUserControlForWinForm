@@ -310,10 +310,9 @@ namespace WlxMindMap
             return;
 
         }
-            
-        private void EmptyRange_Click(object sender, EventArgs e)
+        private void EmptyRange_MouseClick(object sender, MouseEventArgs e)
         {
-            if (EmptyRangeClick != null) EmptyRangeClick(this, e);
+            if (EmptyRangeMouseClick != null) EmptyRangeMouseClick(this, e);
         }
 
         private void EmptyRange_MouseDown(object sender, MouseEventArgs e)
@@ -337,7 +336,8 @@ namespace WlxMindMap
         /// 
         /// </summary>
         [Browsable(true), Description("点击空白处")]
-        public event EventHandler EmptyRangeClick;
+        public event MouseEventHandler EmptyRangeMouseClick;
+
         /// <summary> 空白处鼠标按下
         /// 
         /// </summary>
@@ -378,6 +378,8 @@ namespace WlxMindMap
         /// <param name="Chidren">被添加/删除的节点</param>
         public delegate void MindMapEventHandler(MindMapNodeContainer Sender, MindMapNodeContainer MindMapNodeContainer);
         #endregion 事件
+
+    
     }
 
 }

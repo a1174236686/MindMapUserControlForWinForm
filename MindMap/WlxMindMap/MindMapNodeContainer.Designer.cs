@@ -42,7 +42,7 @@
             this.Content_Panel.Name = "Content_Panel";
             this.Content_Panel.Size = new System.Drawing.Size(61, 35);
             this.Content_Panel.TabIndex = 0;
-            this.Content_Panel.Click += new System.EventHandler(this.EmptyRange_Click);
+            this.Content_Panel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseClick);
             this.Content_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);
             this.Content_Panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseMove);
             this.Content_Panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseUp);
@@ -57,7 +57,7 @@
             this.Chidren_Panel.Name = "Chidren_Panel";
             this.Chidren_Panel.Size = new System.Drawing.Size(840, 35);
             this.Chidren_Panel.TabIndex = 1;
-            this.Chidren_Panel.Click += new System.EventHandler(this.EmptyRange_Click);
+            this.Chidren_Panel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseClick);
             this.Chidren_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);
             this.Chidren_Panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseMove);
             this.Chidren_Panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseUp);
@@ -71,7 +71,7 @@
             this.DrawingLine_panel.Name = "DrawingLine_panel";
             this.DrawingLine_panel.Size = new System.Drawing.Size(34, 35);
             this.DrawingLine_panel.TabIndex = 2;
-            this.DrawingLine_panel.Click += new System.EventHandler(this.EmptyRange_Click);
+            this.DrawingLine_panel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseClick);
             this.DrawingLine_panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);
             this.DrawingLine_panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseMove);
             this.DrawingLine_panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseUp);
