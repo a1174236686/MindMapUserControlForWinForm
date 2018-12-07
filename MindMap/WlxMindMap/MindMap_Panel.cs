@@ -65,10 +65,11 @@ namespace WlxMindMap
             get { return _CurrentScaling; }
             set
             {
-
-                Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString() + "%";//将当前比例显示到前台
+                mindMapNode.Visible = false;                
                 _CurrentScaling = value;
+                Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString() + "%";//将当前比例显示到前台
                 mindMapNode.CurrentScaling = value;
+                mindMapNode.Visible = true;
             }
         }
 
@@ -186,6 +187,15 @@ namespace WlxMindMap
             return ResultList;
         }
 
+        /// <summary> 刷新布局,当思维导图出现异常时可以尝试调用重新布局
+        /// 
+        /// </summary>
+        public override void Refresh()
+        {
+            base.Refresh();
+            this.CurrentScaling = this.CurrentScaling;
+
+        }
         #endregion 公开方法
 
         #region 公开事件委托
@@ -247,6 +257,11 @@ namespace WlxMindMap
                     ControlItem.MouseLeave += new EventHandler(mindMapNode_MindMapNodeMouseLeave);
                     ControlItem.MouseClick += new MouseEventHandler(mindMapNode_MindMapNodeMouseClick);
                     ControlItem.MouseDoubleClick += new MouseEventHandler(mindMapNode_MouseDoubleClick);
+                    ControlItem.AllowDrop = true;//允许接收拖拽行为
+                    ControlItem.DragOver += new DragEventHandler(MindMapNode_DragOver);
+                    ControlItem.DragEnter += new DragEventHandler(MindMapNode_DragEnter);
+                    ControlItem.DragDrop += new DragEventHandler(MindMapNode_DragDrop);
+
                 }
                 else
                 {
@@ -258,12 +273,128 @@ namespace WlxMindMap
                     ControlItem.MouseLeave -= new EventHandler(mindMapNode_MindMapNodeMouseLeave);
                     ControlItem.MouseClick -= new MouseEventHandler(mindMapNode_MindMapNodeMouseClick);
                     ControlItem.MouseDoubleClick -= new MouseEventHandler(mindMapNode_MouseDoubleClick);
+
+                    ControlItem.DragOver -= new DragEventHandler(MindMapNode_DragOver);
+                    ControlItem.DragEnter -= new DragEventHandler(MindMapNode_DragEnter);
+                    ControlItem.DragDrop -= new DragEventHandler(MindMapNode_DragDrop);
+
                 }
-
-
-
             });
             #endregion 为节点内容添加事件
+        }
+
+
+        /// <summary>开始拖拽节点
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void MindMapNode_DragOver(object sender, DragEventArgs e)
+        {
+            if (MindMapNodeDragOver != null) MindMapNodeDragOver(sender, e);
+
+
+
+        }
+        /// <summary> 拖拽到某节点
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void MindMapNode_DragEnter(object sender, DragEventArgs e)
+        {
+            DragEventHandler RunEvent= MindMapNodeDragEnter;
+            if (IsElseNode(e.Data))//拖拽操作是从其他节点发起的？
+            {
+                MindMapNodeContentBase Content = ((Control)sender).GetNodeContent();
+                if (AllowDrag(Content.ParentMindMapNode)) //当前节点不能拖动到选中节点和它的子节点下
+                {
+                    e.Effect = e.AllowedEffect;
+                    RunEvent = MindeMapNodeToNodeDragEnter;
+                }
+                else
+                {
+                    e.Effect =   DragDropEffects.None;
+                }
+            }
+            if(RunEvent!=null) RunEvent(sender, e);
+
+        }
+
+
+
+        /// <summary> 在某节点完成拖拽
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void MindMapNode_DragDrop(object sender, DragEventArgs e)
+        {
+            DragEventHandler RunEvent = MindMapNodeDragDrop;
+            if (IsElseNode(e.Data))//拖拽操作是从其他节点发起的？
+            {
+                MindMapNodeContentBase Content = ((Control)sender).GetNodeContent();
+                if (AllowDrag(Content.ParentMindMapNode)) //当前节点不能拖动到选中节点和它的子节点下
+                {
+                    RunEvent = MindeMapNodeToNodeDragDrop;
+                }
+            }
+            if (RunEvent != null) RunEvent(sender, e);
+        }
+
+        [Browsable(true), Description("节点开始拖拽")]
+        public event DragEventHandler MindMapNodeDragOver;
+
+        [Browsable(true), Description("拖拽到某节点边缘时")]
+        public event DragEventHandler MindMapNodeDragEnter;
+
+        [Browsable(true), Description("某节点完成拖拽操作")]
+        public event DragEventHandler MindMapNodeDragDrop;
+
+        [Browsable(true), Description("从某节点拖动到另一个节点边界时触发")]
+        public event DragEventHandler MindeMapNodeToNodeDragEnter;
+
+        [Browsable(true), Description("从某节点拖动到另一个节点完成时触发")]
+        public event DragEventHandler MindeMapNodeToNodeDragDrop;
+
+        /// <summary> 是否从其他节点拖出过来的
+        /// 
+        /// </summary>
+        /// <param name="IDataObjectParame"></param>
+        /// <returns></returns>
+        private bool IsElseNode(IDataObject IDataObjectParame)
+        {
+            List<object> objList = new List<object>();
+            foreach (string FormatItem in IDataObjectParame.GetFormats())
+            {
+                object obj = IDataObjectParame.GetData(FormatItem);
+                objList.Add(obj);
+            }
+            objList = objList.Where(T1 => T1 is MindMapNodeContentBase).ToList();
+            if (objList.Count == 1)
+                return true;
+            return false;
+
+        }
+
+        /// <summary> 判断是否允许拖动到指定节点下[不允许拖动到被选中节点和它的子节点下]
+        /// 
+        /// </summary>
+        /// <param name="DragedContainer"></param>
+        /// <returns></returns>
+        private bool AllowDrag(MindMapNodeContainer DragedContainer)
+        {
+            #region 获取所有选中节点和他的子节点
+            List<MindMapNodeContainer> NodeContainerList = GetSelectedNode();//获取所有选中节点          
+            List<MindMapNodeContainer> SelectedAndChidrenList = new List<MindMapNodeContainer>();
+            SelectedAndChidrenList.AddRange(NodeContainerList);//获取选中节点
+            NodeContainerList.ForEach(T1 => SelectedAndChidrenList.AddRange(T1.GetChidrenNode(true)));//获取选中节点的子节点
+            SelectedAndChidrenList = SelectedAndChidrenList.Distinct().ToList();//去重，两个已选中节点可能是父子关系
+            #endregion 获取所有选中节点和他的子节点
+
+            if (SelectedAndChidrenList.Contains(DragedContainer))//不允许拖动到被选中节点和它的子节点下
+                return false;
+            return true;
         }
 
         #region 节点内容相关事件方法
@@ -273,7 +404,41 @@ namespace WlxMindMap
         /// </summary>
         private void mindMapNode_MindMapNodeMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle) MindMap_Panel_MouseDown(sender, e);
+            if (e.Button == MouseButtons.Left)
+            {
+                MindMapNodeContentBase SenderObject = ((Control)sender).GetNodeContent();
+                if (SenderObject.Edited) return;//单击正在编辑的节点就不做动作
+                #region 取消所有节点的编辑状态
+                List<MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
+                MindMapNodeList.Add(mindMapNode);
+                foreach (MindMapNodeContainer ContainerItem in MindMapNodeList)
+                {
+                    if (ContainerItem.NodeContent.Edited)
+                    {
+                        ContainerItem.NodeContent.Edited = false;
+                        break;
+                    }
+                }
+                #endregion 取消所有节点的编辑状态
+                if (Control.ModifierKeys != Keys.Control)//不按住ctrl就单选
+                {
+                    if (!SenderObject.Selected)//如果单击已选中节点就不做任何事，因为可能需要按住进行拖拽
+                    {
+                        MindMapNodeList.ForEach(T1 => T1.NodeContent.Selected = false);
+                        SenderObject.Selected = true;
+                    }                    
+                }
+                else//按住ctrl可单选
+                {
+                    SenderObject.Selected = !SenderObject.Selected;
+                }
+
+            }
+
+
+                MindMap_Panel_MouseDown(sender, e);
+    
+   
             if (MindMapNodeMouseDown != null) MindMapNodeMouseDown(sender, e);
         }
 
@@ -282,7 +447,8 @@ namespace WlxMindMap
         /// </summary>
         private void mindMapNode_MindMapNodeMouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle) MindMap_Panel_MouseUp(this, e);
+            //if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
+                MindMap_Panel_MouseUp(this, e);
             if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
         }
 
@@ -293,7 +459,8 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_MindMapNodeMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle) MindMap_Panel_MouseMove(sender, e);
+            //if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
+                MindMap_Panel_MouseMove(sender, e);
             if (MindMapNodeMouseMove != null) MindMapNodeMouseMove(sender, e);
         }
 
@@ -310,6 +477,8 @@ namespace WlxMindMap
         /// </summary>
         private void mindMapNode_MindMapNodeMouseLeave(object sender, EventArgs e)
         {
+            if (Control.MouseButtons == MouseButtons.Left) 
+            
             if (MindMapNodeMouseLeave != null) MindMapNodeMouseLeave(sender, e);
         }
 
@@ -321,29 +490,7 @@ namespace WlxMindMap
         private void mindMapNode_MindMapNodeMouseClick(object sender, MouseEventArgs e)
         {
 
-            MindMapNodeContentBase SenderObject = ((Control)sender).GetNodeContent();
-            if (SenderObject.Edited) return;//单击正在编辑的节点就不做动作
-            #region 取消所有节点的编辑状态
-            List<MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
-            MindMapNodeList.Add(mindMapNode);
-            foreach (MindMapNodeContainer ContainerItem in MindMapNodeList)
-            {
-                if (ContainerItem.NodeContent.Edited)
-                {
-                    ContainerItem.NodeContent.Edited = false;
-                    break;
-                }
-            }
-            #endregion 取消所有节点的编辑状态
-            if (Control.ModifierKeys != Keys.Control)//不按住ctrl就单选
-            {
-                MindMapNodeList.ForEach(T1 => T1.NodeContent.Selected = false);
-                SenderObject.Selected = true;
-            }
-            else//按住ctrl可单选
-            {
-                SenderObject.Selected = !SenderObject.Selected;
-            }
+         
             if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
         }
 
@@ -443,8 +590,6 @@ namespace WlxMindMap
 
 
             }
-
-
             MindMap_Panel_MouseDown(sender, e);
             if (EmptyRangeMouseDown != null) EmptyRangeMouseDown(sender, e);
         }
@@ -589,7 +734,12 @@ namespace WlxMindMap
         /// <summary> 左键拖动前就已经选中的节点
         /// 
         /// </summary>
-        List<MindMapNodeContainer> SelectedNodeList = new List<MindMapNodeContainer>();
+       private List<MindMapNodeContainer> SelectedNodeList = new List<MindMapNodeContainer>();
+
+        /// <summary> 是否在节点中被按住
+        /// 
+        /// </summary>
+        private bool IsMindMapNode = false;
 
         /// <summary> 鼠标拖动前的位置
         /// 
@@ -608,16 +758,29 @@ namespace WlxMindMap
             }
             else if (e.Button == MouseButtons.Left)
             {
-                if (Control.ModifierKeys == Keys.Control)//按住ctrl就记录已选中节点
+                MindMapNodeContent.MindMapNodeContentBase ContentControl = ((Control)sender).GetNodeContent();
+                if (ContentControl == null)
                 {
-                    SelectedNodeList = GetSelectedNode();
+                    IsMindMapNode = false;
+                    #region 空白处按住左键，即将进行矩形选择
+                    if (Control.ModifierKeys == Keys.Control)//按住ctrl就记录已选中节点
+                    {
+                        SelectedNodeList = GetSelectedNode();
+                    }
+                    else
+                    {
+                        SelectedNodeList.Clear();//虽然不按住Control在调用本方法之前所有节点就已经取消选中了，但为了性能还是不要调用GetSelectedNode方法了吧
+                    }
+                    ShowOrHideLine(true);//显示矩形的线条 
+                    #endregion 空白处按住左键，即将进行矩形选择
                 }
                 else
                 {
-                    SelectedNodeList.Clear();//虽然不按住Control在调用本方法之前所有节点就已经取消选中了，但为了性能还是不要调用GetSelectedNode方法了吧
+                    // 在节点中按住左键,即将进行拖拽操作
+                    IsMindMapNode = true;          
                 }
                 MoveValue = Scroll_panel.PointToClient(Control.MousePosition);
-                ShowOrHideLine(true);//显示矩形的线条
+            
             }
         }
 
@@ -634,7 +797,7 @@ namespace WlxMindMap
             }
 
         }
-        
+
         /// <summary>按住鼠标中间可拖动滚动条
         /// 
         /// </summary>
@@ -684,49 +847,65 @@ namespace WlxMindMap
                 #endregion 计算矩形的尺寸
                 Rectangle CurrentRectangle = new Rectangle(PanelLocation, PanelSize);//计算出当前在控件中左键画出的矩形
                 if (CurrentRectangle.Width < 3 || CurrentRectangle.Height < 3) return;//必须拖动一定距离才触发，否则单击也会触发                
-                #region 画出矩形
-                Selected_Top_panel.Location = PanelLocation;
-                Selected_Top_panel.Width = PanelSize.Width;
 
-                Selected_Left_panel.Location = PanelLocation;
-                Selected_Left_panel.Height = PanelSize.Height;
-
-                Selected_Right_panel.Location = new Point(PanelLocation.X + PanelSize.Width, PanelLocation.Y);
-                Selected_Right_panel.Height = PanelSize.Height;
-
-                Selected_Bottom_panel.Location = new Point(PanelLocation.X, PanelLocation.Y + PanelSize.Height);
-                Selected_Bottom_panel.Width = PanelSize.Width;
-
-
-                #endregion 画出矩形
-
-                List<MindMapNodeContainer> MindMapNodeContainerTemp = mindMapNode.GetChidrenNode(true);
-                MindMapNodeContainerTemp.Add(mindMapNode);
-                foreach (MindMapNodeContainer MindMapNodeContaineritem in MindMapNodeContainerTemp)
+                if (IsMindMapNode) //是否在节点中进行左键拖拽
                 {
-                    Point ContentPoint = MindMapNodeContaineritem.NodeContent.PointToScreen(new Point());
-                    ContentPoint = Scroll_panel.PointToClient(ContentPoint);
+                    //是：拖拽节点
+                    MindMapNodeContent.MindMapNodeContentBase ContentControl = ((Control)sender).GetNodeContent();
+                    ContentControl.DoDragDrop(ContentControl, DragDropEffects.Move);
+                }
+                else
+                {
+                    //不是：就拖拽出矩形框框
+                    #region 画出矩形
+                    Selected_Top_panel.Location = PanelLocation;
+                    Selected_Top_panel.Width = PanelSize.Width;
 
-                    Rectangle RectangleTemp = new Rectangle(ContentPoint, MindMapNodeContaineritem.NodeContent.Size);
+                    Selected_Left_panel.Location = PanelLocation;
+                    Selected_Left_panel.Height = PanelSize.Height;
 
-                    if (CurrentRectangle.IntersectsWith(RectangleTemp))
+                    Selected_Right_panel.Location = new Point(PanelLocation.X + PanelSize.Width, PanelLocation.Y);
+                    Selected_Right_panel.Height = PanelSize.Height;
+
+                    Selected_Bottom_panel.Location = new Point(PanelLocation.X, PanelLocation.Y + PanelSize.Height);
+                    Selected_Bottom_panel.Width = PanelSize.Width;
+
+
+                    #endregion 画出矩形
+
+                    #region 选中框住的节点
+                    //获取所有节点实例
+                    List<MindMapNodeContainer> MindMapNodeContainerTemp = mindMapNode.GetChidrenNode(true);
+                    MindMapNodeContainerTemp.Add(mindMapNode);
+                    foreach (MindMapNodeContainer MindMapNodeContaineritem in MindMapNodeContainerTemp)//遍历所有节点实例
                     {
-                        if (SelectedNodeList.Contains(MindMapNodeContaineritem))//如果已经选中了就取消选中
+                        #region 获取当前节点的坐标和尺寸信息[矩形信息]
+                        Point ContentPoint = MindMapNodeContaineritem.NodeContent.PointToScreen(new Point());//获取节点屏幕坐标
+                        ContentPoint = Scroll_panel.PointToClient(ContentPoint);//获取节点在控件中的位置
+                        Rectangle RectangleTemp = new Rectangle(ContentPoint, MindMapNodeContaineritem.NodeContent.Size);//获取节点的位置和尺寸信息 
+                        #endregion 获取当前节点的坐标和尺寸信息[矩形信息]
+
+                        #region 被框住就选中或反选节点
+                        if (CurrentRectangle.IntersectsWith(RectangleTemp))//左键拖出的矩形是否与当前实例有交集
                         {
-                            MindMapNodeContaineritem.NodeContent.Selected = false;
+                            if (SelectedNodeList.Contains(MindMapNodeContaineritem))//如果已经选中了就取消选中
+                            {
+                                MindMapNodeContaineritem.NodeContent.Selected = false;
+                            }
+                            else
+                            {
+                                MindMapNodeContaineritem.NodeContent.Selected = true;
+                            }
                         }
                         else
                         {
-                            MindMapNodeContaineritem.NodeContent.Selected = true;
+                            if (SelectedNodeList.Contains(MindMapNodeContaineritem))
+                                continue;//在拖动之前就已经选中了就不管
+                            MindMapNodeContaineritem.NodeContent.Selected = false;
                         }
+                        #endregion 被框住就选中或反选节点
                     }
-                    else
-                    {
-                        if (SelectedNodeList.Contains(MindMapNodeContaineritem))
-                            continue;//在拖动之前就已经选中了就不管
-                        MindMapNodeContaineritem.NodeContent.Selected = false;
-                    }
-
+                    #endregion 选中框住的节点
 
                 }
             }
@@ -955,9 +1134,9 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void Scaling_button_Click(object sender, EventArgs e)
         {
-            mindMapNode.Visible = false;
+            
             CurrentScaling = 1;//将比例设置为100%
-            mindMapNode.Visible = true;
+          
         }
 
         #endregion 按住Ctrl+滚轮缩放

@@ -34,6 +34,7 @@
             // 
             // Content_lable
             // 
+            this.Content_lable.AllowDrop = true;
             this.Content_lable.AutoSize = true;
             this.Content_lable.BackColor = System.Drawing.Color.DodgerBlue;
             this.Content_lable.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -64,6 +65,7 @@
             // 
             // Text_MindMapNodeContent
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.Edit_TextBox);

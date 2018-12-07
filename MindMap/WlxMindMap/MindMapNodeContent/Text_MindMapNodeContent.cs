@@ -192,8 +192,8 @@ namespace WlxMindMap.MindMapNodeContent
         }
 
         private void Content_lable_MouseDown(object sender, MouseEventArgs e)
-        {
-            Content_lable.BackColor = _NodeBackColor.Down.Value;
+        {        
+            Content_lable.BackColor = _NodeBackColor.Down.Value;           
         }
 
         private void Content_lable_MouseUp(object sender, MouseEventArgs e)
@@ -347,5 +347,7 @@ namespace WlxMindMap.MindMapNodeContent
         #endregion 用于指明节点的背景色
 
         #endregion 配套使用的内部类
+
+      
     }
 }

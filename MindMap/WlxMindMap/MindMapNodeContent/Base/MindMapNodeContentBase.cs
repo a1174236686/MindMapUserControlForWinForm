@@ -75,6 +75,11 @@ namespace WlxMindMap.MindMapNodeContent
         #endregion 基类提供的方法
 
         #region 属性
+
+        /// <summary>ParentMindMapNode 属性的锁，防止死递归，确保Set属性只会被访问一次
+        /// 
+        /// </summary>
+        private bool ParentMindMapNodeLock = false;
         private MindMapNodeContainer _ParentMindMapNode;
         /// <summary> 获取或设置节点容器
         /// 
@@ -84,12 +89,23 @@ namespace WlxMindMap.MindMapNodeContent
             get { return _ParentMindMapNode; }
             set
             {
-                if (_ParentMindMapNode == value) return;
+                #region 为什么要有锁？
+                /*
+                    * 锁的概念是为了能够在设置本属性的同时联动将原父容器的节点内容设置为空
+                    * 类似于Control类的Parent属性,使得节点容器和节点内容只需要修改其中一个实例另一个实例就会自动变
+                    * 但是父节点容器也有相同的特性也会联动将原节点内容设置为空，所以会造成死递归                 
+                    */
+                #endregion 为什么要有锁？
+                if (ParentMindMapNodeLock) return;//被锁住就直接返回
+                ParentMindMapNodeLock = true;//打开锁防止死递归
+                if (_ParentMindMapNode == value) return;//相同属性就直接返回
+                if (_ParentMindMapNode != null) _ParentMindMapNode.SetNodeContent(DataStruct, null);//把原来的置为null
                 _ParentMindMapNode = value;
                 if (_ParentMindMapNode != null)
                 {
                     _ParentMindMapNode.SetNodeContent(DataStruct, this);
                 }
+                ParentMindMapNodeLock = false;//关闭锁
             }
         }
 

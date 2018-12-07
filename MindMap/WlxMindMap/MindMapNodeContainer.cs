@@ -21,7 +21,6 @@ namespace WlxMindMap
             this.DoubleBuffered = true;
             RecordScaling();
             this.Margin = new Padding(0, 2, 0, 2);
-
         }
 
         #region 缩放相关
@@ -57,7 +56,7 @@ namespace WlxMindMap
             get { return _CurrentScaling; }
             set
             {
-                if (_CurrentScaling == value) return;
+                //if (_CurrentScaling == value) return;
                 _CurrentScaling = value;
 
                 List<MindMapNodeContainer> ContainerList = GetChidrenNode();//获取子节点
@@ -127,23 +126,42 @@ namespace WlxMindMap
         #endregion 属性               
 
         #region 方法
-
+        /// <summary>SetNodeContent方法的锁。防止死递归,确保该方法只会被允许调用一次
+        /// 
+        /// </summary>
+        private bool SetContentLock = false;
         /// <summary> 为节点设置内容布局样式
         /// 
         /// </summary>
         /// <param name="Struct">指示DataItem的数据结构</param>
         /// <param name="NodeContentParame">设置节点内容布局</param>
-        public void SetNodeContent(MindMapNodeStructBase Struct, MindMapNodeContentBase NodeContentParame )
+        public void SetNodeContent(MindMapNodeStructBase Struct, MindMapNodeContentBase NodeContentParame)
         {
-            if (NodeContentParame == null) throw new Exception("节点内容的布局不能为空");
+            #region 为什么要有锁？
+            /*
+                * 锁的概念是为了调用本方法设置节点内容时，要将以前的节点内容的ParentMindMapNode属性设置为空
+                * 类似于Control类的Parent属性,使得节点容器和节点内容只需要修改其中一个实例另一个实例就会自动变
+                * 但是以前的节点内容的ParentMindMapNode属性也有相同的特性会返回来调用本方法，所以会造成死递归                 
+                */
+            #endregion 为什么要有锁？
+            if (SetContentLock) return;//锁打开了就直接返回
+            SetContentLock = true;//打开锁
+
             if (this._NodeContent == NodeContentParame) return;
-            else this._NodeContent = NodeContentParame;
-            this.NodeContent.DataStruct = Struct;
-            this.Content_Panel.Controls.Add(this.NodeContent);
-            this._NodeContent.ParentMindMapNode = this;
-            this._NodeContent.CurrentScaling = this.CurrentScaling;
+            if (this._NodeContent != null) this._NodeContent.ParentMindMapNode = null;//把以前的置为空
+            this._NodeContent = NodeContentParame;
+            this.Content_Panel.Controls.Clear();
+            if (this._NodeContent != null)
+            {
+                this.NodeContent.DataStruct = Struct;
+                this.Content_Panel.Controls.Add(this.NodeContent);
+                this._NodeContent.ParentMindMapNode = this;
+                this._NodeContent.CurrentScaling = this.CurrentScaling;
+            }
             ReSetSize();
+            SetContentLock = false;//关闭锁
             if (AddNodeContent != null) AddNodeContent(this, null);
+
         }
 
         /// <summary> 为节点设置内容布局样式
@@ -270,8 +288,7 @@ namespace WlxMindMap
             Chidren_Panel.Controls.Add(NewNode);
             MindMapNodeParame.ParentNode = this;
             MindMapNodeParame.CurrentScaling = this.CurrentScaling;
-            NewNode.ResetNodeSize();
-
+            ResetNodeSize();
             if (AddChidrenNode != null) AddChidrenNode(this, NewNode);
         }
 
@@ -294,6 +311,7 @@ namespace WlxMindMap
                     break;
                 }
             }
+            this.ResetNodeSize();
         }
         #endregion 方法
 
@@ -310,6 +328,7 @@ namespace WlxMindMap
             return;
 
         }
+
         private void EmptyRange_MouseClick(object sender, MouseEventArgs e)
         {
             if (EmptyRangeMouseClick != null) EmptyRangeMouseClick(this, e);

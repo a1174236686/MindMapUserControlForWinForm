@@ -16,7 +16,7 @@ namespace MindMap
         public frmMainForm()
         {
             InitializeComponent();
-            mindMap_Panel1.MouseWheel += new MouseEventHandler(OnMouseWhell);
+        
             
         }
 
@@ -204,19 +204,18 @@ namespace MindMap
 
 
         }
-        /// <summary> 滚轮放大缩小
-        /// 
-        /// </summary>
-        /// <param name="Send"></param>
-        /// <param name="e"></param>
-        private void OnMouseWhell(object Send, MouseEventArgs e)
-        {
-            return;          
-                                 
-        }
 
-        private void mindMap_Panel1_MouseDown(object sender, MouseEventArgs e)
+        private void mindMap_Panel1_MindeMapNodeToNodeDragDrop(object sender, DragEventArgs e)
         {
+            MindMapNodeContainer DragTarget = ((Control)sender).GetNodeContent().ParentMindMapNode;
+            mindMap_Panel1.Visible = false;
+
+            mindMap_Panel1.GetSelectedNode().ForEach(T1 => T1.ParentNode = DragTarget);
+            mindMap_Panel1.Visible = true ;
+            
+
+
+
 
         }
     }
