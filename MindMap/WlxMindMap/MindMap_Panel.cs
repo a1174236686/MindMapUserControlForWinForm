@@ -404,7 +404,7 @@ namespace WlxMindMap
         /// </summary>
         private void mindMapNode_MindMapNodeMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left )
             {
                 MindMapNodeContentBase SenderObject = ((Control)sender).GetNodeContent();
                 if (SenderObject.Edited) return;//单击正在编辑的节点就不做动作
@@ -449,7 +449,7 @@ namespace WlxMindMap
         {
             //if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
                 MindMap_Panel_MouseUp(this, e);
-            if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(this, e);
+            if (MindMapNodeMouseUp != null) MindMapNodeMouseUp(sender, e);
         }
 
         /// <summary>鼠标在节点移动时
@@ -491,7 +491,7 @@ namespace WlxMindMap
         {
 
          
-            if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(this, e);
+            if (MindMapNodeMouseClick != null) MindMapNodeMouseClick(sender, e);
         }
 
         /// <summary> 双击某节点后编辑某节点
@@ -501,10 +501,10 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (sender == null) return;
-            MindMapNodeContentBase SenderObject = ((Control)sender).GetNodeContent();
-            SenderObject.Edited = true;
-            if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(this, e);
+            //if (sender == null) return;
+            //MindMapNodeContentBase SenderObject = ((Control)sender).GetNodeContent();
+            //SenderObject.Edited = true;
+            if (MindMapNodeMouseDoubleClick != null) MindMapNodeMouseDoubleClick(sender, e);
 
         }
 
@@ -568,7 +568,7 @@ namespace WlxMindMap
         private void mindMapNode_EmptyRangeMouseDown(object sender, MouseEventArgs e)
         {
             this.Focus();
-            if (e.Button == MouseButtons.Left)
+            //if (e.Button == MouseButtons.Left)
             {
                 #region 取消所有编辑状态
                 List<MindMapNodeContainer> MindMapNodeList = mindMapNode.GetChidrenNode(true);
@@ -795,6 +795,7 @@ namespace WlxMindMap
             {
                 ShowOrHideLine(false);//隐藏矩形的线条
             }
+            IsMindMapNode = false;
 
         }
 
@@ -852,6 +853,7 @@ namespace WlxMindMap
                 {
                     //是：拖拽节点
                     MindMapNodeContent.MindMapNodeContentBase ContentControl = ((Control)sender).GetNodeContent();
+                    if(ContentControl==null)return;
                     ContentControl.DoDragDrop(ContentControl, DragDropEffects.Move);
                 }
                 else

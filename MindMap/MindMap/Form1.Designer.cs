@@ -51,6 +51,7 @@
             this.mindMap_Panel1.Size = new System.Drawing.Size(1663, 872);
             this.mindMap_Panel1.TabIndex = 0;
             this.mindMap_Panel1.MindeMapNodeToNodeDragDrop += new System.Windows.Forms.DragEventHandler(this.mindMap_Panel1_MindeMapNodeToNodeDragDrop);
+            this.mindMap_Panel1.MindMapNodeMouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.mindMap_Panel1_MindMapNodeMouseDoubleClick);
             // 
             // frmMainForm
             // 
