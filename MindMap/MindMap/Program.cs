@@ -16,20 +16,23 @@ namespace MindMap
         [STAThread]
         static void Main(string[] args)
         {
-
-
-            rightConmandKey(args);
-
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmMainForm());
+            try
+            {
+                rightConmandKey(args);  //文件夹添加右键菜单
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new frmMainForm());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-
-
         public static string MindMapRightMenu= "用思维导图打开(&Z)";
-        public static string ParamePath = @"C:\Users\wayne\Desktop";
+        //public static string ParamePath = @"C:\Users\wayne\Desktop";
+        public static string ParamePath = @"d:\";
+        
         private static void rightConmandKey(string[] args)
         {
 
@@ -102,7 +105,6 @@ namespace MindMap
             }
             catch (Exception ex)
             {
-
                 Recod(@"E:\Menu.txt", "注册右键菜单异常");
             }
         }

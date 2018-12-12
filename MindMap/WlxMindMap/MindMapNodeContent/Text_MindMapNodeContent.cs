@@ -5,7 +5,6 @@ using System.Windows.Forms;
 
 namespace WlxMindMap.MindMapNodeContent
 {
-
     public partial class Text_MindMapNodeContent :
     MindMapNodeContentBase
     //UserControl
@@ -15,14 +14,12 @@ namespace WlxMindMap.MindMapNodeContent
             InitializeComponent();
             this.DoubleBuffered = true;
             Content_lable.ForeColor = Color.FromArgb(255, 255, 255);
-            Content_lable.LinkColor = Color.FromArgb(255, 255, 255);
-            Content_lable.VisitedLinkColor = Color.FromArgb(255, 255, 255);
-            Content_lable.ActiveLinkColor = Color.FromArgb(255, 255, 255);
-            Content_lable.BackColor = NodeBackColor.Normaly.Value;
-            Edit_TextBox.Visible = false;
-            RecordScling();
+            Content_lable.BackColor = NodeBackColor.Normaly.Value;            
+            RecordScling();         
         }
-      
+
+        public string ContentText { get { return Content_lable.Text; } }
+
         #region 缩放相关
 
         /// <summary>记录当前尺寸为100%时的尺寸，缩放时将会基类该值进行调整
@@ -66,38 +63,38 @@ namespace WlxMindMap.MindMapNodeContent
             }
         }
 
-        private bool _Edited = false;
-        /// <summary>  获取或设置节点是否处于编辑状态
-        /// 
-        /// </summary>
-        public override bool Edited
-        {
-            get => _Edited;
-            set
-            {
-                if (value == _Edited) return;
-                if (value)
-                {
+        //private bool _Edited = false;
+        ///// <summary>  获取或设置节点是否处于编辑状态
+        ///// 
+        ///// </summary>
+        //public override bool Edited
+        //{
+        //    get => _Edited;
+        //    set
+        //    {
+        //        if (value == _Edited) return;
+        //        if (value)
+        //        {
 
-                    Edit_TextBox.Visible = true;
+        //            Edit_TextBox.Visible = true;
 
-                    Edit_TextBox.Size = Content_lable.Size;
-                    Edit_TextBox.Location = Content_lable.Location;
-                    Edit_TextBox.Font = Content_lable.Font;
-                    Edit_TextBox.Text = Content_lable.Text;
-                    Edit_TextBox.BringToFront();
-                    Edit_TextBox.Focus();
-                    Content_lable.Visible = false;
-                }
-                else
-                {
-                    Edit_TextBox.Visible = false;
-                    Content_lable.Visible = true;
-                    ParentMindMapNode.ResetNodeSize();
-                }
-                _Edited = value;
-            }
-        }
+        //            Edit_TextBox.Size = Content_lable.Size;
+        //            Edit_TextBox.Location = Content_lable.Location;
+        //            Edit_TextBox.Font = Content_lable.Font;
+        //            Edit_TextBox.Text = Content_lable.Text;
+        //            Edit_TextBox.BringToFront();
+        //            Edit_TextBox.Focus();
+        //            Content_lable.Visible = false;
+        //        }
+        //        else
+        //        {
+        //            Edit_TextBox.Visible = false;
+        //            Content_lable.Visible = true;
+        //            ParentMindMapNode.ResetNodeSize();
+        //        }
+        //        _Edited = value;
+        //    }
+        //}
 
         private object _DataItem;
         /// <summary> 获取或设置用于显示内容的数据源
@@ -229,19 +226,19 @@ namespace WlxMindMap.MindMapNodeContent
         /// <param name="e"></param>
         private void Edit_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyData)
-            {
-                case Keys.Enter:
-                    Content_lable.Text = Edit_TextBox.Text;
-                    RefreshContentSize();
-                    Edited = false;
-                    break;
+            //switch (e.KeyData)
+            //{
+            //    case Keys.Enter:
+            //        Content_lable.Text = Edit_TextBox.Text;
+            //        RefreshContentSize();
+            //        Edited = false;
+            //        break;
 
-                case Keys.Escape:
-                    Edited = false;
-                    break;
-            }
-            e.Handled = true;
+            //    case Keys.Escape:
+            //        Edited = false;
+            //        break;
+            //}
+            //e.Handled = true;
         }
 
         #region 配套使用的内部类
@@ -348,6 +345,6 @@ namespace WlxMindMap.MindMapNodeContent
 
         #endregion 配套使用的内部类
 
-      
+     
     }
 }

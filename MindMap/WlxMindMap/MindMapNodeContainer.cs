@@ -289,6 +289,11 @@ namespace WlxMindMap
             MindMapNodeParame.ParentNode = this;
             MindMapNodeParame.CurrentScaling = this.CurrentScaling;
             ResetNodeSize();
+
+            //添加节点后禁用Tab键。否则Tab键无法触发到MindMap_Panel控件中
+            this.GetAllControl().ForEach(T1 => T1.TabStop = false);
+            this.TabStop = false;
+
             if (AddChidrenNode != null) AddChidrenNode(this, NewNode);
         }
 

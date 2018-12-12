@@ -17,6 +17,7 @@ namespace WlxMindMap.MindMapNodeContent
     /// </summary>
     public abstract class MindMapNodeContentBase : UserControl
     {
+      
         #region 子类必须实现的抽象方法
         /// <summary> 指示DataItem的结构
         /// 
@@ -27,11 +28,7 @@ namespace WlxMindMap.MindMapNodeContent
         /// 
         /// </summary>
         public abstract bool Selected { get; set; }
-
-        /// <summary> 获取或设置节点是否处于编辑状态
-        /// 
-        /// </summary>
-        public abstract bool Edited { get; set; }
+             
         
         /// <summary> 表示用于显示内容的数据源
         /// 

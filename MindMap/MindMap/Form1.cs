@@ -19,8 +19,12 @@ namespace MindMap
         public frmMainForm()
         {
             InitializeComponent();
-        
-            
+
+
+        }
+        private void frmMainForm_Activated(object sender, EventArgs e)
+        {
+            this.TopMost = false;
         }
 
         private void frmMainForm_Load(object sender, EventArgs e)
@@ -197,56 +201,65 @@ namespace MindMap
             }
             else
             {
-                string PathTemp = Program.ParamePath;
-                string[] PathArrayTemp = PathTemp.Split('\\');
-                PathTemp = PathArrayTemp.LastOrDefault();
+                //string PathTemp = Program.ParamePath;
+                //string[] PathArrayTemp = PathTemp.Split('\\');
+                //PathTemp = PathArrayTemp.LastOrDefault();
+
+                string PathTemp = new DirectoryInfo(Program.ParamePath).Name;
                 TestEntity TestEntityTemp = new TestEntity();
                 TestEntityTemp.ID = GetID();
                 TestEntityTemp.Text = PathTemp;
                 TestEntityTemp.ParentID = "Base";
-                TestEntityTemp.Path = Program.ParamePath;       
+                TestEntityTemp.Path = Program.ParamePath;
                 DataSourceList.Add(TestEntityTemp);
-                DataSourceList.AddRange(GetDirectoriesList(Program.ParamePath, TestEntityTemp.ID,20));
+                DataSourceList.AddRange(GetDirectoriesList(Program.ParamePath, TestEntityTemp.ID, 20));
             }
 
 
-            Text_MindMapNodeContent.Text_ContentStruct NodeStruct =new Text_MindMapNodeContent.Text_ContentStruct ();
-            NodeStruct.MindMapID="ID";
+            Text_MindMapNodeContent.Text_ContentStruct NodeStruct = new Text_MindMapNodeContent.Text_ContentStruct();
+            NodeStruct.MindMapID = "ID";
             NodeStruct.MindMapParentID = "ParentID";
-            NodeStruct.Text= "Text";
+            NodeStruct.Text = "Text";
 
             mindMap_Panel1.DataStruct = NodeStruct;
             mindMap_Panel1.SetDataSource<WlxMindMap.MindMapNodeContent.Text_MindMapNodeContent, TestEntity>(DataSourceList);
 
+          
             //MindMapNodeContainer ContainerTemp = new MindMapNodeContainer();
             //ContainerTemp.SetNodeContent<Text_MindMapNodeContent>(NodeStruct);
             //ContainerTemp.DataItem = new TestEntity() { ID = "100", ParentID = "123", Text = "手动添加" };
             //mindMap_Panel1.BaseNode.AddNode(ContainerTemp);
         }
-        
-        private void mindMap_Panel1_MindeMapNodeToNodeDragDrop(object sender, DragEventArgs e)
-        {
-            MindMapNodeContainer DragTarget = ((Control)sender).GetNodeContent().ParentMindMapNode;
-            mindMap_Panel1.Visible = false;
-
-            mindMap_Panel1.GetSelectedNode().ForEach(T1 => T1.ParentNode = DragTarget);
-            mindMap_Panel1.Visible = true;
-        }
-        
-        /// <summary> 双击节点打开文件夹
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void mindMap_Panel1_MindMapNodeMouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            MindMapNodeContentBase contentTemp= ((Control)sender).GetNodeContent();
-            if (contentTemp == null) return;
-            TestEntity TestEntityTemp=(TestEntity)(contentTemp.DataItem);
-            Process.Start(TestEntityTemp.Path);
-        }
 
         #region 私有方法
+        /// <summary> 是否选中一个节点
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool IsSelectedOne()
+        {
+            List<MindMapNodeContainer> MindMapNodeContainerList = mindMap_Panel1.GetSelectedNode();
+            if (MindMapNodeContainerList.Count == 1) return true;
+            return false;
+
+
+        }
+
+
+        /// <summary> 获取当前选中的节点内容
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private MindMapNodeContentBase GetCurrentContent()
+        {
+            if (!IsSelectedOne()) return null;//多个节点被选中
+            List<MindMapNodeContainer> MindMapNodeContainerList = mindMap_Panel1.GetSelectedNode();
+            MindMapNodeContainer CurrentNode = MindMapNodeContainerList.FirstOrDefault();
+            if (CurrentNode == null) return null;//必须有被选中节点
+            return CurrentNode.NodeContent;
+        }
+
+
         /// <summary> 递归获取文件夹
         /// 
         /// </summary>
@@ -264,8 +277,7 @@ namespace MindMap
 
             foreach (string PathItem in PathArray)
             {
-                string[] PathArrayTemp = PathItem.Split('\\');
-                string PathTemp = PathArrayTemp.LastOrDefault();
+                string PathTemp = new DirectoryInfo(PathItem).Name;
                 Regex regexTemp = new Regex(@"[\u4e00-\u9fa5]");
                 if (!regexTemp.IsMatch(PathTemp)) continue;
                 TestEntity TestEntityTemp = new TestEntity();
@@ -299,6 +311,241 @@ namespace MindMap
 
         }
         #endregion 私有方法
+
+        #region 右键菜单
+
+        private void 重命名QToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MindMapNodeContentBase CurrentContent = GetCurrentContent();
+
+            if (CurrentContent == null) return;
+            if (!(CurrentContent is Text_MindMapNodeContent)) return;
+            Edit_textBox.Text = ((Text_MindMapNodeContent)CurrentContent).ContentText;
+            Edit_textBox.Visible = true;
+            #region 居中编辑框
+
+            Edit_textBox.Left = (this.Size.Width - Edit_textBox.Size.Width) / 2;
+            Edit_textBox.Top = (this.Size.Height - Edit_textBox.Size.Height) / 2;
+
+            #endregion 居中编辑框
+            Edit_textBox.Focus();
+
+        }
+
+        private void 添加同级文件夹ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MindMapNodeContentBase MindMapNodeContentBase = GetCurrentContent();
+            if (MindMapNodeContentBase == null) return;
+            MindMapNodeContainer MindMapNodeContainer = MindMapNodeContentBase.ParentMindMapNode.ParentNode;
+            if (MindMapNodeContainer == null) return;//没有父节点直接返回
+            AddFolder(MindMapNodeContainer);//添加一个文件夹
+
+
+        }
+
+        private void 添加子文件夹ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MindMapNodeContentBase MindMapNodeContentBase = GetCurrentContent();
+            if (MindMapNodeContentBase == null) return;
+            AddFolder(MindMapNodeContentBase.ParentMindMapNode);//添加一个文件夹
+
+        }
+
+        private void 删除文件夹ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<MindMapNodeContainer> MindMapNodeContainerList = mindMap_Panel1.GetBaseSelectedNode();
+
+
+            foreach (var item in MindMapNodeContainerList)
+            {
+                TestEntity TestEntityTemp = (TestEntity)(item.DataItem);
+                new DirectoryInfo(TestEntityTemp.Path).Delete(true);
+                item.ParentNode = null;
+            }
+
+        }
+        /// <summary> 按照默认文件名添加一个文件夹
+        /// 
+        /// </summary>
+        /// <param name="ContainerParame">需要添加文件夹的节点</param>
+        private void AddFolder(MindMapNodeContainer ContainerParame)
+        {
+            TestEntity TestEntityTemp = (TestEntity)(ContainerParame.DataItem);
+            string FileName = GetMinDefaultsFolderName(TestEntityTemp.Path);
+            DirectoryInfo CreatedFolder = new DirectoryInfo(TestEntityTemp.Path).CreateSubdirectory(FileName);
+
+            TestEntity NewTestEntity = new TestEntity();
+            NewTestEntity.ParentID = TestEntityTemp.ID;
+            NewTestEntity.ID = GetID();
+            NewTestEntity.Path = CreatedFolder.FullName;
+            NewTestEntity.Text = CreatedFolder.Name;
+
+            MindMapNodeContainer MindMapNodeContainerTemp = new MindMapNodeContainer();
+            MindMapNodeContainerTemp.SetNodeContent<Text_MindMapNodeContent>(ContainerParame.DataStruct);
+            MindMapNodeContainerTemp.NodeContent.DataItem = NewTestEntity;
+            ContainerParame.AddNode(MindMapNodeContainerTemp);
+
+            mindMap_Panel1.GetSelectedNode().ForEach(T1 => T1.NodeContent.Selected = false);//取消所有选中
+            MindMapNodeContainerTemp.NodeContent.Selected = true;//选中刚添加的
+
+
+        }
+
+        /// <summary> 获取默认的文件名称
+        /// 
+        /// </summary>
+        /// <param name="StrPathParame">文件夹路径</param>
+        /// <returns></returns>
+        private string GetMinDefaultsFolderName(string StrPathParame)
+        {
+            DirectoryInfo[] DirectoryInfoArray = new DirectoryInfo(StrPathParame).GetDirectories();
+            Regex RegexTemp = new Regex(@"(?<=文件夹)\d+");
+            List<string> FolderNameList = DirectoryInfoArray.Where(T1 => RegexTemp.IsMatch(T1.Name)).Select(T1 => T1.Name).ToList();//获取已有默认名称的文件夹名称
+            FolderNameList = FolderNameList.Select(T1 => RegexTemp.Match(T1).Value).ToList();//将文件夹名称的序号部分截取出来
+            List<int> FolderNumList = FolderNameList.Select(T1 => Int32.Parse(T1)).ToList();//将String转换为int;
+
+            List<int> NumberInt = new List<int>();//声明0-99的集合
+            for (int i = 1; i < 99; i++) NumberInt.Add(i);
+
+            NumberInt = NumberInt.Where(T1 => !FolderNumList.Contains(T1)).ToList();//剔除掉已有的文件序号
+            int FolderNum = NumberInt.FirstOrDefault();//获取最小的序号
+            return "文件夹" + FolderNum.ToString();
+
+        }
+
+        #endregion 右键菜单
+
+        #region 事件
+
+        /// <summary> 用于编辑的TextBox按下回车完成编辑，按下esc取消编辑        
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Edit_textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Enter:
+                    List<MindMapNodeContainer> MindMapNodeContainerList = mindMap_Panel1.GetSelectedNode();
+                    MindMapNodeContainer CurrentNode = MindMapNodeContainerList.FirstOrDefault();
+                    if (CurrentNode != null)//必须有被选中节点
+                    {
+                        if (CurrentNode.DataItem is TestEntity)//被选中节点数据类型必须为TestEntity
+                        {
+                            TestEntity CurrentData = (TestEntity)CurrentNode.DataItem;
+                            string StrPath = Path.GetDirectoryName(CurrentData.Path);
+                            StrPath = StrPath + @"\" + Edit_textBox.Text;
+                            if (!Directory.Exists(StrPath))
+                            {
+                                DirectoryInfo DirectoryInfoTemp = new DirectoryInfo(CurrentData.Path);
+                                DirectoryInfoTemp.MoveTo(StrPath);
+
+                                CurrentData.Text = Edit_textBox.Text;
+                                CurrentData.Path = StrPath;
+                                CurrentNode.NodeContent.DataItem = CurrentData;
+                            }
+                        }
+                    }
+                    Edit_textBox.Visible = false;
+                    break;
+
+                case Keys.Escape:
+                    Edit_textBox.Visible = false;
+                    break;
+            }
+            //e.Handled = true;
+        }
+
+        /// <summary> 焦点离开编辑节点的编辑框就取消编辑
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Edit_textBox_Leave(object sender, EventArgs e)
+        {
+            ((Control)sender).Visible = false;
+        }
+
+        /// <summary> 右键节点显示菜单
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMap_Panel1_MindMapNodeMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                RightKey_Menu.Show(Control.MousePosition);
+            }
+        }
+
+        /// <summary> 键盘按下的快捷键
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMap_Panel1_MindNodemapKeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Tab:
+                    添加子文件夹ToolStripMenuItem1_Click(null, null);
+                    break;
+                case Keys.Enter:
+                    添加同级文件夹ToolStripMenuItem_Click(null, null);
+                    break;
+                case Keys.Space:
+                    重命名QToolStripMenuItem_Click(null, null);
+                    break;
+                case Keys.Delete:
+                    删除文件夹ToolStripMenuItem_Click(null, null);
+                    break;
+            }
+        }
+
+        /// <summary> 拖动选中节点
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMap_Panel1_MindeMapNodeToNodeDragDrop(object sender, DragEventArgs e)
+        {
+            MindMapNodeContainer DragTarget = ((Control)sender).GetNodeContent().ParentMindMapNode;
+            mindMap_Panel1.Visible = false;
+
+            mindMap_Panel1.GetSelectedNode().ForEach(T1 => T1.ParentNode = DragTarget);
+            mindMap_Panel1.Visible = true;
+        }
+
+        /// <summary> 双击节点打开文件夹
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mindMap_Panel1_MindMapNodeMouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            MindMapNodeContentBase contentTemp = ((Control)sender).GetNodeContent();
+            if (contentTemp == null) return;
+            TestEntity TestEntityTemp = (TestEntity)(contentTemp.DataItem);
+            Process.Start(TestEntityTemp.Path);
+        }
+        #endregion 事件
+        
+        #region 这个可以用于禁用窗体的tab键
+
+        //protected override bool ProcessDialogKey(Keys keydata)
+        //{
+        //    if (keydata == Keys.Tab)
+        //    {
+        //        //添加子文件夹ToolStripMenuItem1_Click(null, null);
+        //        //return false;
+        //    }
+        //    return base.ProcessDialogKey(keydata);
+        //} 
+        #endregion 这个可以用于禁用窗体的tab键
+        
     }
 
 
