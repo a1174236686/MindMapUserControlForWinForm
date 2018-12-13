@@ -336,7 +336,7 @@ namespace MindMap
         {
             MindMapNodeContentBase MindMapNodeContentBase = GetCurrentContent();
             if (MindMapNodeContentBase == null) return;
-            MindMapNodeContainer MindMapNodeContainer = MindMapNodeContentBase.ParentMindMapNode.ParentNode;
+            MindMapNodeContainer MindMapNodeContainer = MindMapNodeContentBase.NodeContainer.ParentNode;
             if (MindMapNodeContainer == null) return;//没有父节点直接返回
             AddFolder(MindMapNodeContainer);//添加一个文件夹
 
@@ -347,7 +347,7 @@ namespace MindMap
         {
             MindMapNodeContentBase MindMapNodeContentBase = GetCurrentContent();
             if (MindMapNodeContentBase == null) return;
-            AddFolder(MindMapNodeContentBase.ParentMindMapNode);//添加一个文件夹
+            AddFolder(MindMapNodeContentBase.NodeContainer);//添加一个文件夹
 
         }
 
@@ -511,7 +511,7 @@ namespace MindMap
         /// <param name="e"></param>
         private void mindMap_Panel1_MindeMapNodeToNodeDragDrop(object sender, DragEventArgs e)
         {
-            MindMapNodeContainer DragTarget = ((Control)sender).GetNodeContent().ParentMindMapNode;
+            MindMapNodeContainer DragTarget = (MindMapNodeContainer)sender;
             mindMap_Panel1.Visible = false;
 
             mindMap_Panel1.GetSelectedNode().ForEach(T1 => T1.ParentNode = DragTarget);
@@ -526,7 +526,7 @@ namespace MindMap
         private void mindMap_Panel1_MindMapNodeMouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
-            MindMapNodeContentBase contentTemp = ((Control)sender).GetNodeContent();
+            MindMapNodeContainer contentTemp = (MindMapNodeContainer)sender;
             if (contentTemp == null) return;
             TestEntity TestEntityTemp = (TestEntity)(contentTemp.DataItem);
             Process.Start(TestEntityTemp.Path);

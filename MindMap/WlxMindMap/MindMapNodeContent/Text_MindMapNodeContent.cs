@@ -114,7 +114,7 @@ namespace WlxMindMap.MindMapNodeContent
                 Content_lable.Text = GetDataValue(g_DataStruct.Text).ToString();
 
 
-                if (ParentMindMapNode != null) ParentMindMapNode.ResetNodeSize();
+                if (NodeContainer != null) NodeContainer.ResetNodeSize();
             }
         }
 

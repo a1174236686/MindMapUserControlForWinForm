@@ -148,14 +148,14 @@ namespace WlxMindMap
             SetContentLock = true;//打开锁
 
             if (this._NodeContent == NodeContentParame) return;
-            if (this._NodeContent != null) this._NodeContent.ParentMindMapNode = null;//把以前的置为空
+            if (this._NodeContent != null) this._NodeContent.NodeContainer = null;//把以前的置为空
             this._NodeContent = NodeContentParame;
             this.Content_Panel.Controls.Clear();
             if (this._NodeContent != null)
             {
                 this.NodeContent.DataStruct = Struct;
                 this.Content_Panel.Controls.Add(this.NodeContent);
-                this._NodeContent.ParentMindMapNode = this;
+                this._NodeContent.NodeContainer = this;
                 this._NodeContent.CurrentScaling = this.CurrentScaling;
             }
             ReSetSize();

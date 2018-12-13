@@ -48,27 +48,18 @@ namespace WlxMindMap.MindMapNodeContent
         #endregion 子类必须实现的抽象方法
 
         #region 基类提供的方法     
-        /// <summary>获取该节点内容的所有控件（含自己）
-        /// 
+     
+        /// <summary> 获取会触发节点内容事件的控件，
+        /// 例如节点的拖动事件，鼠标按下，鼠标弹起，鼠标移入，鼠标移出等
+        /// 如果你不希望某个控件会触发事件你可以使用override重载这个方法并在返回结果中排除那个控件
         /// </summary>
-        /// <param name="ControlParame"></param>
         /// <returns></returns>
-        public List<Control> GetNodeControl(Control ControlParame = null)
-        {
-            List<Control> ResultList = new List<Control>();
-            if (ControlParame == null)
-            {
-                ControlParame = this;
-                ResultList.Add(this);
-            }
-
-            foreach (Control Item in ControlParame.Controls)
-            {
-                ResultList.Add(Item);
-                ResultList.AddRange(GetNodeControl(Item));//递归取子控件
-            }
-            return ResultList;
+        public List<Control> GetEventControl()
+        {            
+            return this.GetAllControl();
         }
+
+
         #endregion 基类提供的方法
 
         #region 属性
@@ -77,13 +68,13 @@ namespace WlxMindMap.MindMapNodeContent
         /// 
         /// </summary>
         private bool ParentMindMapNodeLock = false;
-        private MindMapNodeContainer _ParentMindMapNode;
+        private MindMapNodeContainer _NodeContainer;
         /// <summary> 获取或设置节点容器
         /// 
         /// </summary>
-        public MindMapNodeContainer ParentMindMapNode
+        public MindMapNodeContainer NodeContainer
         {
-            get { return _ParentMindMapNode; }
+            get { return _NodeContainer; }
             set
             {
                 #region 为什么要有锁？
@@ -95,12 +86,12 @@ namespace WlxMindMap.MindMapNodeContent
                 #endregion 为什么要有锁？
                 if (ParentMindMapNodeLock) return;//被锁住就直接返回
                 ParentMindMapNodeLock = true;//打开锁防止死递归
-                if (_ParentMindMapNode == value) return;//相同属性就直接返回
-                if (_ParentMindMapNode != null) _ParentMindMapNode.SetNodeContent(DataStruct, null);//把原来的置为null
-                _ParentMindMapNode = value;
-                if (_ParentMindMapNode != null)
+                if (_NodeContainer == value) return;//相同属性就直接返回
+                if (_NodeContainer != null) _NodeContainer.SetNodeContent(DataStruct, null);//把原来的置为null
+                _NodeContainer = value;
+                if (_NodeContainer != null)
                 {
-                    _ParentMindMapNode.SetNodeContent(DataStruct, this);
+                    _NodeContainer.SetNodeContent(DataStruct, this);
                 }
                 ParentMindMapNodeLock = false;//关闭锁
             }

@@ -1,0 +1,10 @@
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\bin\Release\WlxMindMap.dll
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\bin\Release\WlxMindMap.pdb
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Release\WlxMindMap.MindMapNodeContainer.resources
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Release\WlxMindMap.MindMapNodeContent.MindMapNodeContentBase.resources
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Release\WlxMindMap.MindMapNodeContent.Text_MindMapNodeContent.resources
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Release\WlxMindMap.MindMap_Panel.resources
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Release\WlxMindMap.csproj.GenerateResource.cache
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Release\WlxMindMap.csproj.CoreCompileInputs.cache
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Release\WlxMindMap.dll
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Release\WlxMindMap.pdb
