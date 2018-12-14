@@ -22,6 +22,7 @@ namespace MindMap
 
 
         }
+
         private void frmMainForm_Activated(object sender, EventArgs e)
         {
             this.TopMost = false;
@@ -224,7 +225,7 @@ namespace MindMap
             mindMap_Panel1.DataStruct = NodeStruct;
             mindMap_Panel1.SetDataSource<WlxMindMap.MindMapNodeContent.Text_MindMapNodeContent, TestEntity>(DataSourceList);
 
-          
+
             //MindMapNodeContainer ContainerTemp = new MindMapNodeContainer();
             //ContainerTemp.SetNodeContent<Text_MindMapNodeContent>(NodeStruct);
             //ContainerTemp.DataItem = new TestEntity() { ID = "100", ParentID = "123", Text = "手动添加" };
@@ -245,6 +246,35 @@ namespace MindMap
 
         }
 
+        private bool AllowAdd(string PathParame)
+        {
+
+            DirectoryInfo DirectoryTemp = new DirectoryInfo(PathParame);
+            int HiddeEnumValue = (int)(DirectoryTemp.Attributes & FileAttributes.Hidden);
+            if (HiddeEnumValue != 0) return false;//隐藏就不添加了
+
+            //Regex regexTemp = new Regex(@"[\u4e00-\u9fa5]");
+            //if (!regexTemp.IsMatch(DirectoryTemp.Name)) return false;//文件名不含有中文就不添加
+
+
+            FileInfo[] FileArray = DirectoryTemp.GetFiles();           
+            foreach (var FileItem in FileArray)
+            {
+                string StrExtention = FileItem.Extension;
+                StrExtention = StrExtention.ToLower();
+                switch (StrExtention)
+                {
+                    case ".sln":
+                    case ".dll":
+                    case ".cs":
+                    case ".xml":
+                        return false;
+                        continue;
+                        break;
+                }
+            }
+            return true;
+        }
 
         /// <summary> 获取当前选中的节点内容
         /// 
@@ -272,14 +302,21 @@ namespace MindMap
             List<TestEntity> ResultList = new List<TestEntity>();
             if (i_Parame == 0) return ResultList;
             int CurrentI = i_Parame - 1;
-
-            string[] PathArray = Directory.GetDirectories(ParentPath);
-
-            foreach (string PathItem in PathArray)
+            string[] PathArray = null;
+            try
             {
-                string PathTemp = new DirectoryInfo(PathItem).Name;
-                Regex regexTemp = new Regex(@"[\u4e00-\u9fa5]");
-                if (!regexTemp.IsMatch(PathTemp)) continue;
+
+                PathArray = Directory.GetDirectories(ParentPath);
+
+            }
+            catch (System.UnauthorizedAccessException ex)
+            {
+                return ResultList;//不允许访问就直接返回
+            }
+            foreach (string PathItem in PathArray)
+            {                
+                if (!AllowAdd(PathItem)) continue;
+                string PathTemp = new DirectoryInfo(PathItem).Name;               
                 TestEntity TestEntityTemp = new TestEntity();
                 TestEntityTemp.ID = GetID();
                 TestEntityTemp.Text = PathTemp;

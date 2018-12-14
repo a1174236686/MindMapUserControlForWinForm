@@ -10,4 +10,3 @@ C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.csproj.CoreCompileInputs.cache
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.dll
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.pdb
-C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.csprojAssemblyReference.cache

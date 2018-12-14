@@ -69,11 +69,11 @@ namespace WlxMindMap
             get { return _CurrentScaling; }
             set
             {
-                mindMapNode.Visible = false;                
+                        
                 _CurrentScaling = value;
                 Scaling_button.Text = ((int)(this._CurrentScaling * 100)).ToString() + "%";//将当前比例显示到前台
                 mindMapNode.CurrentScaling = value;
-                mindMapNode.Visible = true;
+           
             }
         }
 
@@ -248,6 +248,7 @@ namespace WlxMindMap
                     NodeItem.AddChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
                     NodeItem.RemoveChidrenNode += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
                     NodeItem.AddNodeContent += new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddContent);
+                    NodeItem.NodeSizeChanged += new Action (HideMindMap);
                 }
                 else
                 {
@@ -259,6 +260,7 @@ namespace WlxMindMap
                     NodeItem.AddChidrenNode -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddChidrenNode);
                     NodeItem.RemoveChidrenNode -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeRemoveChidrenNode);
                     NodeItem.AddNodeContent -= new MindMapNodeContainer.MindMapEventHandler(MindMapNodeAddContent);
+                    NodeItem.NodeSizeChanged -= new Action(HideMindMap);
                 }
                 if (NodeItem.NodeContent != null) NodeContentList.AddRange(NodeItem.NodeContent.GetEventControl());//获取当前节点内容的所有控件
             });
@@ -990,7 +992,7 @@ namespace WlxMindMap
         {
             //不知道什么原因，如果本控件尺寸改变后如果立即设置滚动条的尺寸，会出现Bug
             //例如外部Winform添加本控件后，Dock设为Fill，在窗体最大化，或从最大或变成正常态时将会出现Bug
-            //所以当本控件尺寸发生改变时延迟200毫秒设置滚动条尺寸        
+            //所以当本控件尺寸发生改变时延迟50毫秒设置滚动条尺寸        
             DelayShow();
         }
 
@@ -1060,6 +1062,15 @@ namespace WlxMindMap
             Main_Panel.AutoScrollPosition = new Point(LeftTemp, TopTemp);
         }
 
+        /// <summary> 移动滚动条时记录滚动比例
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Main_Panel_Scroll(object sender, ScrollEventArgs e)
+        {
+            RecordScrollPosition();
+        }
         #endregion 当控件尺寸改变时更改滚动条尺寸
 
         #region 按住Ctrl+滚轮缩放
@@ -1070,7 +1081,7 @@ namespace WlxMindMap
         /// </summary>
         private void DelayShow()
         {
-            PaintNum = 300;//倒计时300毫秒
+            PaintNum = 50;//倒计时300毫秒
             if (PaintTread == null)//为空表示线程没有开启线程
             {
                 PaintTread = new Thread(() =>
@@ -1081,12 +1092,9 @@ namespace WlxMindMap
                         PaintNum = PaintNum - 10;
                     }
                     this.Invoke(new Action(() =>
-                    {
-                        mindMapNode.Visible = false;//当所有尺寸设置完成后再显示，可以有效加快控件的绘制过程
-                        this.CurrentScaling = this._CurrentScaling;
-                        mindMapNode.Visible = true;
+                    {                        
+                        this.CurrentScaling = this._CurrentScaling;                        
                         ResetMindMapPanelSize();//将思维导图居中      
-
                     }));
                     PaintTread = null;//将自己置空来表示自己已经运行结束了
                 });
@@ -1110,18 +1118,8 @@ namespace WlxMindMap
                     #region 缩放相关代码
                     if (Control.ModifierKeys == Keys.Control)
                     {
-                        #region 获取本次缩放的值[1%-50%:每次缩放10%；50%-100%:每次缩放20%；100%以上:每次缩放50%]
-                        float ChangeValue = 0.1F;//每次放大或缩小10%
-                        if (0.5 <= this._CurrentScaling && this._CurrentScaling < 1.5)
-                        {
-                            ChangeValue = 0.2F;
-                        }
-                        else if (1.5 <= this._CurrentScaling)
-                        {
-                            ChangeValue = 0.5F;
-                        }
-                        #endregion 获取本次缩放的值[1%-50%:每次缩放10%；50%-100%:每次缩放20%；100%以上:每次缩放50%]
 
+                        float ChangeValue = 0.2f;//默认每次缩放20%
                         float ResultScaling = 1;//结果的比例
                         int WheelValue = m.WParam.ToInt32();
                         if (WheelValue < 0)
@@ -1160,19 +1158,43 @@ namespace WlxMindMap
         }
 
         #endregion 按住Ctrl+滚轮缩放
+        
+        #region 用于跳过绘制过程
 
-
-        /// <summary> 移动滚动条时记录滚动比例
-        /// 
+        private int CountDown = 50;//倒计时50毫秒
+        private Thread DelayThread = null;//用于倒计时的线程
+        /// <summary> 临时隐藏思维导图节点并在50毫秒后显示出来
+        /// 如果高平率反复调用本方法则会重置倒计时时间，以保证最后一次临时隐藏到显示间隔50毫秒
+        /// 主要是由于winform的缺陷在进行大面积变动时（用户在循环中添加节点或删除节点）时。如果不隐藏思维导图就会展示添加/删除节点的过程（绘制过程）
+        /// 每当有节点添加或删除时或尺寸改变时（改变数据源）都会调用本方法用于跳过绘制过程
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Main_Panel_Scroll(object sender, ScrollEventArgs e)
+        private void HideMindMap()
         {
-            RecordScrollPosition();
+
+            CountDown = 50;//重置倒计时时间
+            mindMapNode.Visible = false;//隐藏思维导图节点
+            if (DelayThread != null) return;//如果之前就已经开始倒计时了就直接返回。
+            DelayThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    CountDown = CountDown - 10;
+                    if (CountDown <= 0) break;
+                    Thread.Sleep(10);
+                }
+                DelayThread = null;
+                this.Invoke(new Action(() =>
+                {
+                    mindMapNode.Visible = true;
+                }));
+            });
+            DelayThread.Start();
+
         }
 
-     
+        #endregion 用于跳过绘制过程
+
+
 
     }
 }

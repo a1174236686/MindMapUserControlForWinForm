@@ -183,13 +183,11 @@ namespace WlxMindMap
         {
             int CurrentNodeHeightCenter = Content_Panel.Height / 2;
             Point StartPoint = new Point(0, CurrentNodeHeightCenter);
-
             Graphics LineGraphics = DrawingLine_panel.CreateGraphics();
-
             LineGraphics.Clear(DrawingLine_panel.BackColor);//清除之前的
             LineGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;//开启抗锯齿
 
-            Pen PenTemp = new Pen(Color.Black, 1);
+            Pen PenTemp = new Pen(Color.Black, 2);
             foreach (Control ControlItem in this.Chidren_Panel.Controls)
             {
                 int TopTemp = ControlItem.Top + (ControlItem.Height / 2);
@@ -229,6 +227,7 @@ namespace WlxMindMap
         /// </summary>
         private void ReSetSize()
         {
+            if (NodeSizeChanged != null) NodeSizeChanged();//隐藏思维导图用以跳过绘制过程
             Size ContentSize = new Size(0, 0);
             if (_NodeContent != null)
             {
@@ -284,6 +283,7 @@ namespace WlxMindMap
             int FindCount = MindMapNodeList.Where(T1 => T1 == MindMapNodeParame).Count();
             if (FindCount != 0) return;//如果要添加的节点已经存在就直接返回
 
+            if (NodeSizeChanged != null) NodeSizeChanged();//隐藏思维导图用以跳过绘制过程
             MindMapNodeContainer NewNode = MindMapNodeParame;
             Chidren_Panel.Controls.Add(NewNode);
             MindMapNodeParame.ParentNode = this;
@@ -304,7 +304,8 @@ namespace WlxMindMap
         public void Remove(MindMapNodeContainer MindMapNodeParame)
         {
             if (MindMapNodeParame == null) return;
-            MindMapNodeContainer MindMapNodeTemp = null;
+            if (NodeSizeChanged != null) NodeSizeChanged(); //隐藏思维导图用以跳过绘制过程
+             MindMapNodeContainer MindMapNodeTemp = null;            
             foreach (Control ControlItem in Chidren_Panel.Controls)
             {
                 MindMapNodeTemp = (MindMapNodeContainer)ControlItem;
@@ -354,7 +355,7 @@ namespace WlxMindMap
         {
             if (EmptyRangeMouseMove != null) EmptyRangeMouseMove(this, e);
         }
-
+        
         
         /// <summary> 点击空白处
         /// 
@@ -392,8 +393,17 @@ namespace WlxMindMap
         [Browsable(true), Description("删除节点")]
         public event MindMapEventHandler RemoveChidrenNode;
 
+        /// <summary> 为节点添加节点内容时发生
+        /// 
+        /// </summary>
         [Browsable(true), Description("为节点添加节点内容时发生")]
         public event MindMapEventHandler AddNodeContent;
+
+        /// <summary> 当节点自身尺寸即将发生改变时
+        /// 隐藏思维导图用以跳过绘制过程
+        /// </summary>
+        [Browsable(true), Description("当节点自身尺寸即将发生改变时")]
+        public event Action NodeSizeChanged;
 
         /// <summary> 删除或添加节点的委托类型
         /// 
