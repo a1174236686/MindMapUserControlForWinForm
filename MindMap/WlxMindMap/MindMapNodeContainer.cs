@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WlxMindMap.MindMapNodeContent;
-
+using WlxMindMap.UseControl;
 using System.Reflection;
 
 namespace WlxMindMap
@@ -30,13 +30,12 @@ namespace WlxMindMap
         private void RecordScaling()
         {
             Scaling_LineSize = DrawingLine_panel.Size;
-            Scaling_Margin = this.Margin;
-
+            Scaling_Margin = this.Margin;            
+            Scaling_CollapseButtonFont = collapseNodeButton1.ButtonFont;
         }
-        private Size Scaling_LineSize=new Size ();
-        private Padding Scaling_Margin = new Padding();
-
-
+        private Size Scaling_LineSize = new Size();//缩放比例100%时画线的宽度
+        private Padding Scaling_Margin = new Padding();//缩放比例100%时子节点之间的间隙
+        private Font Scaling_CollapseButtonFont = new Font("", 1f);//缩放比例100%时折叠按钮尺寸        
         #endregion 缩放相关
 
         #region 属性
@@ -55,15 +54,17 @@ namespace WlxMindMap
         {
             get { return _CurrentScaling; }
             set
-            {
-                //if (_CurrentScaling == value) return;
+            {               
                 _CurrentScaling = value;
 
                 List<MindMapNodeContainer> ContainerList = GetChidrenNode();//获取子节点
                 ContainerList.ForEach(Item => Item.CurrentScaling = _CurrentScaling);//将子节点的缩放比例也修改
                 if (this._NodeContent != null) this._NodeContent.CurrentScaling = _CurrentScaling;
 
-                DrawingLine_panel.Width = Scaling_LineSize.ByScaling(_CurrentScaling).Width;//更新连接线尺寸
+                this.DrawingLine_panel.Width = Scaling_LineSize.ByScaling(_CurrentScaling).Width;//更新连接线尺寸
+                this.Margin = Scaling_Margin.ByScaling(_CurrentScaling); //子节点之间的间隙
+                collapseNodeButton1.ButtonFont = Scaling_CollapseButtonFont.ByScaling(_CurrentScaling);
+
                 ReSetSize();
             }
         }
@@ -173,7 +174,6 @@ namespace WlxMindMap
         {
             SetNodeContent(Struct, new NodeContentClass());
         }
-
         
 
         /// <summary> 在面板上画出当前节点的连接线
@@ -191,7 +191,7 @@ namespace WlxMindMap
             foreach (Control ControlItem in this.Chidren_Panel.Controls)
             {
                 int TopTemp = ControlItem.Top + (ControlItem.Height / 2);
-                Point PointTemp = new Point(this.DrawingLine_panel.Width, TopTemp);                
+                Point PointTemp = new Point(this.DrawingLine_panel.Width, TopTemp);
 
                 List<Point> PointArray = new List<Point>();
                 PointArray.Add(StartPoint);
@@ -200,7 +200,7 @@ namespace WlxMindMap
 
                 PointArray.Add(PointTemp);
                 LineGraphics.DrawCurve(PenTemp, PointArray.ToArray(), 0);
-            }           
+            }
         }
 
         /// <summary> 获取该节点下的子节点
@@ -221,7 +221,7 @@ namespace WlxMindMap
             }
             return ResultList;
         }
-                
+
         /// <summary> 刷新节点的宽度和高度
         /// 
         /// </summary>
@@ -234,19 +234,44 @@ namespace WlxMindMap
                 _NodeContent.RefreshContentSize();
                 ContentSize = _NodeContent.Size;
             }
-
-
             Content_Panel.Width = ContentSize.Width;
+
+
+
             int MaxChidrenWidth = 0;//子节点最宽的宽度
             int HeightCount = 0;//子节点高度的总和
-            foreach (Control ControlItem in this.Chidren_Panel.Controls)//遍历所有子节点容器
+            List<MindMapNodeContainer> ChidrenNodeList = this.GetChidrenNode();//获取所有子节点
+            if (ChidrenNodeList.Count > 0)//是否有子节点
             {
-                if (MaxChidrenWidth < ControlItem.Width) MaxChidrenWidth = ControlItem.Width;//获取子节点最宽的宽度
-                HeightCount += ControlItem.Height + 4;//获取子节点高度的总和
+                //有子节点
+                collapseNodeButton1.Visible = true;
+                if (!collapseNodeButton1.IsExpand)//是否已经展开
+                {
+                    //已展开                   
+                    DrawingLine_panel.Visible = true;
+                    Chidren_Panel.Visible = true;
+                    MaxChidrenWidth=ChidrenNodeList.Select(T1 => T1.Width).Max();//获取子节点最宽的宽度
+                    HeightCount = ChidrenNodeList.Select(T1 => T1.Height + T1.Margin.Top + T1.Margin.Bottom).Sum();
+                    
+                    //设置本节点容器的整体宽度（节点内容宽度 + 折叠按钮宽度 + 连接线宽度 + 最宽子节点的宽度）            
+                    MaxChidrenWidth = MaxChidrenWidth + collapseNodeButton1.Width + DrawingLine_panel.Width + Content_Panel.Width;
+                }
+                else
+                {
+                    //未展开             
+                    DrawingLine_panel.Visible = false;
+                    Chidren_Panel.Visible = false;
+                    MaxChidrenWidth = MaxChidrenWidth + collapseNodeButton1.Width;
+                }
             }
-
-            //设置本节点容器的整体宽度（节点内容宽度+连接线宽度+最宽子节点的宽度）            
-            MaxChidrenWidth = MaxChidrenWidth + DrawingLine_panel.Width + Content_Panel.Width;
+            else
+            {
+                //没有子节点
+                collapseNodeButton1.Visible = false;
+                DrawingLine_panel.Visible = false;
+                Chidren_Panel.Visible = false;
+                MaxChidrenWidth = Content_Panel.Width;//没有子节点本节点的宽度就等于当前内容的宽度
+            }
             this.Width = MaxChidrenWidth;
 
             //设置本节点容器的整体高度（所有子节点高度的总和，或节点内容的高度，两者较大的那一个）
@@ -305,7 +330,7 @@ namespace WlxMindMap
         {
             if (MindMapNodeParame == null) return;
             if (NodeSizeChanged != null) NodeSizeChanged(); //隐藏思维导图用以跳过绘制过程
-             MindMapNodeContainer MindMapNodeTemp = null;            
+            MindMapNodeContainer MindMapNodeTemp = null;
             foreach (Control ControlItem in Chidren_Panel.Controls)
             {
                 MindMapNodeTemp = (MindMapNodeContainer)ControlItem;
@@ -318,6 +343,19 @@ namespace WlxMindMap
                 }
             }
             this.ResetNodeSize();
+        }
+
+        public void Expand()
+        {
+            collapseNodeButton1.IsExpand = true;
+            ResetNodeSize();
+        }
+
+        public void ExpandAll()
+        {
+            collapseNodeButton1.IsExpand = true;
+            ResetNodeSize();
+
         }
         #endregion 方法
 
@@ -355,8 +393,8 @@ namespace WlxMindMap
         {
             if (EmptyRangeMouseMove != null) EmptyRangeMouseMove(this, e);
         }
-        
-        
+
+
         /// <summary> 点击空白处
         /// 
         /// </summary>
@@ -413,7 +451,7 @@ namespace WlxMindMap
         public delegate void MindMapEventHandler(MindMapNodeContainer Sender, MindMapNodeContainer MindMapNodeContainer);
         #endregion 事件
 
-    
+
     }
 
 }

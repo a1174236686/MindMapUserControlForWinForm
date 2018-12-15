@@ -179,7 +179,7 @@ namespace WlxMindMap
         /// 例如节点A下有B、C两个节点，如果此时都被选中本方法只会返回A
         /// </summary>
         /// <returns></returns>
-        public List<MindMapNodeContainer> GetBaseSelectedNode()
+        public List<MindMapNodeContainer> GetSelectedBaseNode()
         {
             List<MindMapNodeContainer> ContainerList=  GetSelectedNode();
             ContainerList = ContainerList.Where(T1 => !ParentContaine(ContainerList, T1.ParentNode)).ToList();

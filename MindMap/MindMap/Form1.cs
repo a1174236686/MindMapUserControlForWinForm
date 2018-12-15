@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WlxMindMap;
 using WlxMindMap.MindMapNodeContent;
+
 namespace MindMap
 {
     public partial class frmMainForm : Form
@@ -29,7 +30,7 @@ namespace MindMap
         }
 
         private void frmMainForm_Load(object sender, EventArgs e)
-        {
+        {            
             List<TestEntity> DataSourceList = new List<TestEntity>();
             if (String.IsNullOrEmpty(Program.ParamePath))
             {
@@ -390,7 +391,7 @@ namespace MindMap
 
         private void 删除文件夹ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            List<MindMapNodeContainer> MindMapNodeContainerList = mindMap_Panel1.GetBaseSelectedNode();
+            List<MindMapNodeContainer> MindMapNodeContainerList = mindMap_Panel1.GetSelectedBaseNode();
 
 
             foreach (var item in MindMapNodeContainerList)
@@ -434,7 +435,7 @@ namespace MindMap
         /// <param name="StrPathParame">文件夹路径</param>
         /// <returns></returns>
         private string GetMinDefaultsFolderName(string StrPathParame)
-        {
+        {            
             DirectoryInfo[] DirectoryInfoArray = new DirectoryInfo(StrPathParame).GetDirectories();
             Regex RegexTemp = new Regex(@"(?<=文件夹)\d+");
             List<string> FolderNameList = DirectoryInfoArray.Where(T1 => RegexTemp.IsMatch(T1.Name)).Select(T1 => T1.Name).ToList();//获取已有默认名称的文件夹名称
@@ -451,7 +452,7 @@ namespace MindMap
         }
 
         #endregion 右键菜单
-
+        
         #region 事件
 
         /// <summary> 用于编辑的TextBox按下回车完成编辑，按下esc取消编辑        
@@ -548,11 +549,21 @@ namespace MindMap
         /// <param name="e"></param>
         private void mindMap_Panel1_MindeMapNodeToNodeDragDrop(object sender, DragEventArgs e)
         {
-            MindMapNodeContainer DragTarget = (MindMapNodeContainer)sender;
-            mindMap_Panel1.Visible = false;
-
-            mindMap_Panel1.GetSelectedNode().ForEach(T1 => T1.ParentNode = DragTarget);
-            mindMap_Panel1.Visible = true;
+            MindMapNodeContainer DragTarget = (MindMapNodeContainer)sender;            
+            TestEntity Entityarget = (TestEntity)DragTarget.DataItem;
+            mindMap_Panel1.GetSelectedBaseNode().ForEach(T1 => {
+                
+                if (T1.DataItem != null&& T1.DataItem is TestEntity)
+                {
+                    TestEntity TestEntityItem = (TestEntity)T1.DataItem;
+                    string PathStr = TestEntityItem.Path;
+                    DirectoryInfo DirectoryInfoTemp=new DirectoryInfo(PathStr);
+                    DirectoryInfoTemp.MoveTo(Entityarget.Path+"\\"+ DirectoryInfoTemp.Name);
+                    TestEntityItem.Path = DirectoryInfoTemp.FullName;
+                    T1.ParentNode = DragTarget;
+                }
+            });
+        
         }
 
         /// <summary> 双击节点打开文件夹

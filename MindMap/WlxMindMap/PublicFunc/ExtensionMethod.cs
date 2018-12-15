@@ -27,12 +27,12 @@ namespace WlxMindMap
             }
             else
             {
+                if(thisControl is MindMap_Panel) return result;//如果找到思维导图容器了还没有找到那这个控件就不是节点内容里的控件
                 if (thisControl.Parent == null) return result;
                 return thisControl.Parent.GetNodeContent();
             }
         }
-
-
+        
         /// <summary>
         /// 清除事件绑定的函数
         /// </summary>
@@ -71,6 +71,19 @@ namespace WlxMindMap
             }
         }
 
+
+        public static void Center(this Control ThisControl)
+        {
+            if (ThisControl == null) return;
+            if (ThisControl.Parent == null) return;
+            Control ParentControl = ThisControl.Parent;
+
+
+
+
+        }
+            
+
         /// <summary> 获取某控件下的所有子控件
         /// 
         /// </summary>
@@ -87,6 +100,9 @@ namespace WlxMindMap
             }
             return ResultList;
         }
+
+
+        #region 缩放相关
 
         /// <summary> 按比例进行缩放，返回缩放后的实例
         /// 
@@ -154,5 +170,6 @@ namespace WlxMindMap
                 return new Size(_Width, _Height);
             }
         }
+        #endregion 缩放相关
     }
 }

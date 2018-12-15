@@ -67,6 +67,12 @@
       <DependentUpon>MindMap_Panel.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UseControl\CollapseNodeButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UseControl\CollapseNodeButton.Designer.cs">
+      <DependentUpon>CollapseNodeButton.cs</DependentUpon>
+    </Compile>
     <Compile Include="User_Main_Panel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -85,6 +91,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MindMap_Panel.resx">
       <DependentUpon>MindMap_Panel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UseControl\CollapseNodeButton.resx">
+      <DependentUpon>CollapseNodeButton.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
