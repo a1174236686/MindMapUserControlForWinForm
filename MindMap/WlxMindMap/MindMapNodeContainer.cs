@@ -261,7 +261,7 @@ namespace WlxMindMap
                     //未展开             
                     DrawingLine_panel.Visible = false;
                     Chidren_Panel.Visible = false;
-                    MaxChidrenWidth = MaxChidrenWidth + collapseNodeButton1.Width;
+                    MaxChidrenWidth = MaxChidrenWidth + collapseNodeButton1.Width+ Content_Panel.Width;
                 }
             }
             else
@@ -345,19 +345,50 @@ namespace WlxMindMap
             this.ResetNodeSize();
         }
 
-        public void Expand()
+        /// <summary> 展开/折叠当前节点
+        /// 
+        /// </summary>
+        /// <param name="IsExpandParame">[true:显示为展开+；false：显示为折叠-]</param>
+        public void ExpandOrCollapse(bool IsExpandParame)
         {
-            collapseNodeButton1.IsExpand = true;
+            collapseNodeButton1.IsExpand = IsExpandParame;
             ResetNodeSize();
         }
 
-        public void ExpandAll()
+        /// <summary> 展开/折叠所有子节点
+        /// 
+        /// </summary>
+        /// <param name="IsExpandParame">[true:显示为展开+；false：显示为折叠-]</param>
+        public void ExpandOrCollapseAll(bool IsExpandParame)
         {
-            collapseNodeButton1.IsExpand = true;
+            collapseNodeButton1.IsExpand = IsExpandParame;
+            this.GetChidrenNode().ForEach(T1 => T1.PrivateExpandOrCollapseAll(IsExpandParame));
             ResetNodeSize();
-
         }
         #endregion 方法
+
+        #region 私有方法
+        /// <summary>递归向下展开/折叠所有子节点只供本类自己调用
+        /// 
+        /// </summary>
+        /// <param name="IsExpandParame">[true:显示为展开+；false：显示为折叠-]</param>
+        private void PrivateExpandOrCollapseAll(bool IsExpandParame)
+        {
+            collapseNodeButton1.IsExpand = IsExpandParame;
+            this.GetChidrenNode().ForEach(T1 => T1.PrivateExpandOrCollapseAll(IsExpandParame));
+            ReSetSize();
+        }
+
+        /// <summary> 折叠按钮被点击
+        /// 
+        /// </summary>
+        private void collapseNodeButton1_CollapseButtonDown()
+        {           
+            ExpandOrCollapse(!collapseNodeButton1.IsExpand);
+            this.NodeContent.Selected = true;
+        }
+        #endregion 私有放
+
 
         #region 事件
         /// <summary> 重画时重新画出连接线
@@ -449,8 +480,8 @@ namespace WlxMindMap
         /// <param name="Sender">发生事件的节点</param>
         /// <param name="Chidren">被添加/删除的节点</param>
         public delegate void MindMapEventHandler(MindMapNodeContainer Sender, MindMapNodeContainer MindMapNodeContainer);
-        #endregion 事件
 
+        #endregion 事件
 
     }
 

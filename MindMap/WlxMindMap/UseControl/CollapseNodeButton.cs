@@ -60,6 +60,9 @@ namespace WlxMindMap.UseControl
 
         private MindMapNodeContent.Text_MindMapNodeContent.MindMapNodeBackColor BackColorObj = new MindMapNodeContent.Text_MindMapNodeContent.MindMapNodeBackColor(Color.FromArgb(200, 200, 200));
 
+        [Description("折叠按钮被按下")]
+        public event Action CollapseButtonDown = null;
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -80,6 +83,7 @@ namespace WlxMindMap.UseControl
         {
             Button_label.BackColor = BackColorObj.Down.Value;
             this.OnMouseDown(e);
+            if (CollapseButtonDown != null) CollapseButtonDown();
         }
         private void Button_label_MouseUp(object sender, MouseEventArgs e)
         {

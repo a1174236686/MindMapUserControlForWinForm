@@ -88,6 +88,7 @@
             this.collapseNodeButton1.Name = "collapseNodeButton1";
             this.collapseNodeButton1.Size = new System.Drawing.Size(14, 35);
             this.collapseNodeButton1.TabIndex = 0;
+            this.collapseNodeButton1.CollapseButtonDown += new System.Action(this.collapseNodeButton1_CollapseButtonDown);
             this.collapseNodeButton1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseClick);
             this.collapseNodeButton1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);
             this.collapseNodeButton1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseMove);
