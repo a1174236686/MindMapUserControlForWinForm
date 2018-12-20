@@ -15,6 +15,13 @@ using WlxMindMap.MindMapNodeContent;
 
 namespace WlxMindMap
 {
+    /// <summary>思维导图的本体可以直接在窗体设计器里将该控件直接拖动到窗体上
+    /// 负责了以下任务：
+    /// 1、右键拖拽节点时移动思维导图的位置
+    /// 2、左键拖动鼠标时绘制矩形框来选中节点
+    /// 3、向用户提供一些事件和方法供用户使用代码操作如：绑定数据、获取选中节点、设置缩放比例等
+    /// </summary>
+
     public partial class MindMap_Panel : UserControl, IMessageFilter
     {
         /// <summary> 根节点容器
@@ -25,6 +32,15 @@ namespace WlxMindMap
         public MindMap_Panel()
         {
             InitializeComponent();
+            //if(false)
+            //new Thread(() => {
+            //    Thread.Sleep(20);
+            //    this.Invoke(new Action (() => {
+            //        Descraption_label.Visible = false;
+            //    }));
+            //    }).Start();
+
+            Descraption_label.Visible = false;
             this.AutoScroll = false;
             #region 根节点容器
             InitBaseNode();//初始化根节点

@@ -13,6 +13,14 @@ using System.Reflection;
 
 namespace WlxMindMap
 {
+    /// <summary> 节点容器，
+    /// 负责处理当前节点和子节点的关系，每一个节点都有一个单独的节点容器，但本身是不具备节点内容的（使用SetNoeContent方法来设置节点内容）
+    /// 负责：
+    /// 1、绘制当前节点与子节点之间的连接线
+    /// 2、添加子节点或删除子节点
+    /// 3、负责折叠或展开子节点
+    /// 4、计算节点尺寸
+    /// </summary>
     public partial class MindMapNodeContainer : UserControl
     {
         public MindMapNodeContainer()
@@ -24,7 +32,7 @@ namespace WlxMindMap
         }
 
         #region 缩放相关
-        /// <summary>记录当前尺寸为100%时的尺寸，缩放时将会基类该值进行调整
+        /// <summary>将当前尺寸记录为缩放比例为100%时的尺寸，缩放时将会基类该值进行调整
         /// 
         /// </summary>
         private void RecordScaling()

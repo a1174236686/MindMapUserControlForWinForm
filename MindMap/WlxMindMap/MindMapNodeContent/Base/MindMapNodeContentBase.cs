@@ -15,6 +15,7 @@ namespace WlxMindMap.MindMapNodeContent
     /// 当你继承该类后，你的窗体设计器是无法使用的。
     /// 这时候如果你想使用窗体设计器你可以临时将父类改为UserControl使用完毕后再切换回本类即可
     /// </summary>
+    
     public abstract class MindMapNodeContentBase : UserControl
     {
       
