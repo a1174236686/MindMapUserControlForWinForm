@@ -71,18 +71,14 @@ namespace WlxMindMap
             }
         }
 
-
         public static void Center(this Control ThisControl)
         {
             if (ThisControl == null) return;
             if (ThisControl.Parent == null) return;
             Control ParentControl = ThisControl.Parent;
-
-
-
-
-        }
-            
+        }      
+        
+        
 
         /// <summary> 获取某控件下的所有子控件
         /// 

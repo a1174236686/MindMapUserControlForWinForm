@@ -38,7 +38,7 @@ namespace WlxMindMap
         private void RecordScaling()
         {
             Scaling_LineSize = DrawingLine_panel.Size;
-            Scaling_Margin = this.Margin;            
+            Scaling_Margin = this.Margin;
             Scaling_CollapseButtonFont = collapseNodeButton1.ButtonFont;
         }
         private Size Scaling_LineSize = new Size();//缩放比例100%时画线的宽度
@@ -62,7 +62,7 @@ namespace WlxMindMap
         {
             get { return _CurrentScaling; }
             set
-            {               
+            {
                 _CurrentScaling = value;
 
                 List<MindMapNodeContainer> ContainerList = GetChidrenNode();//获取子节点
@@ -130,6 +130,48 @@ namespace WlxMindMap
         }
         private MindMapNodeContainer _ParentNode = null;
 
+        /// <summary> 获取该节点所在的思维导图容器
+        /// 
+        /// </summary>
+        public MindMap_Panel MindMap_Panel
+        {
+            get
+            {
+                MindMapNodeContainer BaseNode = this;
+                #region 向上找到根节点
+                while (true)
+                {
+                    if (BaseNode.ParentNode != null)
+                    {
+                        BaseNode = BaseNode.ParentNode;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                #endregion 向上找到根节点
+
+
+                #region 向上找到思维导图控件
+                Control ControlTemp = BaseNode;
+                while (true)
+                {
+                    if (ControlTemp.Parent != null)
+                    {
+                        if (ControlTemp is MindMap_Panel) return (MindMap_Panel)ControlTemp;
+
+                        ControlTemp = ControlTemp.Parent;
+
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                #endregion 向上找到思维导图控件
+            }
+        }
 
 
         #endregion 属性               
@@ -182,7 +224,7 @@ namespace WlxMindMap
         {
             SetNodeContent(Struct, new NodeContentClass());
         }
-        
+
 
         /// <summary> 在面板上画出当前节点的连接线
         /// 
@@ -258,9 +300,9 @@ namespace WlxMindMap
                     //已展开                   
                     DrawingLine_panel.Visible = true;
                     Chidren_Panel.Visible = true;
-                    MaxChidrenWidth=ChidrenNodeList.Select(T1 => T1.Width).Max();//获取子节点最宽的宽度
+                    MaxChidrenWidth = ChidrenNodeList.Select(T1 => T1.Width).Max();//获取子节点最宽的宽度
                     HeightCount = ChidrenNodeList.Select(T1 => T1.Height + T1.Margin.Top + T1.Margin.Bottom).Sum();
-                    
+
                     //设置本节点容器的整体宽度（节点内容宽度 + 折叠按钮宽度 + 连接线宽度 + 最宽子节点的宽度）            
                     MaxChidrenWidth = MaxChidrenWidth + collapseNodeButton1.Width + DrawingLine_panel.Width + Content_Panel.Width;
                 }
@@ -269,7 +311,7 @@ namespace WlxMindMap
                     //未展开             
                     DrawingLine_panel.Visible = false;
                     Chidren_Panel.Visible = false;
-                    MaxChidrenWidth = MaxChidrenWidth + collapseNodeButton1.Width+ Content_Panel.Width;
+                    MaxChidrenWidth = MaxChidrenWidth + collapseNodeButton1.Width + Content_Panel.Width;
                 }
             }
             else
@@ -373,6 +415,69 @@ namespace WlxMindMap
             this.GetChidrenNode().ForEach(T1 => T1.PrivateExpandOrCollapseAll(IsExpandParame));
             ResetNodeSize();
         }
+
+        /// <summary> 将该节点滚动致可视范围
+        /// 
+        /// </summary>
+        public void ScrollToView()
+        {
+
+            if (NodeContent == null) return;
+            MindMap_Panel MindMap_PanelTemp = MindMap_Panel;
+            Rectangle PanelRec = new Rectangle(MindMap_PanelTemp.PointToScreen(new Point(0, 0)), MindMap_PanelTemp.Size);
+            Rectangle NodeRec = new Rectangle(NodeContent.PointToScreen(new Point(0, 0)), NodeContent.Size);
+
+            if (PanelRec.Contains(NodeRec)) return;
+            Point ResultPoint = new Point();
+            #region 获取X轴偏移量
+            if (PanelRec.Left > NodeRec.Left)
+            {
+                ResultPoint.X = NodeRec.Left - PanelRec.Left;
+            }
+            if (PanelRec.Left + PanelRec.Width < NodeRec.Left + NodeRec.Width)
+            {
+                ResultPoint.X = (NodeRec.Left + NodeRec.Width) - (PanelRec.Left + PanelRec.Width)+20;
+            }
+            #endregion 获取X轴偏移量
+            #region 获取Y轴偏移量
+            if (PanelRec.Top > NodeRec.Top)
+            {
+                ResultPoint.Y = NodeRec.Top - PanelRec.Top;
+            }
+            if (PanelRec.Top + PanelRec.Height < NodeRec.Top + NodeRec.Height)
+            {
+                ResultPoint.Y = (NodeRec.Top + NodeRec.Height) - (PanelRec.Top + PanelRec.Height)+20;
+            }
+            #endregion 获取Y轴偏移量
+
+            MindMap_PanelTemp.ScrollMindMap(ResultPoint);
+        }
+
+        /// <summary> 将该节点居中
+        /// 
+        /// </summary>
+        public void ScrollToCenter()
+        {
+            if (NodeContent == null) return;
+            MindMap_Panel MindMap_PanelTemp = MindMap_Panel;
+            Rectangle PanelRec = new Rectangle(MindMap_PanelTemp.PointToScreen(new Point(0, 0)), MindMap_PanelTemp.Size);
+            Rectangle NodeRec = new Rectangle(NodeContent.PointToScreen(new Point(0, 0)), NodeContent.Size);
+
+            Point ResultPoint = new Point();
+            ResultPoint.X = PanelRec.Width - NodeContent.Width;
+            ResultPoint.Y = PanelRec.Height - NodeContent.Height;
+            ResultPoint.X = ResultPoint.X / 2;
+            ResultPoint.Y = ResultPoint.Y / 2;
+            ResultPoint.X = ResultPoint.X + PanelRec.X;
+            ResultPoint.Y = ResultPoint.Y + PanelRec.Y;
+            ResultPoint.X = NodeRec.Left - ResultPoint.X;
+            ResultPoint.Y = NodeRec.Top - ResultPoint.Y;
+
+            MindMap_PanelTemp.ScrollMindMap(ResultPoint);
+
+
+        }
+
         #endregion 方法
 
         #region 私有方法
@@ -391,12 +496,11 @@ namespace WlxMindMap
         /// 
         /// </summary>
         private void collapseNodeButton1_CollapseButtonDown()
-        {           
+        {
             ExpandOrCollapse(!collapseNodeButton1.IsExpand);
             this.NodeContent.Selected = true;
         }
         #endregion 私有放
-
 
         #region 事件
         /// <summary> 重画时重新画出连接线
@@ -492,6 +596,5 @@ namespace WlxMindMap
         #endregion 事件
 
     }
-
 }
 

@@ -449,7 +449,11 @@ namespace WlxMindMap
                     if (!SenderObject.Selected)//如果单击已选中节点就不做任何事，因为可能需要按住进行拖拽
                     {
                         MindMapNodeList.ForEach(T1 => T1.NodeContent.Selected = false);
-                        SenderObject.Selected = true;
+                        SenderObject.Selected = true;                    
+                    SenderObject.NodeContainer.ScrollToView();//如果被单击的节点超出了可视范围就滚动到可视范围内
+                    RecordScrollPosition();
+
+
                     }
                 }
                 else//按住ctrl可单选
@@ -751,7 +755,7 @@ namespace WlxMindMap
 
         #endregion 公开事件委托    
 
-        #region 鼠标中键拖动滚动条
+        #region 鼠标拖动相关
 
 
         /// <summary> 左键拖动前就已经选中的节点
@@ -922,7 +926,7 @@ namespace WlxMindMap
 
                         #region 被框住就选中或反选节点
                         if (CurrentRectangle.IntersectsWith(RectangleTemp))//左键拖出的矩形是否与当前实例有交集
-                        {
+                        {                          
                             if (SelectedNodeList.Contains(MindMapNodeContaineritem))//如果已经选中了就取消选中
                             {
                                 MindMapNodeContaineritem.NodeContent.Selected = false;
@@ -985,7 +989,7 @@ namespace WlxMindMap
             }
         }
 
-        #endregion 鼠标中键拖动滚动条
+        #endregion 鼠标拖动相关
 
         #region 当控件尺寸改变时更改滚动条尺寸
 
@@ -1060,8 +1064,28 @@ namespace WlxMindMap
             int IntX = this.Scroll_panel.Width - this.Width;
             int IntY = this.Scroll_panel.Height - this.Height;
             Point PointTemp = new Point(IntX / 2, IntY / 2);
+            this.ScrollMindMap(PointTemp, true);
             Main_Panel.AutoScrollPosition = PointTemp;
             #endregion 将容器滚动至居中位置
+            RecordScrollPosition();
+        }
+
+        /// <summary> 滚动思维导图到指定坐标
+        /// 
+        /// </summary>
+        /// <param name="PointParame">坐标</param>
+        /// <param name="Absolucte">指示PointParame是否为绝对位置</param>
+        public void ScrollMindMap( Point PointParame , bool Absolucte=false)
+        {
+            if (Absolucte)
+            {
+                Main_Panel.AutoScrollPosition = PointParame;
+            }
+            else
+            {
+                Point PointTemp = new Point(Main_Panel.HorizontalScroll.Value+ PointParame.X, Main_Panel.VerticalScroll.Value + PointParame.Y);
+                Main_Panel.AutoScrollPosition = PointTemp;
+            }
             RecordScrollPosition();
         }
 
