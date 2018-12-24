@@ -453,7 +453,7 @@ namespace WlxMindMap
             MindMap_PanelTemp.ScrollMindMap(ResultPoint);
         }
 
-        /// <summary> 将该节点居中
+        /// <summary> 将该滚动之居中位置
         /// 
         /// </summary>
         public void ScrollToCenter()

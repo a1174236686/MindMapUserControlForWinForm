@@ -939,8 +939,8 @@ namespace WlxMindMap
                         else
                         {
                             if (SelectedNodeList.Contains(MindMapNodeContaineritem))
-                                continue;//在拖动之前就已经选中了就不管
-                            MindMapNodeContaineritem.NodeContent.Selected = false;
+                                MindMapNodeContaineritem.NodeContent.Selected = true;//在拖动之前就已经选中了就不管   
+                            else MindMapNodeContaineritem.NodeContent.Selected = false;
                         }
                         #endregion 被框住就选中或反选节点
                     }
