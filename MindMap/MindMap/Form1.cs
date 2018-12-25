@@ -581,18 +581,7 @@ namespace MindMap
         }
         #endregion 事件
         
-        #region 这个可以用于禁用窗体的tab键
-
-        //protected override bool ProcessDialogKey(Keys keydata)
-        //{
-        //    if (keydata == Keys.Tab)
-        //    {
-        //        //添加子文件夹ToolStripMenuItem1_Click(null, null);
-        //        //return false;
-        //    }
-        //    return base.ProcessDialogKey(keydata);
-        //} 
-        #endregion 这个可以用于禁用窗体的tab键
+     
         
     }
 

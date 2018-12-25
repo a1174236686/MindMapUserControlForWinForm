@@ -15,7 +15,7 @@ namespace WlxMindMap.UseControl
         public CollapseNodeButton()
         {
             InitializeComponent();
-            Button_label.BackColor = BackColorObj.Normaly.Value;
+            Button_label.BackColor = BackColorObj.Normaly.Value;                      
         }
         public Font ButtonFont
         {
@@ -34,7 +34,7 @@ namespace WlxMindMap.UseControl
         }
 
         /// <summary>获取或设置当前按钮的展开状态        
-        /// [true:显示为展开+；false：显示为折叠-]
+        /// [true:展开；false：折叠]
         /// </summary>
         public bool IsExpand
         {
@@ -48,15 +48,15 @@ namespace WlxMindMap.UseControl
                 _IsExpand = value;
                 if (_IsExpand)
                 {
-                    Button_label.Text = "+";
+                    Button_label.Text = "-";
                 }
                 else
                 {
-                    Button_label.Text = "-";
+                    Button_label.Text = "+";
                 }
             }
         }
-        private bool _IsExpand = false;
+        private bool _IsExpand = true;
 
         private MindMapNodeContent.Text_MindMapNodeContent.MindMapNodeBackColor BackColorObj = new MindMapNodeContent.Text_MindMapNodeContent.MindMapNodeBackColor(Color.FromArgb(200, 200, 200));
 
@@ -81,20 +81,22 @@ namespace WlxMindMap.UseControl
         }
         private void Button_label_MouseDown(object sender, MouseEventArgs e)
         {
-            Button_label.BackColor = BackColorObj.Down.Value;
             this.OnMouseDown(e);
-            if (CollapseButtonDown != null) CollapseButtonDown();
+            Button_label.BackColor = BackColorObj.Down.Value;
+        
         }
         private void Button_label_MouseUp(object sender, MouseEventArgs e)
         {
             Button_label.BackColor = BackColorObj.Enter.Value;
+            this.OnMouseUp(e);
+            if (CollapseButtonDown != null) CollapseButtonDown();
         }
 
 
 
         private void tableLayoutPanel1_MouseUp(object sender, MouseEventArgs e)
         {
-            Button_label_MouseUp(null, null);
+            //Button_label_MouseUp(null, null);
             this.OnMouseUp(e);
         }
 

@@ -82,12 +82,13 @@
             this.collapseNodeButton1.BackColor = System.Drawing.Color.White;
             this.collapseNodeButton1.ButtonFont = new System.Drawing.Font("宋体", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.collapseNodeButton1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.collapseNodeButton1.IsExpand = false;
+            this.collapseNodeButton1.IsExpand = true;
             this.collapseNodeButton1.Location = new System.Drawing.Point(61, 0);
             this.collapseNodeButton1.Margin = new System.Windows.Forms.Padding(2);
             this.collapseNodeButton1.Name = "collapseNodeButton1";
             this.collapseNodeButton1.Size = new System.Drawing.Size(14, 35);
             this.collapseNodeButton1.TabIndex = 0;
+            this.collapseNodeButton1.TabStop = false;
             this.collapseNodeButton1.CollapseButtonDown += new System.Action(this.collapseNodeButton1_CollapseButtonDown);
             this.collapseNodeButton1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseClick);
             this.collapseNodeButton1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EmptyRange_MouseDown);

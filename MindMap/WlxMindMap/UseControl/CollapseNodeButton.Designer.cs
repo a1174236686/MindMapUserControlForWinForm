@@ -49,7 +49,7 @@
             this.Button_label.MouseEnter += new System.EventHandler(this.Button_label_MouseEnter);
             this.Button_label.MouseLeave += new System.EventHandler(this.Button_label_MouseLeave);
             this.Button_label.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tableLayoutPanel1_MouseMove);
-            this.Button_label.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tableLayoutPanel1_MouseUp);
+            this.Button_label.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Button_label_MouseUp);
             // 
             // tableLayoutPanel1
             // 
@@ -60,7 +60,7 @@
             this.tableLayoutPanel1.Controls.Add(this.Button_label, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -79,7 +79,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "CollapseNodeButton";
             this.Size = new System.Drawing.Size(320, 254);
             this.tableLayoutPanel1.ResumeLayout(false);

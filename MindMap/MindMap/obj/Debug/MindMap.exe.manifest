@@ -48,19 +48,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>rXapn9ap+asEqNb1LvwxhIVwkRJ/IY33PuIxoTH5VJU=</dsig:DigestValue>
+        <dsig:DigestValue>5oqCEh0z/MYZMhhoEUSmHdx/conea6FlpvD9vwxnNSo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WlxMindMap.dll" size="54784">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WlxMindMap.dll" size="58368">
       <assemblyIdentity name="WlxMindMap" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Vc7ewlAgDUXHjPoK0hGTLOHr75GlD1vrNxFNNsCwnsY=</dsig:DigestValue>
+        <dsig:DigestValue>WtGlZv3OYapCDNKuz8Cq4U+CcMZckudOK/utUoc/CAI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

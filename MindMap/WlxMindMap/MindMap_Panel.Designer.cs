@@ -154,7 +154,7 @@
         #endregion
 
         private System.Windows.Forms.Panel Scroll_panel;
-        private System.Windows.Forms.Button Scaling_button;
+        public  System.Windows.Forms.Button Scaling_button;
         private User_Main_Panel Main_Panel;
         private System.Windows.Forms.Panel Selected_Top_panel;
         private System.Windows.Forms.Panel Selected_Left_panel;

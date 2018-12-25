@@ -295,7 +295,7 @@ namespace WlxMindMap
             {
                 //有子节点
                 collapseNodeButton1.Visible = true;
-                if (!collapseNodeButton1.IsExpand)//是否已经展开
+                if (collapseNodeButton1.IsExpand)//是否已经展开
                 {
                     //已展开                   
                     DrawingLine_panel.Visible = true;
@@ -398,9 +398,10 @@ namespace WlxMindMap
         /// <summary> 展开/折叠当前节点
         /// 
         /// </summary>
-        /// <param name="IsExpandParame">[true:显示为展开+；false：显示为折叠-]</param>
+        /// <param name="IsExpandParame">[true:展开；false：折叠]</param>
         public void ExpandOrCollapse(bool IsExpandParame)
         {
+            if (collapseNodeButton1.IsExpand == IsExpandParame) return;
             collapseNodeButton1.IsExpand = IsExpandParame;
             ResetNodeSize();
         }
@@ -408,11 +409,13 @@ namespace WlxMindMap
         /// <summary> 展开/折叠所有子节点
         /// 
         /// </summary>
-        /// <param name="IsExpandParame">[true:显示为展开+；false：显示为折叠-]</param>
+        /// <param name="IsExpandParame">[true:展开；false：折叠]</param>
         public void ExpandOrCollapseAll(bool IsExpandParame)
         {
-            collapseNodeButton1.IsExpand = IsExpandParame;
+
             this.GetChidrenNode().ForEach(T1 => T1.PrivateExpandOrCollapseAll(IsExpandParame));
+            //if (collapseNodeButton1.IsExpand == IsExpandParame) return;
+            collapseNodeButton1.IsExpand = IsExpandParame;
             ResetNodeSize();
         }
 
@@ -499,6 +502,7 @@ namespace WlxMindMap
         {
             ExpandOrCollapse(!collapseNodeButton1.IsExpand);
             this.NodeContent.Selected = true;
+            this.MindMap_Panel.Scaling_button.Focus();
         }
         #endregion 私有放
 

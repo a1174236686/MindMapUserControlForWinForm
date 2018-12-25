@@ -380,6 +380,7 @@ namespace WlxMindMap
             return ContainerControl;
         }
 
+
         /// <summary>开始拖拽节点
         /// 
         /// </summary>
@@ -558,6 +559,89 @@ namespace WlxMindMap
         #endregion 节点内容相关事件方法
 
         #region 非节点内容的事件方法
+        /// <summary> 控件中键盘按下事件
+        /// 
+        /// </summary>
+        /// <param name="keyData"></param>
+        /// <returns></returns>
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Right:
+                case Keys.Left:
+                    List<MindMapNodeContainer> NodeList = this.GetSelectedNode();
+                    MindMapNodeContainer CurrentNode = NodeList.FirstOrDefault();
+                    NodeList.ForEach(T1 => T1.NodeContent.Selected = false);//取消所有节点的选中
+                    if (CurrentNode != null)
+                    {
+                        switch (keyData)
+                        {
+                            case Keys.Up:
+                            case Keys.Down:
+                                NodeList = BaseNode.GetChidrenNode(true);
+                                NodeList.Add(BaseNode);
+                                var ContentAndRectangleList = NodeList.Select(T1 => new
+                                {
+                                    Node = T1,
+                                    ScreenRectangle = new Rectangle(T1.PointToScreen(new Point()), T1.NodeContent.Size),
+                                    Visible= T1.Visible
+                                }).ToList();
+                                var CurrentNodeVar = ContentAndRectangleList.Where(T1 => T1.Node == CurrentNode).FirstOrDefault();
+                                ContentAndRectangleList = ContentAndRectangleList.Where(T1 => T1.Visible).ToList();//不选择已经折叠的节点
+                                if (keyData == Keys.Up)
+                                {
+                                    int MinTop = ContentAndRectangleList.Select(T1 => T1.ScreenRectangle.Top).Min();
+                                    int x = CurrentNodeVar.ScreenRectangle.Left;
+                                    int y = MinTop;
+                                    int width = CurrentNodeVar.ScreenRectangle.Width;
+                                    int height = CurrentNodeVar.ScreenRectangle.Top - MinTop;
+                                    Rectangle Rec = new Rectangle(x, y, width, height);
+                                    ContentAndRectangleList = ContentAndRectangleList.Where(T1 => T1.ScreenRectangle.IntersectsWith(Rec)).ToList();
+                                    ContentAndRectangleList = ContentAndRectangleList.OrderByDescending(T1 => T1.ScreenRectangle.Top).ToList();
+                                    CurrentNodeVar = ContentAndRectangleList.FirstOrDefault();
+                                    if (CurrentNodeVar != null) CurrentNode = CurrentNodeVar.Node;
+                                }
+                                else
+                                {
+                                    int MaxBottom = ContentAndRectangleList.Select(T1 => T1.ScreenRectangle.Top + T1.ScreenRectangle.Height).Max();
+                                    int x = CurrentNodeVar.ScreenRectangle.Left;
+                                    int y = CurrentNodeVar.ScreenRectangle.Top + CurrentNodeVar.ScreenRectangle.Height;
+                                    int width = CurrentNodeVar.ScreenRectangle.Width;
+                                    int height = MaxBottom - y;
+                                    Rectangle Rec = new Rectangle(x, y, width, height);
+                                    ContentAndRectangleList = ContentAndRectangleList.Where(T1 => T1.ScreenRectangle.IntersectsWith(Rec)).ToList();
+                                    ContentAndRectangleList = ContentAndRectangleList.OrderBy(T1 => T1.ScreenRectangle.Top).ToList();
+                                    CurrentNodeVar = ContentAndRectangleList.FirstOrDefault();
+                                    if (CurrentNodeVar != null) CurrentNode = CurrentNodeVar.Node;                                  
+                                }
+
+                                break;
+                            case Keys.Left://左方向键
+                                if (CurrentNode.ParentNode != null) CurrentNode = CurrentNode.ParentNode;                                
+                                break;
+                            case Keys.Right://右方向键
+                                MindMapNodeContainer NodeTemp = CurrentNode.GetChidrenNode().FirstOrDefault();
+                                if (NodeTemp != null)
+                                {                                   
+                                    CurrentNode.ExpandOrCollapse(true);
+                                    CurrentNode = NodeTemp;//有子节点就转移到子节点上         
+                                }                     
+                                break;
+                        }
+                        CurrentNode.NodeContent.Selected = true;
+                        CurrentNode.ScrollToView();//将选中节点移动到可以范围
+                    }
+                    break;
+            }
+
+
+
+            if (MindNodemapKeyDown != null) MindNodemapKeyDown(this, new KeyEventArgs(keyData));
+            return base.ProcessDialogKey(keyData);
+        }
 
         /// <summary> 空白处被单击取消所有选中        
         /// 
@@ -734,24 +818,15 @@ namespace WlxMindMap
         [Browsable(true), Description("点击空白处")]
         public event MouseEventHandler EmptyRangeMouseClick;
 
-        #endregion 节点容器相关事件委托[在非节点处发生的事件]
-
-
         /// <summary> 焦点在思维导图任何位置时，键盘按下事件
         /// 
         /// </summary>
         public event KeyEventHandler MindNodemapKeyDown;
+        #endregion 节点容器相关事件委托[在非节点处发生的事件]
 
-        /// <summary> 控件中键盘按下事件
-        /// 
-        /// </summary>
-        /// <param name="keyData"></param>
-        /// <returns></returns>
-        protected override bool ProcessDialogKey(Keys keyData)
-        {
-            if (MindNodemapKeyDown != null) MindNodemapKeyDown(this, new KeyEventArgs(keyData));
-            return base.ProcessDialogKey(keyData);
-        }
+
+
+       
 
         #endregion 公开事件委托    
 
@@ -1114,14 +1189,14 @@ namespace WlxMindMap
         #endregion 当控件尺寸改变时更改滚动条尺寸
 
         #region 按住Ctrl+滚轮缩放
-        private int PaintNum = 0;//倒计时的时间
+        private int PaintNum = 50;//倒计时的时间
         private Thread PaintTread = null;//用于倒计时的线程（不阻塞UI线程）
-        /// <summary> 延时200毫秒刷新滚动条尺寸和位置
+        /// <summary> 延时20毫秒刷新滚动条尺寸和位置
         /// 
         /// </summary>
         private void DelayShow()
         {
-            PaintNum = 50;//倒计时300毫秒
+            PaintNum = 50;//倒计时20毫秒
             if (PaintTread == null)//为空表示线程没有开启线程
             {
                 PaintTread = new Thread(() =>
@@ -1201,9 +1276,9 @@ namespace WlxMindMap
         
         #region 用于跳过绘制过程
 
-        private int CountDown = 50;//倒计时50毫秒
+        private int CountDown = 20;//倒计时20毫秒
         private Thread DelayThread = null;//用于倒计时的线程
-        /// <summary> 临时隐藏思维导图节点并在50毫秒后显示出来
+        /// <summary> 临时隐藏思维导图节点并在20毫秒后显示出来
         /// 如果高平率反复调用本方法则会重置倒计时时间，以保证最后一次临时隐藏到显示间隔50毫秒
         /// 主要是由于winform的缺陷在进行大面积变动时（用户在循环中添加节点或删除节点）时。如果不隐藏思维导图就会展示添加/删除节点的过程（绘制过程）
         /// 每当有节点添加或删除时或尺寸改变时（改变数据源）都会调用本方法用于跳过绘制过程
@@ -1211,16 +1286,17 @@ namespace WlxMindMap
         private void HideMindMap()
         {
 
-            CountDown = 50;//重置倒计时时间
+            CountDown = 20;//重置倒计时时间
             mindMapNode.Visible = false;//隐藏思维导图节点
             if (DelayThread != null) return;//如果之前就已经开始倒计时了就直接返回。
             DelayThread = new Thread(() =>
             {
                 while (true)
                 {
-                    CountDown = CountDown - 10;
+                   
                     if (CountDown <= 0) break;
                     Thread.Sleep(10);
+                    CountDown = CountDown - 10;
                 }
                 DelayThread = null;
                 this.Invoke(new Action(() =>
@@ -1233,8 +1309,6 @@ namespace WlxMindMap
         }
 
         #endregion 用于跳过绘制过程
-
-
-
+        
     }
 }
