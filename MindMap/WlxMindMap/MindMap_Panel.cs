@@ -662,7 +662,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void mindMapNode_EmptyRangeMouseDown(object sender, MouseEventArgs e)
         {
-            this.Focus();
+            Scaling_button.Focus();//尽量将焦点给button，因为Panel是不允许拥有输入焦点的，所以不好获取键盘按下事件
             //if (e.Button == MouseButtons.Left)
             {
                 #region 取消所有编辑状态

@@ -110,13 +110,9 @@ namespace WlxMindMap.MindMapNodeContent
                 return _DataItem;
             }
             set
-            {
-                
+            {               
                 _DataItem = value;
-
                 Content_lable.Text = GetDataValue(g_DataStruct.Text).ToString();
-
-
                 if (NodeContainer != null) NodeContainer.ResetNodeSize();
             }
         }
@@ -154,7 +150,6 @@ namespace WlxMindMap.MindMapNodeContent
                 _DataStruct = value;
                 if (!(_DataStruct is Text_ContentStruct)) throw new Exception("指示内容结构的类必须为Text_ContentStruct");
                 g_DataStruct = (Text_ContentStruct)_DataStruct;
-
             }
         }
         
@@ -221,29 +216,7 @@ namespace WlxMindMap.MindMapNodeContent
             }
         }
         private MindMapNodeBackColor _NodeBackColor = new MindMapNodeBackColor(Color.FromArgb(48, 120, 215));
-
-        /// <summary> 用于编辑的TextBox按下回车完成编辑，按下esc取消编辑        
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Edit_TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            //switch (e.KeyData)
-            //{
-            //    case Keys.Enter:
-            //        Content_lable.Text = Edit_TextBox.Text;
-            //        RefreshContentSize();
-            //        Edited = false;
-            //        break;
-
-            //    case Keys.Escape:
-            //        Edited = false;
-            //        break;
-            //}
-            //e.Handled = true;
-        }
-
+      
         #region 配套使用的内部类
         /// <summary> Text_MindMapNodeContent中指示DataItem的结构
         /// 
