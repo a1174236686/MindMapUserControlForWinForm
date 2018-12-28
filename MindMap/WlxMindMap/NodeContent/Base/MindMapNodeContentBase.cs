@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
-namespace WlxMindMap.MindMapNodeContent
+namespace WlxMindMap.NodeContent
 {
     /// <summary> 节点内容的基类
     /// 如果你要自定义节点内容的布局等你就必须实现这些抽象方法
@@ -46,6 +46,7 @@ namespace WlxMindMap.MindMapNodeContent
         /// </summary>
         public abstract void RefreshContentSize();
 
+      
         #endregion 子类必须实现的抽象方法
 
         #region 基类提供的方法     

@@ -40,3 +40,6 @@ C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.csproj.CopyComplete
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.exe
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.pdb
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.File_NodeContent.resources
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.frmRightMenu.resources
+C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\MindMap\obj\Debug\MindMap.FileItem.resources

@@ -3,22 +3,22 @@ using System.Drawing;
 using System.Windows.Forms;
 
 
-namespace WlxMindMap.MindMapNodeContent
+namespace WlxMindMap.NodeContent
 {
     /// <summary> 节点内容，提供了在节点中显示文本的功能
     /// 并且如果你直接使用思维导图容器的SetDataSource不带泛型的方法来绑定数据源时默认也是使用这个节点内容布局
     /// </summary>
-    public partial class Text_MindMapNodeContent :
+    public partial class Text_NodeContent :
     MindMapNodeContentBase
     //UserControl
     {
-        public Text_MindMapNodeContent()
+        public Text_NodeContent()
         {
             InitializeComponent();
             this.DoubleBuffered = true;
             Content_lable.ForeColor = Color.FromArgb(255, 255, 255);
             Content_lable.BackColor = NodeBackColor.Normaly.Value;            
-            RecordScling();         
+            RecordScaling();         
         }
 
         public string ContentText { get { return Content_lable.Text; } }
@@ -28,7 +28,7 @@ namespace WlxMindMap.MindMapNodeContent
         /// <summary> 将当前尺寸记录为缩放比例为100%时的尺寸，缩放时将会基类该值进行调整
         /// 
         /// </summary>
-        private void RecordScling()
+        private void RecordScaling()
         {
             Scaling_ContentFont = Content_lable.Font;
             Scaling_ContentPadding = Content_lable.Padding;
@@ -129,8 +129,7 @@ namespace WlxMindMap.MindMapNodeContent
             }
             set
             {
-                _CurrentScaling = value;
-                //this.RefreshContentSize();
+                _CurrentScaling = value;              
             }
         }
 

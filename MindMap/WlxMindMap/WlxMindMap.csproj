@@ -50,14 +50,14 @@
     <Compile Include="MindMapNodeContainer.Designer.cs">
       <DependentUpon>MindMapNodeContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="MindMapNodeContent\Base\MindMapNodeContentBase.cs">
+    <Compile Include="NodeContent\Base\MindMapNodeContentBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MindMapNodeContent\Text_MindMapNodeContent.cs">
+    <Compile Include="NodeContent\Text_NodeContent.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MindMapNodeContent\Text_MindMapNodeContent.Designer.cs">
-      <DependentUpon>Text_MindMapNodeContent.cs</DependentUpon>
+    <Compile Include="NodeContent\Text_NodeContent.Designer.cs">
+      <DependentUpon>Text_NodeContent.cs</DependentUpon>
     </Compile>
     <Compile Include="MindMapNodeStructBase.cs" />
     <Compile Include="MindMap_Panel.cs">
@@ -83,11 +83,11 @@
     <EmbeddedResource Include="MindMapNodeContainer.resx">
       <DependentUpon>MindMapNodeContainer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MindMapNodeContent\Base\MindMapNodeContentBase.resx">
+    <EmbeddedResource Include="NodeContent\Base\MindMapNodeContentBase.resx">
       <DependentUpon>MindMapNodeContentBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MindMapNodeContent\Text_MindMapNodeContent.resx">
-      <DependentUpon>Text_MindMapNodeContent.cs</DependentUpon>
+    <EmbeddedResource Include="NodeContent\Text_NodeContent.resx">
+      <DependentUpon>Text_NodeContent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MindMap_Panel.resx">
       <DependentUpon>MindMap_Panel.cs</DependentUpon>

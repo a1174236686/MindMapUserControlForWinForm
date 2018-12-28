@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WlxMindMap.MindMapNodeContent;
+using WlxMindMap.NodeContent;
 using WlxMindMap.UseControl;
 using System.Reflection;
 

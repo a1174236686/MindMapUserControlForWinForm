@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.Threading;
 using WlxMindMap;
-using WlxMindMap.MindMapNodeContent;
+using WlxMindMap.NodeContent;
 
 
 namespace WlxMindMap
@@ -849,6 +849,11 @@ namespace WlxMindMap
         /// </summary>
         private bool IsMindMapNode = false;
 
+        /// <summary> 指示鼠标是否被按下
+        /// 
+        /// </summary>
+        private bool IsMouseDown = false;
+
         /// <summary> 鼠标拖动前的位置
         /// 
         /// </summary>
@@ -860,13 +865,15 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void MindMap_Panel_MouseDown(object sender, MouseEventArgs e)
         {
+            IsMouseDown = true;
+
             if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right)
             {
                 MoveValue = e.Location;
             }
             else if (e.Button == MouseButtons.Left)
             {
-                MindMapNodeContent.MindMapNodeContentBase ContentControl = ((Control)sender).GetNodeContent();
+                NodeContent.MindMapNodeContentBase ContentControl = ((Control)sender).GetNodeContent();
                 if (ContentControl == null)
                 {
                     IsMindMapNode = false;
@@ -900,6 +907,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void MindMap_Panel_MouseUp(object sender, MouseEventArgs e)
         {
+            IsMouseDown = false;
             if (e.Button == MouseButtons.Left)
             {
                 ShowOrHideLine(false);//隐藏矩形的线条
@@ -915,7 +923,7 @@ namespace WlxMindMap
         /// <param name="e"></param>
         private void MindMap_Panel_MouseMove(object sender, MouseEventArgs e)
         {
-        
+            if (!IsMouseDown) return                      ;
                 #region 计算矩形的尺寸
                 Point PointTemp1 = Scroll_panel.PointToClient(Control.MousePosition);
                 Point PanelLocation = new Point(0, 0);
@@ -964,7 +972,7 @@ namespace WlxMindMap
                     if (IsMindMapNode) //是否在节点中进行左键拖拽
                 {
                     //是：拖拽节点
-                    MindMapNodeContent.MindMapNodeContentBase ContentControl = ((Control)sender).GetNodeContent();
+                    NodeContent.MindMapNodeContentBase ContentControl = ((Control)sender).GetNodeContent();
                     if (ContentControl == null) return;
                     ContentControl.DoDragDrop(ContentControl, DragDropEffects.Move);
                 }

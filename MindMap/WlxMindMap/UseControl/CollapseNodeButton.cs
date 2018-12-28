@@ -58,7 +58,7 @@ namespace WlxMindMap.UseControl
         }
         private bool _IsExpand = true;
 
-        private MindMapNodeContent.Text_MindMapNodeContent.MindMapNodeBackColor BackColorObj = new MindMapNodeContent.Text_MindMapNodeContent.MindMapNodeBackColor(Color.FromArgb(200, 200, 200));
+        private NodeContent.Text_NodeContent.MindMapNodeBackColor BackColorObj = new NodeContent.Text_NodeContent.MindMapNodeBackColor(Color.FromArgb(200, 200, 200));
 
         [Description("折叠按钮被按下")]
         public event Action CollapseButtonDown = null;
