@@ -51,7 +51,7 @@
             this.main_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.main_panel.Location = new System.Drawing.Point(0, 0);
             this.main_panel.Name = "main_panel";
-            this.main_panel.Size = new System.Drawing.Size(330, 440);
+            this.main_panel.Size = new System.Drawing.Size(300, 440);
             this.main_panel.TabIndex = 0;
             // 
             // Files_Panel
@@ -60,7 +60,7 @@
             this.Files_Panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Files_Panel.Location = new System.Drawing.Point(0, 0);
             this.Files_Panel.Name = "Files_Panel";
-            this.Files_Panel.Size = new System.Drawing.Size(328, 305);
+            this.Files_Panel.Size = new System.Drawing.Size(298, 305);
             this.Files_Panel.TabIndex = 1;
             // 
             // panel1
@@ -72,7 +72,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 305);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(3);
-            this.panel1.Size = new System.Drawing.Size(328, 133);
+            this.panel1.Size = new System.Drawing.Size(298, 133);
             this.panel1.TabIndex = 0;
             // 
             // panel3
@@ -80,9 +80,9 @@
             this.panel3.Controls.Add(this.button2);
             this.panel3.Controls.Add(this.button3);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(166, 3);
+            this.panel3.Location = new System.Drawing.Point(146, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(157, 125);
+            this.panel3.Size = new System.Drawing.Size(147, 125);
             this.panel3.TabIndex = 5;
             // 
             // button2
@@ -95,11 +95,12 @@
             this.button2.Location = new System.Drawing.Point(0, -1);
             this.button2.Margin = new System.Windows.Forms.Padding(0);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(157, 63);
+            this.button2.Size = new System.Drawing.Size(147, 63);
             this.button2.TabIndex = 3;
             this.button2.TabStop = false;
             this.button2.Text = "新建同级节点";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -111,11 +112,12 @@
             this.button3.Location = new System.Drawing.Point(0, 62);
             this.button3.Margin = new System.Windows.Forms.Padding(0);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(157, 63);
+            this.button3.Size = new System.Drawing.Size(147, 63);
             this.button3.TabIndex = 4;
             this.button3.TabStop = false;
             this.button3.Text = "新建子节点";
             this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // panel2
             // 
@@ -124,7 +126,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(163, 125);
+            this.panel2.Size = new System.Drawing.Size(143, 125);
             this.panel2.TabIndex = 4;
             // 
             // button1
@@ -137,11 +139,12 @@
             this.button1.Location = new System.Drawing.Point(0, -1);
             this.button1.Margin = new System.Windows.Forms.Padding(0);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(163, 63);
+            this.button1.Size = new System.Drawing.Size(143, 63);
             this.button1.TabIndex = 4;
             this.button1.TabStop = false;
             this.button1.Text = "重命名";
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button4
             // 
@@ -153,17 +156,18 @@
             this.button4.Location = new System.Drawing.Point(0, 62);
             this.button4.Margin = new System.Windows.Forms.Padding(0);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(163, 63);
+            this.button4.Size = new System.Drawing.Size(143, 63);
             this.button4.TabIndex = 5;
             this.button4.TabStop = false;
             this.button4.Text = "删除节点";
             this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // frmRightMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(330, 440);
+            this.ClientSize = new System.Drawing.Size(300, 440);
             this.Controls.Add(this.main_panel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmRightMenu";

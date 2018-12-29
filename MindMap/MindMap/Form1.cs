@@ -347,8 +347,20 @@ namespace MindMap
                 TestEntity TestEntityTemp = (TestEntity)(contentTemp.DataItem);
                 frmRightMenu frm = new frmRightMenu();
                 frm.Dir = new DirectoryInfo(TestEntityTemp.Path);
+
+                frm.AddFolder += new EventHandler(添加同级文件夹ToolStripMenuItem_Click);
+                frm.AddChidrenFolder += new EventHandler(添加子文件夹ToolStripMenuItem1_Click);
+                frm.ResetName += new EventHandler(重命名QToolStripMenuItem_Click);
+                frm.DeleteFolder += new EventHandler(删除文件夹ToolStripMenuItem_Click);
+
                 frm.Show();
-                frm.Location = Control.MousePosition;
+                Point PointTemp =  this.PointToScreen(new Point (this.Size.Width, this.Size.Height));
+                PointTemp.X = PointTemp.X - frm.Width;
+                PointTemp.Y = PointTemp.Y - frm.Height;
+                frm.Left = Control.MousePosition.X < PointTemp.X ? Control.MousePosition.X : PointTemp.X;
+                frm.Top = Control.MousePosition.Y < PointTemp.Y ? Control.MousePosition.Y : PointTemp.Y;
+
+                //frm.Location = Control.MousePosition;
                 //RightKey_Menu.Show(Control.MousePosition);
             }
         }

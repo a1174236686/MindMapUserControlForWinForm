@@ -31,8 +31,9 @@ namespace MindMap
 
         public static string MindMapRightMenu= "用思维导图打开(&Z)";
         //public static string ParamePath = @"C:\Users\wayne\Desktop";
+        //public static string ParamePath = @"C:\Users\wayne";
         public static string ParamePath = @"d:\";
-        
+
         private static void rightConmandKey(string[] args)
         {
 

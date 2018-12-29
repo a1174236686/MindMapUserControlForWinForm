@@ -19,7 +19,7 @@ namespace MindMap
             InitializeComponent();
         }
 
-        public DirectoryInfo Dir{ get; set; }
+        public DirectoryInfo Dir { get; set; }
         private void frmRightMenu_Leave(object sender, EventArgs e)
         {
             this.Close();
@@ -42,11 +42,22 @@ namespace MindMap
                 FileControl.FilePath = FileInfoItem.FullName;
                 FileControl.FileIco = GetImageByFileName(FileInfoItem.FullName);
                 FileControl.Parent = Files_Panel;
+                FileControl.Click += new EventHandler(FileItemClick);                
             }
-
-
-
         }
+
+        private void FileItemClick(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        public event EventHandler ResetName;
+        public event EventHandler DeleteFolder;
+        public event EventHandler AddChidrenFolder;
+        public event EventHandler AddFolder;
+        
+
+
         #region 获取文件图标
 
         /// <summary> 获取一个文件的图标
@@ -135,5 +146,30 @@ namespace MindMap
 
 
         #endregion 获取文件图标
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            if (ResetName != null) ResetName(this,e);
+            
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            if (DeleteFolder != null) DeleteFolder(this, e);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            if (AddFolder != null) AddFolder(this, e);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            if (AddChidrenFolder != null) AddChidrenFolder(this, e);
+        }
     }
 }

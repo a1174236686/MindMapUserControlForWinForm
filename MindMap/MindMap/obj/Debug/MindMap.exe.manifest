@@ -41,14 +41,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MindMap.exe" size="32768">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MindMap.exe" size="35328">
       <assemblyIdentity name="MindMap" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>GPydrx+Wr8b7yRctoaXkB0kxGFOa4lL6TDeo4zYmyK0=</dsig:DigestValue>
+        <dsig:DigestValue>gW3TiNhYTTRFYJf85VB24OnpgsTAqxbzizz0M9q8JOA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

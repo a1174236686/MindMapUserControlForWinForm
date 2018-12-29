@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace MindMap
 {
@@ -29,5 +30,20 @@ namespace MindMap
         }
 
         public string FilePath { set; get; }
+
+        private void label1_MouseEnter(object sender, EventArgs e)
+        {
+            this.BackColor = Color.FromArgb(255, 255, 255);
+        }
+
+        private void label1_MouseLeave(object sender, EventArgs e)
+        {
+            this.BackColor = Color.FromName("control");
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {            
+            Process.Start(FilePath);
+        }
     }
 }

@@ -29,7 +29,9 @@ namespace MindMap
 
 
 
-
+        /// <summary> 记录100%缩放比例时的尺寸
+        /// 
+        /// </summary>
         public void RecordScaling()
         {
             FolderTitle_Font = Title_Label.Font;
@@ -84,7 +86,7 @@ namespace MindMap
         /// <summary> 表示用于显示内容的数据源
         /// 
         /// </summary>
-        public override object DataItem     
+        public override object DataItem
         {
             get { return _DataItem; }
             set
@@ -99,19 +101,20 @@ namespace MindMap
                     FileInfo[] FileArray = DirTemp.GetFiles();
 
                     if (FileArray.Length != 0) IsFiles = true;
-
+                    int MaxFileCount = 3;//这里限制扫描出来的文件不超过三个，否则如果文件太多了节点会非常的长
                     foreach (var FileItem in FileArray)
                     {
                         PictureBox ControlTemp = new PictureBox();
                         //ControlTemp.BorderStyle = BorderStyle.FixedSingle;
-                        
+
                         ControlTemp.Margin = new Padding(1);
                         ControlTemp.Padding = new Padding();
                         ControlTemp.SizeMode = PictureBoxSizeMode.StretchImage;
                         ControlTemp.Image = GetImageByFileName(FileItem.FullName);
-                        
-                        ControlTemp.Parent = File_Panel;                        
-                       
+
+                        ControlTemp.Parent = File_Panel;
+                        MaxFileCount--;
+                        if (MaxFileCount <= 0) break;
                     }
                 }
                 if (NodeContainer != null) NodeContainer.ResetNodeSize();
@@ -131,14 +134,14 @@ namespace MindMap
         /// </summary>
         public override void RefreshContentSize()
         {
-            Title_Label.Font = FolderTitle_Font.ByScaling(CurrentScaling);
-            Title_Label.Padding = FolderTitle_Padding.ByScaling(CurrentScaling);
+            Title_Label.Font = FolderTitle_Font.ByScaling(CurrentScaling);//按照比例缩放
+            Title_Label.Padding = FolderTitle_Padding.ByScaling(CurrentScaling);//按照比例缩放
             Title_panel.Width = Title_Label.Width;
             this.Height = Title_Label.Height;    
             
-            File_Panel.Visible = IsFiles;
-            int widthCount = 0;
-            if (IsFiles)
+            File_Panel.Visible = IsFiles;//该文件夹下是否有文件
+            int widthCount = 0;//文件图标所占的宽度
+            if (IsFiles)//如果有文件就计算文件图标所占的宽度
             {
                 foreach (Control ImgItem in File_Panel.Controls)
                 {
