@@ -52,7 +52,8 @@ namespace WlxMindMap.NodeContent
         /// </summary>
         public override bool Selected
         {
-            get => _Selected; set
+            get { return _Selected; }
+            set
             {
                 _Selected = value;
                 if (_Selected)

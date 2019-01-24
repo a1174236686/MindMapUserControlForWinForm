@@ -50,7 +50,15 @@ namespace MindMap
             //NodeStruct.Text = "Text";
             //mindMap_Panel1.DataStruct = NodeStruct;
             //mindMap_Panel1.SetDataSource<WlxMindMap.NodeContent.Text_NodeContent, TestEntity>(DataSourceList);
-
+            if (DataSourceList.Count > 200)
+            {
+                this.Text = @"
+当前文件夹下的子文件夹数量过多
+基于自定义控件实现，文件夹过多可能会造成句柄失效
+这取决于你的操作系统剩余句柄数量，建议子文件夹数量不要超过500个
+你可以选择在在你的工作文件夹下打开本应用";
+                return; 
+            }
 
             File_NodeContent.File_ContentStruct NodeStruct = new File_NodeContent.File_ContentStruct();
             NodeStruct.MindMapID = "ID";

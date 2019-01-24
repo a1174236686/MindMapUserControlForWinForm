@@ -286,7 +286,7 @@ namespace WlxMindMap
             }
             Content_Panel.Width = ContentSize.Width;
 
-
+            
 
             int MaxChidrenWidth = 0;//子节点最宽的宽度
             int HeightCount = 0;//子节点高度的总和

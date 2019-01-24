@@ -11,3 +11,14 @@ C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.pdb
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.NodeContent.MindMapNodeContentBase.resources
 C:\Users\wayne\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.NodeContent.Text_NodeContent.resources
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.MindMapNodeContainer.resources
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.NodeContent.MindMapNodeContentBase.resources
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.NodeContent.Text_NodeContent.resources
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.MindMap_Panel.resources
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.UseControl.CollapseNodeButton.resources
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.csproj.GenerateResource.Cache
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.dll
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\obj\Debug\WlxMindMap.pdb
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\bin\Debug\WlxMindMap.dll
+C:\Users\Administrator\Documents\GitHub\MindMapUserControlForWinForm\MindMap\WlxMindMap\bin\Debug\WlxMindMap.pdb
