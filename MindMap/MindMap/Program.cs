@@ -48,6 +48,7 @@ namespace MindMap
                 str = System.Environment.CurrentDirectory + "\\MindMap.exe" + " %V";//当前exe文件夹路径
                 AddFileContextMenuItem(MindMapRightMenu, str, 1);
                 Recod(@"C:\Menu.txt", "注册右键菜单");
+                ParamePath = Application.StartupPath;
             }
             else
             {
