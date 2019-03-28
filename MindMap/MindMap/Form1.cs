@@ -203,10 +203,8 @@ namespace MindMap
 
             Edit_textBox.Left = (this.Size.Width - Edit_textBox.Size.Width) / 2;
             Edit_textBox.Top = (this.Size.Height - Edit_textBox.Size.Height) / 2;
-
             #endregion 居中编辑框
             Edit_textBox.Focus();
-
         }
 
         private void 添加同级文件夹ToolStripMenuItem_Click(object sender, EventArgs e)
