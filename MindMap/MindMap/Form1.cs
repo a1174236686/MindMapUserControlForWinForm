@@ -193,8 +193,11 @@ namespace MindMap
             MindMapNodeContentBase CurrentContent = GetCurrentContent();
 
             if (CurrentContent == null) return;
-            if (!(CurrentContent is Text_NodeContent)) return;
-            Edit_textBox.Text = ((Text_NodeContent)CurrentContent).ContentText;
+            if (!(CurrentContent is File_NodeContent)) return;
+            File_NodeContent File_NodeContentTemp=(File_NodeContent)CurrentContent;
+            TestEntity TestEntityTemp = (TestEntity)(File_NodeContentTemp.DataItem);
+
+            Edit_textBox.Text = TestEntityTemp.Text;
             Edit_textBox.Visible = true;
             #region 居中编辑框
 
