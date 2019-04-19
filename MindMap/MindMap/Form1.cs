@@ -67,6 +67,8 @@ namespace MindMap
             NodeStruct.Path = "Path";
             mindMap_Panel1.DataStruct = NodeStruct;
             mindMap_Panel1.SetDataSource<File_NodeContent, TestEntity>(DataSourceList);
+
+            RunPath_TextBox.Text = Application.ExecutablePath+" "+ Program.ParamePath;
         }
 
         #region 私有方法
@@ -435,10 +437,102 @@ namespace MindMap
             TestEntity TestEntityTemp = (TestEntity)(contentTemp.DataItem);
             Process.Start(TestEntityTemp.Path);
         }
+
+
         #endregion 事件
-        
-     
-        
+
+
+        #region 右上角三个功能键
+        /// <summary>最大化，最小化，关闭移入变色
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseWindow_Label_MouseEnter(object sender, EventArgs e)
+        {
+            ButtonColorChange(sender, Color.FromArgb(255, 128, 0));
+        }
+        /// <summary>最大化，最小化，关闭移出变色
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseWindow_Label_MouseLeave(object sender, EventArgs e)
+        {
+            ButtonColorChange(sender, Color.FromArgb(64, 64, 64));
+        }
+        /// <summary>统一设置Label颜色
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="ColorParame"></param>
+        private void ButtonColorChange(object sender, Color ColorParame)
+        {
+            if (sender == null) return;
+            Label CurrentButton = (Label)sender;
+            CurrentButton.BackColor = ColorParame;
+        }
+
+        /// <summary>最大化，最小化，关闭窗口事件
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseWindow_Label_Click(object sender, EventArgs e)
+        {
+            Label CurrentButton = (Label)sender;
+            switch (CurrentButton.Text)
+            {
+                case "×":
+                    this.Close();
+                    break;
+                case "口":
+                    if (this.WindowState == FormWindowState.Maximized)
+                    {
+                      Size  ScreenSize = Screen.PrimaryScreen.Bounds.Size;                  
+                        this.WindowState = FormWindowState.Normal;
+                        this.Left = (ScreenSize.Width - this.Size.Width) / 2;
+                        this.Top = (ScreenSize.Height - this.Size.Height) / 2;//居中显示
+                    }                    
+                    else this.WindowState = FormWindowState.Maximized;
+                    break;
+                case "_":
+                    this.WindowState = FormWindowState.Minimized;
+                    break;
+                default:
+                    break;
+
+            }
+
+        }
+
+        #endregion 右上角三个功能键
+
+        #region 鼠标按住移动窗口
+
+        private Point CurrentMousePosition = new Point();
+        private bool MouseDown = false;
+        private void MoveWindow_Label_MouseDown(object sender, MouseEventArgs e)
+        {
+            CurrentMousePosition = Control.MousePosition;
+            MouseDown = true;
+        }
+
+        private void MoveWindow_Label_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (MouseDown)
+            {
+                Point PointTemp = Control.MousePosition;
+                this.Left = PointTemp.X - CurrentMousePosition.X + this.Left;
+                this.Top = PointTemp.Y - CurrentMousePosition.Y + this.Top;
+                CurrentMousePosition = PointTemp;
+            }
+        }
+        private void MoveWindow_Label_MouseUp(object sender, MouseEventArgs e)
+        {
+            MouseDown = false;
+        }
+        #endregion 鼠标按住移动窗口
     }
 
 

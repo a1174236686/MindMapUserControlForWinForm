@@ -41,36 +41,36 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MindMap.exe" size="36864">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MindMap.exe" size="38912">
       <assemblyIdentity name="MindMap" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Ed+Zn0d1KhuL/d3dmsC1dhRKWnpbWaTFeBuM1TtaHNw=</dsig:DigestValue>
+        <dsig:DigestValue>im9UIWMPzPjXLU29kgf7oQArW2LrBtFDU/paReoku/o=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WlxMindMap.dll" size="60416">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WlxMindMap.dll" size="58368">
       <assemblyIdentity name="WlxMindMap" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Z697U3JVv0FFnUtJAVRcvnoJtNLcyCDijkrp0uoUWgM=</dsig:DigestValue>
+        <dsig:DigestValue>jG8sMiG0VausKElvkgAAdWQCm76GtUb04EfuGYbiu5o=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="MindMap.exe.config" size="182">
+  <file name="MindMap.exe.config" size="187">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>PbQiHFOih9uz3RPvvsStiPKcsu3PE8/gyCn2QGUyyf4=</dsig:DigestValue>
+      <dsig:DigestValue>xm4bo26HQ0LNVwz1vdPYtzhkpMnp2AI5i+f0b+OahTI=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
