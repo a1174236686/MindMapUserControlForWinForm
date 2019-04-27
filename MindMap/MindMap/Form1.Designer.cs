@@ -130,6 +130,7 @@
             this.RunPath_TextBox.ReadOnly = true;
             this.RunPath_TextBox.Size = new System.Drawing.Size(1401, 21);
             this.RunPath_TextBox.TabIndex = 1;
+            this.RunPath_TextBox.TabStop = false;
             // 
             // MinWindow_Label
             // 
