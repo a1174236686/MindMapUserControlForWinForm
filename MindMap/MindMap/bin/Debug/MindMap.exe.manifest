@@ -41,14 +41,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MindMap.exe" size="38912">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MindMap.exe" size="39936">
       <assemblyIdentity name="MindMap" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>im9UIWMPzPjXLU29kgf7oQArW2LrBtFDU/paReoku/o=</dsig:DigestValue>
+        <dsig:DigestValue>j1Er6CdwSwKcr5dHeOKzbnRqpkArvOysURQSJoGGwKg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -64,13 +64,13 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="MindMap.exe.config" size="187">
+  <file name="MindMap.exe.config" size="182">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>xm4bo26HQ0LNVwz1vdPYtzhkpMnp2AI5i+f0b+OahTI=</dsig:DigestValue>
+      <dsig:DigestValue>PbQiHFOih9uz3RPvvsStiPKcsu3PE8/gyCn2QGUyyf4=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">

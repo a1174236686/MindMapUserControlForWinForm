@@ -204,9 +204,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1569, 832);
+            this.Controls.Add(this.Edit_textBox);
             this.Controls.Add(this.mindMap_Panel1);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.Edit_textBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmMainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
