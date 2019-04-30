@@ -54,7 +54,8 @@ namespace MindMap
             {
                 if (args.Length > 0 && args[0] != "")
                 {
-                    ParamePath = args[0].ToString();
+                    //ParamePath = args[0].ToString();
+                    ParamePath =  string.Join(" ", args);
                     Recod(@"C:\Menu.txt", string.Join("-", args));
                 }
                 else
